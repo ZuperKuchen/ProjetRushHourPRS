@@ -39,6 +39,93 @@ void move_piece (piece p, dir d, int distance){
       (*p).x += distance;
     }
   }if ((*p).horizontal==false){
-    
-    
+    if(d==UP){
+      (*p).y += distance;
+    }if(d==DOWN){
+      (*p).y -= distance;
+    }
+  }
+}
 
+bool intersect(cpiece p1, cpiece p2){
+  int taille1;
+  int taille2;
+  int t1[3][2];
+  int t2[3][2];
+  if((*p1).small == true){
+    taille1 = 2;
+  }else{
+    taille1 = 3;
+  }
+  if((*p2).small == true){
+    taille2 = 2;
+  }else{
+    taille2 = 3;
+  }
+  if((*p1).horizontal == true){
+    for(int i=0 ; i<taille1 ; i++){
+      t1[i][0]=(*p1).x + i;
+      t1[i][1]=(*p1).y;
+    }
+  }else{
+    for(int i=0 ; i<taille1 ; i++){
+      t1[i][0]=(*p1).x;
+      t1[i][1]=(*p1).y + i;
+    }
+  }
+  if((*p2).horizontal == true){
+    for(int i=0 ; i<taille2 ; i++){
+      t2[i][0]=(*p2).x + i;
+      t2[i][1]=(*p2).y;
+    }
+  }else{
+    for(int i=0 ; i<taille2 ; i++){
+      t2[i][0]=(*p2).x;
+      t2[i][1]=(*p2).y + i;
+    }
+  }
+  for(int i=0; i<taille1; i++){
+    for(int j=0; j<taille2; j++){
+      if(t1[i][0] == t2[j][0] && t1[i][1] == t2[j][1]){
+	return true;
+      }
+    }
+  }
+  return false;
+}
+
+int get_x(cpiece p){
+  return (*p).x;
+}
+
+int get_y(cpiece p){
+  return (*p).y;
+}
+
+int get_height(cpiece p){
+  if((*p).horizontal == false){
+    if ((*p).small == true){
+      return 2;
+    }else{
+      return 3;
+    }
+  }else{
+    return 1;
+  }
+}
+
+int get_width(cpiece p){
+  if((*p).horizontal == true){
+    if ((*p).small == true){
+      return 2;
+    }else{
+      return 3;
+    }
+  }else{
+    return 1;
+  }
+}
+
+bool is_horizontal(cpiece p){
+  return (*p).horizontal;
+}
