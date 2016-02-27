@@ -16,7 +16,7 @@ void usage(char *nomfonction){
 
 
 game new_game_hr (int nb_pieces, piece *pieces){
-  game g=malloc(sizeof(struct game));
+  game g=malloc(sizeof(game));
   (*g).mov=0;
   (*g).nb_pieces=nb_pieces;
   for (int i=0;i<nb_pieces;i++){
@@ -32,19 +32,20 @@ void delete_game (game g){
 void copy_game(cgame src,game dst){
   (*dst).mov=game_nb_moves(src);
   (*dst).nb_pieces=game_nb_pieces(src);
-  for (int i=0;i<nb_pieces;i++){
+  for (int i=0;i<game_nb_pieces(src);i++){
     copy_piece(src+i,dst+i);
   }
 }
 
 int game_nb_pieces(cgame g){
-  res=(*g).nb_pieces;
+  int res=(*g).nb_pieces;
   return res;
 }
 
 cpiece game_piece(cgame g,int piece_num){
   if(piece_num<0 || piece_num>(*g).nb_pieces){
-    return usage("game_piece");
+    usage("game_piece");
+    exit(EXIT_FAILURE);
   }
   cpiece p;
   copy_piece((*g).piece[piece_num],p);
@@ -59,9 +60,9 @@ int game_nb_moves(cgame g){
   return (*g).mov;
 }
 
-bool play_move(game g,int piece_num, dir d, int distance){
+/*bool play_move(game g,int piece_num, dir d, int distance){
   if (distance<=0 || piece_num<0 || piece_num>(*g).game_nb_pieces(g)-1 ){
-    usage(play_move);
+    usage("play_move");
     return false;
   }
   cpiece p;
@@ -72,6 +73,6 @@ bool play_move(game g,int piece_num, dir d, int distance){
        }
   
   
-
+*/
 
 
