@@ -20,8 +20,8 @@ game new_game_hr (int nb_pieces, piece *pieces){
   (*g).mov=0;
   (*g).nb_pieces=nb_pieces;
   for (int i=0;i<nb_pieces;i++){
-    cpiece piece_act = *(pieces+i);
-    copy_piece(piece_act,(*g).pieces[i]);
+    cpiece piece_aux = *(pieces+i);
+    copy_piece(piece_aux,(*g).pieces[i]);
   }
   return g;
 }
@@ -34,14 +34,13 @@ void copy_game(cgame src,game dst){
   (*dst).mov=game_nb_moves(src);
   (*dst).nb_pieces=game_nb_pieces(src);
   for (int i=0;i<game_nb_pieces(src);i++){
-    cpiece piece_act = (*src).pieces[i];
-    copy_piece(piece_act,(*dst).pieces[i]);
+    cpiece piece_aux = (*src).pieces[i];
+    copy_piece(piece_aux,(*dst).pieces[i]);
   }
 }
 
 int game_nb_pieces(cgame g){
-  int res=(*g).nb_pieces;
-  return res;
+  return (*g).nb_pieces;
 }
 
 cpiece game_piece(cgame g,int piece_num){
@@ -49,9 +48,9 @@ cpiece game_piece(cgame g,int piece_num){
     usage("game_piece");
     exit(EXIT_FAILURE);
   }
-  piece p;
-  cpiece piece_act = (*g).pieces[piece_num];
-  copy_piece(piece_act,p);
+  piece p=malloc(sizeof(piece));
+  cpiece piece_aux = (*g).pieces[piece_num];
+  copy_piece(piece_aux,p);
   return p;
 }
 
@@ -63,19 +62,32 @@ int game_nb_moves(cgame g){
   return (*g).mov;
 }
 
-/*bool play_move(game g,int piece_num, dir d, int distance){
-  if (distance<=0 || piece_num<0 || piece_num>(*g).game_nb_pieces(g)-1 ){
+bool play_move(game g,int piece_num, dir d, int distance){
+  if (distance<=0 || piece_num<0 || piece_num>game_nb_pieces(g)-1 ){
     usage("play_move");
     return false;
   }
-  cpiece p;
-  copy_piece(game_piece(g,piece_num),p);
-  move_pieces(p,d,distance);
-  for(int i=0;i<game_nb_pieces(g);i++){
-    if(intersect(p,
-       }
+  cpiece piece_aux=game_piece(g,piece_num);
+  piece p;
+  copy_piece(piece_aux,p);
+  while (distance!=0){
+    distance --;
+    move_piece(p,d,1);
+    for(int i=0;i<game_nb_pieces(g);i++){
+      if(i==piece_num){
+	continue;
+      }
+      if (intersect((cpiece)p,game_piece(g,i))==true){
+	return false;
+      }
+    }
+  }
+  copy_piece((cpiece)p,(piece)game_piece(g,piece_num));
+  return true;
+}
+       
   
   
-*/
+
 
 
