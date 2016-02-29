@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "piece.h"
+#define TAILLE=6
 
 struct game_s{
   int mov;
@@ -44,7 +45,7 @@ int game_nb_pieces(cgame g){
 }
 
 cpiece game_piece(cgame g,int piece_num){
-  if(piece_num<0 || piece_num>(*g).nb_pieces){
+  if(piece_num<0 || piece_num>=(*g).nb_pieces){
     usage("game_piece");
     exit(EXIT_FAILURE);
   }
@@ -62,6 +63,11 @@ int game_nb_moves(cgame g){
   return (*g).mov;
 }
 
+bool is_out(piece p){
+  return (get_x(p)>(TAILLE-get_width(p)) || get_y(p)>(TAILLE-get_height(p))); 
+  
+  
+
 bool play_move(game g,int piece_num, dir d, int distance){
   if (distance<=0 || piece_num<0 || piece_num>game_nb_pieces(g)-1 ){
     usage("play_move");
@@ -77,7 +83,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
       if(i==piece_num){
 	continue;
       }
-      if (intersect((cpiece)p,game_piece(g,i))==true){
+      if (intersect((cpiece)p,game_piece(g,i)) || is_out(p)){
 	return false;
       }
     }
