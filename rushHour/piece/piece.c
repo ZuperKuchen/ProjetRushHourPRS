@@ -48,20 +48,10 @@ void move_piece (piece p, dir d, int distance){
 }
 
 bool intersect(cpiece p1, cpiece p2){
-  int taille1;
-  int taille2;
+  int taille1 = get_width(p1) * get_height(p1);
+  int taille2 = get_width(p2) * get_height(p2);
   int t1[3][2];
   int t2[3][2];
-  if((*p1).small == true){
-    taille1 = 2;
-  }else{
-    taille1 = 3;
-  }
-  if((*p2).small == true){
-    taille2 = 2;
-  }else{
-    taille2 = 3;
-  }
   if((*p1).horizontal == true){
     for(int i=0 ; i<taille1 ; i++){
       t1[i][0]=(*p1).x + i;
