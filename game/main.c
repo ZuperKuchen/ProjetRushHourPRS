@@ -7,7 +7,7 @@
 #define PieceMax 6
 
 static void usage(char *commande){
-  fprintf(stderr," <entier> nombre de pieces < 6 \n",commande);
+  fprintf(stderr," %s <entier> nombre de pieces < 6 \n",commande);
   exit(EXIT_FAILURE);
 }
 
@@ -58,6 +58,7 @@ piece* creerPieces(int nombrePiece){
     int x;
     int y;      
     (*pointeurSurFonction)(small,horizontal,&x,&y);
+    tab[i]=new_piece_rh(x,y,small,horizontal);
     int j=0;
     for(j=0;j<i;j++){
       if(i!=j){
@@ -73,9 +74,6 @@ piece* creerPieces(int nombrePiece){
       i--;
       continue;
     }
-    else{
-      tab[i]=new_piece_rh(x,y,small,horizontal);
-    }
   }
   return tab;
 }
@@ -84,7 +82,7 @@ void affichage(game g){
   int nb = game_nb_pieces(g);
   for(int i=0;i<nb;i++){
     cpiece p = game_piece(g,i);
-    printf(" piece %d x:%d y:%d small:%b horizontal:%b \n",(*p).x,*p.y,*p.small,*p.horizontal;
+    printf(" piece %d x:%d y:%d small:%b horizontal:%b \n",*(*p).x,*(*p).y,*(*p).small,*(*p).horizontal);
   }
 }
 
