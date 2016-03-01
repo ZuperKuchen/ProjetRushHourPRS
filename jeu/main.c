@@ -59,10 +59,14 @@ piece* creerPieces(int nombrePiece){
     int y;      
     casPossible(small,horizontal,&x,&y);
     tab[i]=new_piece_rh(x,y,small,horizontal);
-    int j=0;
+    if((get_y(tab[i])==3) && is_horizontal(tab[i])){
+      i--;
+      continue;
+    }
+    int j=0;  
     for(j=0;j<i;j++){
       if(i!=j){
-	if((intersect((cpiece)tab[i],(cpiece)tab[j])==false) || ((get_y(tab[j])==3) && is_horizontal(tab[j]))){
+	if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
 	  continue;
 	}
 	else{
