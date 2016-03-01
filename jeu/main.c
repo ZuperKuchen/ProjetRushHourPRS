@@ -50,7 +50,8 @@ bool booleatoire(void){
 piece* creerPieces(int nombrePiece){
   piece* tab =(piece*)malloc(nombrePiece * sizeof(piece));
   srand(time(NULL));
-  for(int i=0;i<nombrePiece;i++){
+  tab[0]=new_piece_rh(0,3,true,true);
+  for(int i=1;i<nombrePiece;i++){
     bool small = booleatoire();
     bool horizontal = booleatoire();
     int x;
@@ -60,7 +61,7 @@ piece* creerPieces(int nombrePiece){
     int j=0;
     for(j=0;j<i;j++){
       if(i!=j){
-	if(intersect((cpiece)tab[i],(cpiece)tab[j])==false){
+	if((intersect((cpiece)tab[i],(cpiece)tab[j])==false) || ((get_y(tab[j])==3) && is_horizontal(tab[j]))){
 	  continue;
 	}
 	else{
@@ -88,11 +89,7 @@ int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1]);
   if(nbPiece<=0 || nbPiece>PieceMax) usage(argv[0]);
-  printf("on creerPiece \n");
   piece* grille = creerPieces(nbPiece);
-  printf("creerPiece fonctionne \n");
   game rushHour = new_game_hr(nbPiece,grille);
-  printf("on a creer newGame \n");
-  //affichage(rushHour);
-  printf("ok \n");
+  affichage(rushHour);
 }  
