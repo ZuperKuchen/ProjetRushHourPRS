@@ -4,6 +4,7 @@
 #include <time.h>
 #include "game.h"
 #include "piece.h"
+#include "string.h"
 #define PieceMax 6
 
 static void usage(char *commande){
@@ -113,6 +114,31 @@ void affichage(game g){
 }
 
 
+void lancerJeu(game g,int nbPiece){
+   while(get_x(game_piece(g,0))!=5){
+    int num,distance;
+    char action;
+    printf("numéro de la piece à bouger ?\n");
+    for(int a=0;a<nbPiece;a++) printf(" %d ",a);
+    printf("\n");
+    scanf("%d",&num);
+    if(is_horizontal(game_piece(g,num)))printf(" quelle direction? LEFT ? RIGHT?");
+    else printf("quelle direction? UP,DOWN?\n");
+    scanf("%s",&action);
+    dir go=(dir)action;
+    if(go!=LEFT && go!=RIGHT && go!=UP && go!=DOWN){
+      printf("choisissez parmis les propositions..");
+      continue;
+    }
+    printf("la distance?");
+    scanf("%d",&distance);
+    play_move(g,num,go,distance);
+    affichage(g);
+   }
+   printf("Bravo ! le jeu est terminé");
+}
+
+
 int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1]);
@@ -120,4 +146,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
+  lancerJeu(rushHour,nbPiece);
 }  
