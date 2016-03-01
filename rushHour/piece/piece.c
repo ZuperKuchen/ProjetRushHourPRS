@@ -4,13 +4,6 @@
 #include "piece.h"
 
 
-struct piece_s {
-  int x;
-  int y;
-  bool small;
-  bool horizontal;
-};
-
 piece new_piece_rh (int x, int y, bool small, bool horizontal){
   piece newpiece = malloc(sizeof(struct piece_s));
   (*newpiece).x = x;
