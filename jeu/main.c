@@ -48,7 +48,7 @@ bool booleatoire(void){
 
 
 piece* creerPieces(int nombrePiece){
-  piece* tab[nombrePiece];
+  piece* tab =(piece*)malloc(nombrePiece * sizeof(piece));
   srand(time(NULL));
   void (*pointeurSurFonction)(bool,bool,int*,int*);
   pointeurSurFonction = casPosible;
@@ -82,7 +82,7 @@ void affichage(game g){
   int nb = game_nb_pieces(g);
   for(int i=0;i<nb;i++){
     cpiece p = game_piece(g,i);
-    printf(" piece %d x:%d y:%d small:%b horizontal:%b \n",*(*p).x,*(*p).y,*(*p).small,*(*p).horizontal);
+    printf(" piece %d x:%d y:%d small:%d horizontal:%d \n",i,(*p).x,(*p).y,(*p).small,(*p).horizontal);
   }
 }
 
