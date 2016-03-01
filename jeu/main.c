@@ -79,11 +79,39 @@ piece* creerPieces(int nombrePiece){
 
 void affichage(game g){
   int nb = game_nb_pieces(g);
-  for(int i=0;i<nb;i++){
-    cpiece p = game_piece(g,i);
-    printf(" piece %d x:%d y:%d small:%d horizontal:%d \n",i,get_x(p),get_y(p),(get_width(p)*get_height(p))==2,is_horizontal(p));
+  int tab_game[6][6];
+  for(int i=0; i<6; i++){
+    for(int j=0; j<6; j++){
+      tab_game[i][j]= 15;
+    }
+    for(int i=0;i<nb;i++){
+      cpiece temp_piece = game_piece(g,i);
+      int x = get_x(temp_piece);
+      int y = get_y(temp_piece);
+      if(is_horizontal(temp_piece)){
+	for(int j=0; j<get_width(temp_piece); j++){
+	  tab_game[x+j][y] = i;
+	}
+      }else{
+	for(int j=0; j<get_height(temp_piece); j++){
+	  tab_game[x][y+j] = i;
+	}
+      }
+    }
+  }
+  for(int yt=5; yt>=0; yt--){
+    for(int xt=0; xt<6; xt++){
+      if(tab_game[xt][yt]==15){
+	printf("[ ]");
+      }
+      else{
+	printf("[%d]", tab_game[xt][yt]);
+      }
+    }
+    printf("\n");
   }
 }
+
 
 int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
