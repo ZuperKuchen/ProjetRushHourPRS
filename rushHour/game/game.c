@@ -74,7 +74,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
     return false;
   }
   cpiece piece_aux=game_piece(g,piece_num);
-  piece p;
+  piece p = malloc(sizeof(piece));
   copy_piece(piece_aux,p);
   while (distance!=0){
     distance --;
