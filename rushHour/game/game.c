@@ -48,9 +48,7 @@ cpiece game_piece(cgame g,int piece_num){
     usage("game_piece");
     exit(EXIT_FAILURE);
   }
-  piece p=malloc(sizeof(piece));
-  cpiece piece_aux = (*g).pieces[piece_num];
-  copy_piece(piece_aux,p);
+  cpiece p = (*g).pieces[piece_num];
   return p;
 }
 
