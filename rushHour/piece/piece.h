@@ -2,7 +2,12 @@
 #define _PIECE_H_
 #include <stdbool.h> //The type bool is defined in this file
 
-
+struct piece_s {
+  int x;
+  int y;
+  bool small;
+  bool horizontal;
+};
 /**
  * @file piece.h
  *
