@@ -7,7 +7,7 @@
 #define PieceMax 6
 
 static void usage(char *commande){
-  fprintf(stderr," %s <entier> nombre de pieces < 6 \n",commande);
+  fprintf(stderr," %s <entier> nombre de pieces <=6 \n",commande);
   exit(EXIT_FAILURE);
 }
 
@@ -48,19 +48,28 @@ bool booleatoire(void){
 
 
 piece* creerPieces(int nombrePiece){
+  printf("nombrePiece : %d \n",nombrePiece);
+  printf("fonction creerPiece \n");
   piece* tab =(piece*)malloc(nombrePiece * sizeof(piece));
+  printf("tab allouer \n");
   srand(time(NULL));
   void (*pointeurSurFonction)(bool,bool,int*,int*);
   pointeurSurFonction = casPosible;
+  printf("on va rentrer dans boucle1 \n");
   for(int i=0;i<nombrePiece;i++){
+    printf("i= %d\n",i);
     bool small = booleatoire();
     bool horizontal = booleatoire();
     int x;
     int y;      
+    printf("on rentre dans le pointeur \n");
     (*pointeurSurFonction)(small,horizontal,&x,&y);
+    printf("on sort \n");
     tab[i]=new_piece_rh(x,y,small,horizontal);
+    printf("on va verifier intersect \n");
     int j=0;
     for(j=0;j<i;j++){
+      printf("j= %d \n",j);
       if(i!=j){
 	if(intersect((cpiece)tab[i],(cpiece)tab[j])==false){
 	  continue;
@@ -70,10 +79,12 @@ piece* creerPieces(int nombrePiece){
 	}
       }
     }
+    printf("j= %d \n",j);
     if(j!=i){
       i--;
       continue;
     }
+    printf("on augmente i \n");
   }
   return tab;
 }
@@ -93,4 +104,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
+  printf("ok");
 }  
