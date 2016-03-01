@@ -1,2 +1,2 @@
-add_executable(main main.c ../rushHour/game/game.c ../rushHour/piece/piece.c)
-
+add_executable(jeu main.c)
+target_link_libraries(jeu game)
