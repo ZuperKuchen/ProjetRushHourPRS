@@ -84,18 +84,18 @@ void affichage(game g){
     for(int j=0; j<6; j++){
       tab_game[i][j]= 15;
     }
-    for(int i=0;i<nb;i++){
-      cpiece temp_piece = game_piece(g,i);
-      int x = get_x(temp_piece);
-      int y = get_y(temp_piece);
-      if(is_horizontal(temp_piece)){
-	for(int j=0; j<get_width(temp_piece); j++){
-	  tab_game[x+j][y] = i;
-	}
-      }else{
-	for(int j=0; j<get_height(temp_piece); j++){
-	  tab_game[x][y+j] = i;
-	}
+  }
+  for(int i=0;i<nb;i++){
+    cpiece temp_piece = game_piece(g,i);
+    int x = get_x(temp_piece);
+    int y = get_y(temp_piece);
+    if(is_horizontal(temp_piece)){
+      for(int j=0; j<get_width(temp_piece); j++){
+	tab_game[x+j][y] = i;
+      }
+    }else{
+      for(int j=0; j<get_height(temp_piece); j++){
+	tab_game[x][y+j] = i;
       }
     }
   }
