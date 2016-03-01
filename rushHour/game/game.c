@@ -17,12 +17,11 @@ void usage(char *nomfonction){
 
 
 game new_game_hr (int nb_pieces, piece *pieces){
-  game g=malloc(sizeof(game));
+  game g=(game)malloc(sizeof(game));
   (*g).mov=0;
   (*g).nb_pieces=nb_pieces;
-  for (int i=0;i<nb_pieces;i++){
-    cpiece piece_aux = *(pieces+i);
-    copy_piece(piece_aux,(*g).pieces[i]);
+  for(int i=0; i<nb_pieces; i++){
+    (*g).pieces[i]=pieces[i];
   }
   return g;
 }
@@ -74,7 +73,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
     return false;
   }
   cpiece piece_aux=game_piece(g,piece_num);
-  piece p = malloc(sizeof(piece));
+  piece p=malloc(sizeof(piece));
   copy_piece(piece_aux,p);
   while (distance!=0){
     distance --;
