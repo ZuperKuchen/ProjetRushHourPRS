@@ -106,13 +106,8 @@ piece* creerPieces(int nombrePiece){
 }
 
 void affichage(game g){
-<<<<<<< HEAD
   printf("\n");
   printf("nombre de mouvements effectues : %d \n",game_nb_moves(g));
-=======
-  printf(" \n");
-  printf("nombre de mouvement effectues : %d \n",game_nb_moves(g));
->>>>>>> bac56fd537afca59cca02c1d54ee5c869e74a902
   int nb = game_nb_pieces(g);
   int tab_game[6][6];
   for(int i=0; i<6; i++){
@@ -145,11 +140,7 @@ void affichage(game g){
     }
     printf("\n");
   }
-<<<<<<< HEAD
-  //printf("Pour quitter appuyer sur q \n");
-=======
   printf("Pour quitter appuyez sur q \n");
->>>>>>> bac56fd537afca59cca02c1d54ee5c869e74a902
   printf("\n");
 }
 
@@ -219,5 +210,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
-  //startGame(rushHour,nbPiece);
+  startGame(rushHour,nbPiece);
 }  
