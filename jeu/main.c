@@ -118,25 +118,56 @@ void affichage(game g){
 }
 
 
-void lancerJeu(game g,int nbPiece){
+void startGame(game g,int nbPiece){
   while(!game_over_hr(g)){
-    int num,distance;
+    int num,distance,d;
+    dir direction;
     printf("numéro de la piece à bouger ?\n");
-    for(int a=0;a<nbPiece;a++) printf(" %d ",a);
+    for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     scanf("%d",&num);
-    if(is_horizontal(game_piece(g,num)))printf(" quelle direction? LEFT ? RIGHT?");
-    else printf("quelle direction? UP,DOWN?\n");
-    char direction[20];
-    fgets(direction, sizeof(direction), stdin);
-    printf("direction: %s.\n", direction);
-    if(go!=LEFT && go!=RIGHT && go!=UP && go!=DOWN){
-      printf("choisissez parmis les propositions..");
+
+    if(is_horizontal(game_piece(g,num))){
+      printf(" quelle direction? l/r ?\n");
+      fscanf(stdin,"%d",&d);
+      //printf("direction: %c\n", d);
+    }
+    else {
+      printf("quelle direction? u/d ?\n");
+      fscanf(stdin,"%d",&d);
+      //printf("direction: %c\n", d);
+    }
+    bool test=true;
+    switch(d){
+    case 'l':
+      printf("LEFT\n");
+      direction=LEFT;
+      break;
+    case 'r':
+      printf("RIGHT\n");
+      direction=RIGHT;
+      break;
+    case 'u':
+      printf("UP\n");
+      direction=UP; 
+      break;
+    case 'd':
+      printf("DOWN\n");
+      direction=DOWN;
+      break;
+    default:
+      printf("choisissez parmis les propositions..\n");
+      test=false;
+      break;
+    }
+    if (!test) continue;
+    printf("la distance?\n");
+    scanf("%d",&distance);
+    bool goodMove=play_move(g,num,direction,distance);
+    if (goodMove==false) {
+      printf("deplacement impossible \n");
       continue;
     }
-    printf("la distance?");
-    scanf("%d",&distance);
-    play_move(g,num,go,distance);
     affichage(g);
    }
   printf("Bravo ! le jeu est terminé");
@@ -150,5 +181,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
-  lancerJeu(rushHour,nbPiece);
+  startGame(rushHour,nbPiece);
 }  
