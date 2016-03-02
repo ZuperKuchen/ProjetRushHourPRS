@@ -106,8 +106,13 @@ piece* creerPieces(int nombrePiece){
 }
 
 void affichage(game g){
+<<<<<<< HEAD
+  printf("\n");
+  printf("nombre de mouvements effectues : %d \n",game_nb_moves(g));
+=======
   printf(" \n");
   printf("nombre de mouvement effectues : %d \n",game_nb_moves(g));
+>>>>>>> bac56fd537afca59cca02c1d54ee5c869e74a902
   int nb = game_nb_pieces(g);
   int tab_game[6][6];
   for(int i=0; i<6; i++){
@@ -140,13 +145,18 @@ void affichage(game g){
     }
     printf("\n");
   }
+<<<<<<< HEAD
+  //printf("Pour quitter appuyer sur q \n");
+=======
   printf("Pour quitter appuyez sur q \n");
+>>>>>>> bac56fd537afca59cca02c1d54ee5c869e74a902
   printf("\n");
 }
 
 void startGame(game g,int nbPiece){
   while(!game_over_hr(g)){
-    int num,distance,d;
+    int num,distance;
+    char d;
     dir direction;
     printf("numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
@@ -155,15 +165,16 @@ void startGame(game g,int nbPiece){
 
     if(is_horizontal(game_piece(g,num))){
       printf(" quelle direction? l/r ?\n");
-      fscanf(stdin,"%d",&d);
+      fscanf(stdin,"%c",&d);
       //printf("direction: %c\n", d);
     }
     else {
       printf("quelle direction? u/d ?\n");
-      fscanf(stdin,"%d",&d);
+      fscanf(stdin,"%c",&d);
       //printf("direction: %c\n", d);
     }
     bool test=true;
+    printf("direction %c\n",d);
     switch(d){
     case 'l':
       printf("LEFT\n");
