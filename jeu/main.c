@@ -119,17 +119,17 @@ void affichage(game g){
 
 
 void lancerJeu(game g,int nbPiece){
-   while(get_x(game_piece(g,0))!=5){
+  while(!game_over_hr(g)){
     int num,distance;
-    char action;
     printf("numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d ",a);
     printf("\n");
     scanf("%d",&num);
     if(is_horizontal(game_piece(g,num)))printf(" quelle direction? LEFT ? RIGHT?");
     else printf("quelle direction? UP,DOWN?\n");
-    scanf("%s",&action);
-    dir go=(dir)action;
+    char direction[20];
+    fgets(direction, sizeof(direction), stdin);
+    printf("direction: %s.\n", direction);
     if(go!=LEFT && go!=RIGHT && go!=UP && go!=DOWN){
       printf("choisissez parmis les propositions..");
       continue;
@@ -139,7 +139,7 @@ void lancerJeu(game g,int nbPiece){
     play_move(g,num,go,distance);
     affichage(g);
    }
-   printf("Bravo ! le jeu est terminé");
+  printf("Bravo ! le jeu est terminé");
 }
 
 
