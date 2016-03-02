@@ -207,9 +207,9 @@ void startGame(game g,int nbPiece){
 int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1])+1;
-  if(nbPiece<=0 || nbPiece>PieceMax) usage(argv[0]);
+  if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
-  startGame(rushHour,nbPiece);
+  //startGame(rushHour,nbPiece);
 }  
