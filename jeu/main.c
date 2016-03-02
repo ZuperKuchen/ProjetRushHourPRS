@@ -133,10 +133,15 @@ void affichage(game g){
   for(int yt=GAME_SIZE-1; yt>=0; yt--){
     for(int xt=0; xt<GAME_SIZE; xt++){
       if(tab_game[xt][yt]==15){
-	printf("[ ]");
+	printf("[ ");
       }
       else{
-	printf("[%d]", tab_game[xt][yt]);
+	printf("[%d", tab_game[xt][yt]);
+      }
+      if(xt==5 && yt==3){
+	printf("{");
+      }else{
+	printf("]");
       }
     }
     printf("\n");
