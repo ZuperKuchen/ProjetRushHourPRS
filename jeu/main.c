@@ -5,9 +5,10 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#define PieceMax 7
-#define small_size 2
-#define big_size 3
+#define PIECE_MAX 7
+#define SMALL_SIZE 2
+#define BIG_SIZE 3
+#define GAME_SIZE 6
 
 static void usage(char *commande){
   fprintf(stderr," %s <entier> nombre de pieces <=6 \n",commande);
@@ -52,7 +53,7 @@ bool booleatoire(void){
 
 bool testCreerPiece(piece p1,piece p2){
   if(get_y(p1)==get_y(p2)){
-    if(get_height(p1)*get_width(p1)==big_size && get_height(p2)*get_width(p2)==big_size){
+    if(get_height(p1)*get_width(p1)==BIG_SIZE && get_height(p2)*get_width(p2)==BIG_SIZE){
       if(is_horizontal(p1)==true && is_horizontal(p2)==true){
 	return false;
       }
@@ -60,7 +61,7 @@ bool testCreerPiece(piece p1,piece p2){
   }
   else if(get_x(p1)==get_x(p2)){
     if(is_horizontal(p1)==false && is_horizontal(p2)==false){
-      if(get_height(p1)*get_width(p1)==big_size || get_height(p2)*get_width(p2)==big_size){
+      if(get_height(p1)*get_width(p1)==BIG_SIZE || get_height(p2)*get_width(p2)==BIG_SIZE){
 	return false;
       }
     }
@@ -79,7 +80,7 @@ piece* creerPieces(int nombrePiece){
     int y;      
     casPossible(small,horizontal,&x,&y);
     tab[i]=new_piece_rh(x,y,small,horizontal);
-    if((get_y(tab[i])==big_size) && is_horizontal(tab[i])){
+    if((get_y(tab[i])==BIG_SIZE) && is_horizontal(tab[i])){
       i--;
       continue;
     }
@@ -107,30 +108,30 @@ piece* creerPieces(int nombrePiece){
 
 void affichage(game g){
   printf("\n");
-  printf("nombre de mouvements effectues : %d \n",game_nb_moves(g));
+  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
   int nb = game_nb_pieces(g);
-  int tab_game[6][6];
-  for(int i=0; i<6; i++){
-    for(int j=0; j<6; j++){
+  int tab_game[GAME_SIZE][GAME_SIZE];
+  for(int i=0; i<GAME_SIZE; i++){
+    for(int j=0; j<GAME_SIZE; j++){
       tab_game[i][j]= 15;
     }
   }
   for(int i=0;i<nb;i++){
-    cpiece temp_piece = game_piece(g,i);
-    int x = get_x(temp_piece);
-    int y = get_y(temp_piece);
-    if(is_horizontal(temp_piece)){
-      for(int j=0; j<get_width(temp_piece); j++){
+    cpiece tmp_piece = game_piece(g,i);
+    int x = get_x(tmp_piece);
+    int y = get_y(tmp_piece);
+    if(is_horizontal(tmp_piece)){
+      for(int j=0; j<get_width(tmp_piece); j++){
 	tab_game[x+j][y] = i;
       }
     }else{
-      for(int j=0; j<get_height(temp_piece); j++){
+      for(int j=0; j<get_height(tmp_piece); j++){
 	tab_game[x][y+j] = i;
       }
     }
   }
-  for(int yt=5; yt>=0; yt--){
-    for(int xt=0; xt<6; xt++){
+  for(int yt=GAME_SIZE-1; yt>=0; yt--){
+    for(int xt=0; xt<GAME_SIZE; xt++){
       if(tab_game[xt][yt]==15){
 	printf("[ ]");
       }
