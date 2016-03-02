@@ -87,11 +87,9 @@ piece* creerPieces(int nombrePiece){
     int j=0;  
     for(j=0;j<i;j++){
       if(i!=j){
-	if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
+	if (!testCreerPiece(tab[i],tab[j])) break;
+	else if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
 	  continue;
-	}
-	else if (!testCreerPiece(tab[i],tab[j])){
-	  break;
 	}
 	else{
 	  break;
@@ -152,54 +150,45 @@ void affichage(game g){
 
 void startGame(game g,int nbPiece){
   while(!game_over_hr(g)){
-    int num,distance;
-    char d;
+    char num[3],distance[3],dir_str[7];
     dir direction;
-    printf("numéro de la piece à bouger ?\n");
+    bool vert;
+    printf("Numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
-    scanf("%d",&num);
-
-    if(is_horizontal(game_piece(g,num))){
-      printf(" quelle direction? l/r ?\n");
-      fscanf(stdin,"%c",&d);
-      //printf("direction: %c\n", d);
+    fgets(num,3,stdin);
+    if(is_horizontal(game_piece(g,atoi(num)))){
+      printf("Quelle direction? left/right ?\n");
+      vert=false;
     }
     else {
-      printf("quelle direction? u/d ?\n");
-      fscanf(stdin,"%c",&d);
-      //printf("direction: %c\n", d);
+      printf("Quelle direction? up/down ?\n");
+      vert=true;
     }
+    fgets(dir_str,7,stdin);
     bool test=true;
-    printf("direction %c\n",d);
-    switch(d){
-    case 'l':
-      printf("LEFT\n");
+    if (strcmp(dir_str,"left\n")==0 && !vert){
       direction=LEFT;
-      break;
-    case 'r':
-      printf("RIGHT\n");
+    }
+    else if (strcmp(dir_str,"right\n")==0 && !vert){
       direction=RIGHT;
-      break;
-    case 'u':
-      printf("UP\n");
-      direction=UP; 
-      break;
-    case 'd':
-      printf("DOWN\n");
+    }
+    else if (strcmp(dir_str,"up\n")==0 && vert){
+      direction=UP;
+    }
+    else if (strcmp(dir_str,"down\n")==0 && vert){
       direction=DOWN;
-      break;
-    default:
-      printf("choisissez parmis les propositions..\n");
+    }
+    else {
+      printf("Choisissez parmis les propositions..\n");
       test=false;
-      break;
     }
     if (!test) continue;
-    printf("la distance?\n");
-    scanf("%d",&distance);
-    bool goodMove=play_move(g,num,direction,distance);
+    printf("La distance?\n");
+    fgets(distance,3,stdin);
+    bool goodMove=play_move(g,atoi(num),direction,atoi(distance));
     if (goodMove==false) {
-      printf("deplacement impossible \n");
+      printf("Deplacement impossible \n");
       continue;
     }
     affichage(g);
@@ -216,5 +205,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
-  //startGame(rushHour,nbPiece);
+  startGame(rushHour,nbPiece);
 }  
