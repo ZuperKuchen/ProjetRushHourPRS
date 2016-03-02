@@ -5,7 +5,9 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#define PieceMax 6
+#define PieceMax 7
+#define small_size 2
+#define big_size 3
 
 static void usage(char *commande){
   fprintf(stderr," %s <entier> nombre de pieces <=6 \n",commande);
@@ -48,6 +50,24 @@ bool booleatoire(void){
 }
 
 
+bool testCreerPiece(piece p1,piece p2){
+  if(get_y(p1)==get_y(p2)){
+    if(get_height(p1)*get_width(p1)==big_size && get_height(p2)*get_width(p2)==big_size){
+      if(is_horizontal(p1)==true && is_horizontal(p2)==true){
+	return false;
+      }
+    }
+  }
+  else if(get_x(p1)==get_x(p2)){
+    if(is_horizontal(p1)==false && is_horizontal(p2)==false){
+      if(get_height(p1)*get_width(p1)==big_size || get_height(p2)*get_width(p2)==big_size){
+	return false;
+      }
+    }
+  }
+  return true;
+}
+
 piece* creerPieces(int nombrePiece){
   piece* tab =(piece*)malloc(nombrePiece * sizeof(piece));
   srand(time(NULL));
@@ -59,7 +79,7 @@ piece* creerPieces(int nombrePiece){
     int y;      
     casPossible(small,horizontal,&x,&y);
     tab[i]=new_piece_rh(x,y,small,horizontal);
-    if((get_y(tab[i])==3) && is_horizontal(tab[i])){
+    if((get_y(tab[i])==big_size) && is_horizontal(tab[i])){
       i--;
       continue;
     }
@@ -68,6 +88,9 @@ piece* creerPieces(int nombrePiece){
       if(i!=j){
 	if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
 	  continue;
+	}
+	else if (!testCreerPiece(tab[i],tab[j])){
+	  break;
 	}
 	else{
 	  break;
@@ -116,7 +139,6 @@ void affichage(game g){
     printf("\n");
   }
 }
-
 
 void startGame(game g,int nbPiece){
   while(!game_over_hr(g)){
@@ -174,9 +196,10 @@ void startGame(game g,int nbPiece){
 }
 
 
+
 int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
-  int nbPiece = atoi(argv[1]);
+  int nbPiece = atoi(argv[1])+1;
   if(nbPiece<=0 || nbPiece>PieceMax) usage(argv[0]);
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
