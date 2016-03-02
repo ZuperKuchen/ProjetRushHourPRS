@@ -106,6 +106,8 @@ piece* creerPieces(int nombrePiece){
 }
 
 void affichage(game g){
+  printf(" \n");
+  printf("nombre de mouvement effectues : %d \n",game_nb_moves(g));
   int nb = game_nb_pieces(g);
   int tab_game[6][6];
   for(int i=0; i<6; i++){
@@ -138,6 +140,8 @@ void affichage(game g){
     }
     printf("\n");
   }
+  printf("Pour quitter appuyez sur q \n");
+  printf("\n");
 }
 
 void startGame(game g,int nbPiece){
@@ -204,5 +208,5 @@ int main(int argc,char *argv[]){
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
   affichage(rushHour);
-  startGame(rushHour,nbPiece);
+  //startGame(rushHour,nbPiece);
 }  
