@@ -48,8 +48,7 @@ cpiece game_piece(cgame g,int piece_num){
     usage("game_piece");
     exit(EXIT_FAILURE);
   }
-  cpiece p = (*g).pieces[piece_num];
-  return p;
+  return (cpiece)(*g).pieces[piece_num];
 }
 
 bool game_over_hr(cgame g){
@@ -66,33 +65,25 @@ bool is_out(piece p){
   
 
 bool play_move(game g,int piece_num, dir d, int distance){
-  printf("on rentre dans playMove \n");
   if (distance<=0 || piece_num<0 || piece_num>game_nb_pieces(g)-1 ){
     usage("play_move");
     return false;
   }
   cpiece piece_aux=game_piece(g,piece_num);
-  printf("on alloue \n");
-  piece p=malloc(sizeof(piece));
-  copy_piece(piece_aux,p);
-  printf("on rentre dans while \n");
   while (distance!=0){
     distance --;
-    move_piece(p,d,1);
-    printf("on rentre dans for avec distance = %d \n",distance);
+    move_piece((piece)piece_aux,d,1);
     for(int i=0;i<game_nb_pieces(g);i++){
-      printf("i= %d \n",i);
       if(i==piece_num){
 	continue;
       }
-      if (intersect((cpiece)p,game_piece(g,i)) || is_out(p)){
+      if (intersect(piece_aux,game_piece(g,i)) || is_out((piece)piece_aux)){
 	return false;
       }
     }
-    printf("on sort du for \n");
   }
-  printf("on sor du while \n");
-  copy_piece((cpiece)p,(piece)game_piece(g,piece_num));
+  copy_piece(piece_aux,(piece)game_piece(g,piece_num));
+  (*g).mov+=1;
   return true;
 }
        
