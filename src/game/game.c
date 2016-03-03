@@ -60,7 +60,7 @@ int game_nb_moves(cgame g){
 }
 
 bool is_out(piece p){
-  return (get_x(p)>(TAILLE-get_width(p)) || get_y(p)>(TAILLE-get_height(p))); 
+  return (get_x(p)>(TAILLE-get_width(p)) || get_y(p)>(TAILLE-get_height(p))|| get_x(p)<0 || get_y(p)<0); 
 }
   
 

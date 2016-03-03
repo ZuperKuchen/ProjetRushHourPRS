@@ -129,7 +129,9 @@ void affichage(cgame g){
       }
     }
   }
+  printf("********************\n");
   for(int yt=GAME_SIZE-1; yt>=0; yt--){
+    printf("%d ",yt);
     for(int xt=0; xt<GAME_SIZE; xt++){
       if(tab_game[xt][yt]==15){
 	printf("[ ");
@@ -145,6 +147,9 @@ void affichage(cgame g){
     }
     printf("\n");
   }
+  printf("  ");
+  for(int k=0;k<GAME_SIZE;k++) printf(" %d ",k);
+  printf("\n");
   printf("\n");
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
@@ -213,6 +218,7 @@ void startGame(game g,int nbPiece){
 
 
 int main(int argc,char *argv[]){
+  char rejouer[6];
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1]);
   if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
@@ -220,4 +226,14 @@ int main(int argc,char *argv[]){
   game rushHour = new_game_hr(nbPiece,grille);
   affichage((cgame)rushHour);
   startGame(rushHour,nbPiece);
+  printf("voulez vous rejouez? oui/non \n");
+  fgets(rejouer,6,stdin);
+  while(strcmp(rejouer,"oui\n")==0){
+    piece* grille = creerPieces(nbPiece);
+    game rushHour = new_game_hr(nbPiece,grille);
+    affichage((cgame)rushHour);
+    startGame(rushHour,nbPiece);
+    printf("voulez vous rejouez? oui/non \n");
+    fgets(rejouer,6,stdin);
+  }
 }  
