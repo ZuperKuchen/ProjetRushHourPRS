@@ -104,7 +104,7 @@ piece* creerPieces(int nombrePiece){
   return tab;
 }
 
-void affichage(game g){
+void affichage(cgame g){
   printf("\n");
   printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
   int nb = game_nb_pieces(g);
@@ -157,7 +157,8 @@ void startGame(game g,int nbPiece){
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num,3,stdin);
-    if(is_horizontal(game_piece(g,atoi(num)))){
+    int num_real=atoi(num);
+    if(is_horizontal(game_piece(g,num_real))){
       printf("Quelle direction? left/right ?\n");
       vert=false;
     }
@@ -186,7 +187,7 @@ void startGame(game g,int nbPiece){
     if (!test) continue;
     printf("La distance?\n");
     fgets(distance,3,stdin);
-    bool goodMove=play_move(g,atoi(num),direction,atoi(distance));
+    bool goodMove=play_move(g,num_real,direction,atoi(distance));
     if (goodMove==false) {
       printf("Deplacement impossible \n");
       continue;
@@ -204,6 +205,6 @@ int main(int argc,char *argv[]){
   if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
-  affichage(rushHour);
+  affichage((cgame)rushHour);
   startGame(rushHour,nbPiece);
 }  
