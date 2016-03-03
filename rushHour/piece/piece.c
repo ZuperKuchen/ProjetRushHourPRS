@@ -51,7 +51,7 @@ bool intersect(cpiece p1, cpiece p2){
   int taille2 = get_width(p2) * get_height(p2);
   int t1[3][2];
   int t2[3][2];
-  if((*p1).horizontal == true){
+  if(is_horizontal(p1)){
     for(int i=0 ; i<taille1 ; i++){
       t1[i][0]=(*p1).x + i;
       t1[i][1]=(*p1).y;
@@ -62,7 +62,7 @@ bool intersect(cpiece p1, cpiece p2){
       t1[i][1]=(*p1).y + i;
     }
   }
-  if((*p2).horizontal == true){
+  if(is_horizontal(p2)){
     for(int i=0 ; i<taille2 ; i++){
       t2[i][0]=(*p2).x + i;
       t2[i][1]=(*p2).y;
