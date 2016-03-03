@@ -31,13 +31,13 @@ void copy_piece (cpiece src, piece dst){
 }
 
 void move_piece (piece p, dir d, int distance){
-  if ((*p).horizontal==true){
+  if (is_horizontal(p)){
     if(d==LEFT){
       (*p).x -= distance;
     }if(d==RIGHT){
       (*p).x += distance;
     }
-  }if ((*p).horizontal==false){
+  }if (!is_horizontal(p)){
     if(d==UP){
       (*p).y += distance;
     }if(d==DOWN){
