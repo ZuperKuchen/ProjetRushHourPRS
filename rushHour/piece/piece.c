@@ -93,7 +93,7 @@ int get_y(cpiece p){
 
 int get_height(cpiece p){
   if(!is_horizontal(p)){
-    if (is_small(p)){
+    if ((*p).small){
       return 2;
     }else{
       return 3;
@@ -105,7 +105,7 @@ int get_height(cpiece p){
 
 int get_width(cpiece p){
   if(is_horizontal(p)){
-    if (is_small(p)){
+    if ((*p).small){
       return 2;
     }else{
       return 3;
@@ -119,7 +119,3 @@ bool is_horizontal(cpiece p){
   return (*p).horizontal;
 }
 
-
-bool is_small(cpiece p){
-  return (*p).small;
-}
