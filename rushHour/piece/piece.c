@@ -53,24 +53,24 @@ bool intersect(cpiece p1, cpiece p2){
   int t2[3][2];
   if(is_horizontal(p1)){
     for(int i=0 ; i<taille1 ; i++){
-      t1[i][0]=(*p1).x + i;
-      t1[i][1]=(*p1).y;
+      t1[i][0]=get_x(p1)+ i;
+      t1[i][1]=get_y(p1);
     }
   }else{
     for(int i=0 ; i<taille1 ; i++){
-      t1[i][0]=(*p1).x;
-      t1[i][1]=(*p1).y + i;
+      t1[i][0]=get_x(p1);
+      t1[i][1]=get_y(p1)+ i;
     }
   }
   if(is_horizontal(p2)){
     for(int i=0 ; i<taille2 ; i++){
-      t2[i][0]=(*p2).x + i;
-      t2[i][1]=(*p2).y;
+      t2[i][0]=get_x(p2)+ i;
+      t2[i][1]=get_y(p2);
     }
   }else{
     for(int i=0 ; i<taille2 ; i++){
-      t2[i][0]=(*p2).x;
-      t2[i][1]=(*p2).y + i;
+      t2[i][0]=get_x(p2);
+      t2[i][1]=get_y(p2) + i;
     }
   }
   for(int i=0; i<taille1; i++){
