@@ -107,6 +107,7 @@ piece* creerPieces(int nombrePiece){
 void affichage(cgame g){
   printf("\n");
   printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
+  printf("\n");
   int nb = game_nb_pieces(g);
   int tab_game[GAME_SIZE][GAME_SIZE];
   for(int i=0; i<GAME_SIZE; i++){
@@ -144,6 +145,7 @@ void affichage(cgame g){
     }
     printf("\n");
   }
+  printf("\n");
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
 }
@@ -157,6 +159,9 @@ void startGame(game g,int nbPiece){
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num,3,stdin);
+    if (strcmp(num,"q\n")==0){
+      exit(EXIT_SUCCESS);
+    }
     int num_real=atoi(num);
     if(is_horizontal(game_piece(g,num_real))){
       printf("Quelle direction? left/right ?\n");
@@ -168,7 +173,10 @@ void startGame(game g,int nbPiece){
     }
     fgets(dir_str,7,stdin);
     bool test=true;
-    if (strcmp(dir_str,"left\n")==0 && !vert){
+    if (strcmp(dir_str,"q\n")==0){
+      exit(EXIT_SUCCESS);
+    }
+    else if (strcmp(dir_str,"left\n")==0 && !vert){
       direction=LEFT;
     }
     else if (strcmp(dir_str,"right\n")==0 && !vert){
@@ -187,14 +195,19 @@ void startGame(game g,int nbPiece){
     if (!test) continue;
     printf("La distance?\n");
     fgets(distance,3,stdin);
+    if (strcmp(distance,"q\n")==0){
+      exit(EXIT_SUCCESS);
+    }
     bool goodMove=play_move(g,num_real,direction,atoi(distance));
     if (goodMove==false) {
       printf("Deplacement impossible \n");
       continue;
     }
+    printf("___________________________________________ \n");
     affichage(g);
    }
-  printf("Bravo ! le jeu est terminé");
+  printf("Bravo ! le jeu est terminé\n ");
+  printf("___________________________________________ \n");
 }
 
 
