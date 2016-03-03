@@ -5,7 +5,7 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#define PIECE_MAX 7
+#define PIECE_MAX 6
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
 #define GAME_SIZE 6
@@ -200,7 +200,7 @@ void startGame(game g,int nbPiece){
 
 int main(int argc,char *argv[]){
   if(argc!=2) usage(argv[0]);
-  int nbPiece = atoi(argv[1])+1;
+  int nbPiece = atoi(argv[1]);
   if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
   piece* grille = creerPieces(nbPiece);
   game rushHour = new_game_hr(nbPiece,grille);
