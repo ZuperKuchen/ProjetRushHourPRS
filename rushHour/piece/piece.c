@@ -24,10 +24,10 @@ void delete_piece (piece p){
 }
 
 void copy_piece (cpiece src, piece dst){
-  (*dst).x = (*src).x;
-  (*dst).y = (*src).y;
+  (*dst).x = get_x(src);
+  (*dst).y = get_y(src);
   (*dst).small = (*src).small;
-  (*dst).horizontal = (*src).horizontal;
+  (*dst).horizontal = is_horizontal(src);
 }
 
 void move_piece (piece p, dir d, int distance){
