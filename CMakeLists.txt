@@ -3,17 +3,17 @@ project (RushHour)
 
 add_definitions(-std=c99 -g)
 
-include_directories(rushHour/game/ rushHour/piece/ jeu/)
+include_directories(src/game/ src/piece/ rushHour/)
 
 install(FILES
 
-        rushHour/game/game.h
-	rushHour/piece/piece.h
+        src/game/game.h
+	src/piece/piece.h
 	
 	DESTINATION "include")
 
+add_subdirectory(src)
 add_subdirectory(rushHour)
-add_subdirectory(jeu)
 
 set(CMAKE_INSTALL_PREFIX RushHour)
 enable_testing()
