@@ -5,13 +5,13 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#define PIECE_MAX 6
+#define PIECE_MAX 9
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
 #define GAME_SIZE 6
 
 static void usage(char *commande){
-  fprintf(stderr," %s <entier> nombre de pieces <=6 \n",commande);
+  fprintf(stderr," %s <entier> nombre de pieces <=9 \n",commande);
   exit(EXIT_FAILURE);
 }
 
@@ -218,6 +218,7 @@ void startGame(game g,int nbPiece){
 
 
 int main(int argc,char *argv[]){
+  printf("choisissez le nombre de voiture\n que vous souhaitez\n Maximum 9\n");
   char rejouer[6];
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1]);
