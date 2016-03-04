@@ -69,9 +69,10 @@ bool play_move(game g,int piece_num, dir d, int distance){
     usage("play_move");
     return false;
   }
+  int dis=distance;
   cpiece piece_aux=game_piece(g,piece_num);
-  while (distance!=0){
-    distance --;
+  while (dis!=0){
+    dis --;
     move_piece((piece)piece_aux,d,1);
     for(int i=0;i<game_nb_pieces(g);i++){
       if(i==piece_num){
