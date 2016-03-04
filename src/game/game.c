@@ -83,7 +83,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
     }
   }
   copy_piece(piece_aux,(piece)game_piece(g,piece_num));
-  (*g).mov+=1;
+  (*g).mov+=distance;
   return true;
 }
        
