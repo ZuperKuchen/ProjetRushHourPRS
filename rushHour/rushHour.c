@@ -164,6 +164,10 @@ void startGame(game g,int nbPiece){
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num,3,stdin);
+    if(atoi(num)<0 || atoi(num)>nbPiece){
+      printf("Choisissez parmis les propositions..\n");
+      continue;
+    }
     if (strcmp(num,"q\n")==0){
       exit(EXIT_SUCCESS);
     }
