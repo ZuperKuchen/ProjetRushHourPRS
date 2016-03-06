@@ -80,23 +80,23 @@ piece* creerPieces(int nombrePiece){
     int y;      
     casPossible(small,horizontal,&x,&y);
     tab[i]=new_piece_rh(x,y,small,horizontal);
-    if((get_y(tab[i])==BIG_SIZE) && is_horizontal(tab[i])){
+    if((get_y(tab[i])==3) && is_horizontal(tab[i])){
+      delete_piece(tab[i]);
       i--;
       continue;
     }
     int j=0;  
     for(j=0;j<i;j++){
-      if(i!=j){
-	if (!testCreerPiece(tab[i],tab[j])) break;
-	else if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
-	  continue;
-	}
-	else{
-	  break;
-	}
+      if (!testCreerPiece(tab[i],tab[j])) break;
+      else if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
+	continue;
+      }
+      else{
+	break;
       }
     }
     if(j!=i){
+      delete_piece(tab[i]);
       i--;
       continue;
     }
@@ -149,8 +149,7 @@ void affichage(cgame g){
   }
   printf("  ");
   for(int k=0;k<GAME_SIZE;k++) printf(" %d ",k);
-  printf("\n");
-  printf("\n");
+  printf("\n\n");
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
 }
@@ -164,7 +163,7 @@ void startGame(game g,int nbPiece){
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num,3,stdin);
-    if(atoi(num)<0 || atoi(num)>nbPiece){
+    if(atoi(num)<0 || atoi(num)>=nbPiece){
       printf("Choisissez parmis les propositions..\n");
       continue;
     }
@@ -231,14 +230,14 @@ int main(int argc,char *argv[]){
   game rushHour = new_game_hr(nbPiece,grille);
   affichage((cgame)rushHour);
   startGame(rushHour,nbPiece);
-  printf("voulez vous rejouez? oui/non \n");
+  printf("Voulez vous rejouez? oui/non \n");
   fgets(rejouer,6,stdin);
   while(strcmp(rejouer,"oui\n")==0){
     piece* grille = creerPieces(nbPiece);
     game rushHour = new_game_hr(nbPiece,grille);
     affichage((cgame)rushHour);
     startGame(rushHour,nbPiece);
-    printf("voulez vous rejouez? oui/non \n");
+    printf("Voulez vous rejouez? oui/non \n");
     fgets(rejouer,6,stdin);
   }
 }  
