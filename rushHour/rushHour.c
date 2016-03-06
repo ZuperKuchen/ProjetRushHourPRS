@@ -219,7 +219,6 @@ void startGame(game g,int nbPiece){
 
 
 int main(int argc,char *argv[]){
-  printf("choisissez le nombre de voiture\n que vous souhaitez\n Maximum 9\n");
   char rejouer[6];
   if(argc!=2) usage(argv[0]);
   int nbPiece = atoi(argv[1]);
