@@ -11,7 +11,7 @@ struct piece_s {
 };
 
 piece new_piece_rh (int x, int y, bool small, bool horizontal){
-  piece newpiece = malloc(sizeof(struct piece_s));
+  piece newpiece = (piece)malloc(sizeof(struct piece_s));
   (*newpiece).x = x;
   (*newpiece).y = y;
   (*newpiece).small = small;
