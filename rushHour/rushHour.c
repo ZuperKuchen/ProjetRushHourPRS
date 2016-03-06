@@ -23,10 +23,10 @@ int aleatoire(int max){
 
 
 void casPossible(bool small,bool horizontal,int *x,int *y){
-  if(horizontal){
+  if(horizontal){ 
     if(small){
-      *x=aleatoire(5);
-    }
+      *x=aleatoire(5);                               /* en fonction de si la piece est small/big et horizontal/vertical*/
+    }                                                /* on génère aléatoirement des valeur x et y en fonction des cas  possible */
     else{
       *x=aleatoire(4);
     }
@@ -44,15 +44,15 @@ void casPossible(bool small,bool horizontal,int *x,int *y){
 }
 
 
-bool booleatoire(void){
-  int nombre_aleatoire = rand()%10;
+bool booleatoire(void){                                /* booleatoire génère un nombre aleatoire entre 0 et 9 compris,soit 10 nombres*/ 
+  int nombre_aleatoire = rand()%10;                    /* si le nombre est 0,1,2,3 ou 4, booleatoire renvoie true, false sinon*/
   if(nombre_aleatoire<5) return true;
   else return false;
 }
 
 
-bool testCreerPiece(piece p1,piece p2){
-  if(get_y(p1)==get_y(p2)){
+bool testCreerPiece(piece p1,piece p2){               /* testCreerPiece regarde quelques cas particulier impossible a résoudre*/
+  if(get_y(p1)==get_y(p2)){                           /* pour le joueur */
     if(get_height(p1)*get_width(p1)==BIG_SIZE && get_height(p2)*get_width(p2)==BIG_SIZE){
       if(is_horizontal(p1)==true && is_horizontal(p2)==true){
 	return false;
@@ -79,11 +79,10 @@ piece* creerPieces(int nombrePiece){
     int x;
     int y;      
     casPossible(small,horizontal,&x,&y);
-    tab[i]=new_piece_rh(x,y,small,horizontal);
-    if((get_y(tab[i])==3) && is_horizontal(tab[i])){
-      delete_piece(tab[i]);
+    tab[i]=new_piece_rh(x,y,small,horizontal);                /* on creer la piece i et on la met dans le tableaux de pieces */
+    if((get_y(tab[i])==3) && is_horizontal(tab[i])){          /* on verifie qu'elle n'est pas horizontal avec y=3 */
       i--;
-      continue;
+      continue;                                               /* si erreur on re-crée la piece */
     }
     int j=0;  
     for(j=0;j<i;j++){
@@ -95,8 +94,7 @@ piece* creerPieces(int nombrePiece){
 	break;
       }
     }
-    if(j!=i){
-      delete_piece(tab[i]);
+    if(j!=i){                                                /* de meme ici si intersection */
       i--;
       continue;
     }

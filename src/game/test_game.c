@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
   bool result = true;
   result = result && test_game_nb_piece(testg, 3);
   result = result && test_game_piece(testg, 2, 4, 0);
-  //result = result && test_copy_game(testg);
+  //result = result && test_copy_game(testg);                    erreur de segmentation pas encore trouvée 
   result = result && !(is_out(tab_pieces[0]));
   result = result && test_play_move(testg,di);
   if(result) printf("youpi test_game\n");
