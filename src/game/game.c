@@ -34,8 +34,7 @@ void copy_game(cgame src,game dst){
   (*dst).mov=game_nb_moves(src);
   (*dst).nb_pieces=game_nb_pieces(src);
   for (int i=0;i<game_nb_pieces(src);i++){
-    cpiece piece_aux = (*src).pieces[i];
-    copy_piece(piece_aux,(*dst).pieces[i]);
+    copy_piece((cpiece)(*src).pieces[i],(*dst).pieces[i]);
   }
 }
 
@@ -70,7 +69,41 @@ bool play_move(game g,int piece_num, dir d, int distance){
     return false;
   }
   int dis=distance;
-  cpiece piece_aux=game_piece(g,piece_num);
+  dir dir_op;
+  while (dis!=0){
+    dis --;
+    move_piece((piece)game_piece(g,piece_num),d,1);
+    for(int i=0;i<game_nb_pieces(g);i++){
+      if(i==piece_num){
+	continue;
+      }
+      if (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num))){
+	if(d = LEFT){
+	  dir_op = RIGHT;
+	}if(d = RIGHT){
+	  dir_op = LEFT;
+	}if(d = UP){
+	  dir_op = DOWN;
+	}if(d = DOWN){
+	  dir_op = UP;
+	}
+	move_piece((piece)game_piece(g,piece_num),dir_op,distance-dis);
+	return false;
+      }
+    }
+  }
+  return true;
+}
+       
+  
+/*bool play_move(game g,int piece_num, dir d, int distance){
+  if (distance<=0 || piece_num<0 || piece_num>game_nb_pieces(g)-1 ){
+    usage("play_move");
+    return false;
+  }
+  int dis=distance;
+  piece piece_aux=new_piece_rh(0,0,true,true);
+  copy_piece(game_piece(g,piece_num),piece_aux);
   while (dis!=0){
     dis --;
     move_piece((piece)piece_aux,d,1);
@@ -79,17 +112,17 @@ bool play_move(game g,int piece_num, dir d, int distance){
 	continue;
       }
       if (intersect(piece_aux,game_piece(g,i)) || is_out((piece)piece_aux)){
+	delete_piece(piece_aux);
 	return false;
       }
     }
   }
-  copy_piece(piece_aux,(piece)game_piece(g,piece_num));
-  (*g).mov+=distance;
+  copy_piece((cpiece)piece_aux,(piece)game_piece(g,piece_num));
+  delete_piece(piece_aux);
   return true;
 }
-       
-  
-  
+
+Ce play move est celui que l'on aurait souhaité faire, mais les données du tableau de pieces du jeu sont erronées à partir du moment où l'on réalloue la piece_aux, malgrès des heures de recherches nous ne savons toujours pas d'où vient le problème. */
 
 
 
