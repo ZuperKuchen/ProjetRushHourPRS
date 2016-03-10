@@ -6,6 +6,8 @@
 #define TAILLE 6
 
 struct game_s{
+  int height;
+  int width;
   int mov;
   int nb_pieces;
   piece pieces[];
@@ -18,10 +20,12 @@ void usage(char *nomfonction){
 
 game new_game_hr (int nb_pieces, piece *pieces){
   game g=(game)malloc(sizeof(game));
-  (*g).mov=0;
-  (*g).nb_pieces=nb_pieces;
+  g->mov=0;
+  g->nb_pieces=nb_pieces;
+  g->height=6;
+  g->width=6;
   for(int i=0; i<nb_pieces; i++){
-    (*g).pieces[i]=pieces[i];
+    g->pieces[i]=pieces[i];
   }
   return g;
 }
@@ -31,15 +35,15 @@ void delete_game (game g){
 }
 
 void copy_game(cgame src,game dst){
-  (*dst).mov=game_nb_moves(src);
-  (*dst).nb_pieces=game_nb_pieces(src);
+  dst->mov=game_nb_moves(src);
+  dst->nb_pieces=game_nb_pieces(src);
   for (int i=0;i<game_nb_pieces(src);i++){
     copy_piece((cpiece)(*src).pieces[i],(*dst).pieces[i]);
   }
 }
 
 int game_nb_pieces(cgame g){
-  return (*g).nb_pieces;
+  return g->nb_pieces;
 }
 
 cpiece game_piece(cgame g,int piece_num){
@@ -55,7 +59,7 @@ bool game_over_hr(cgame g){
 }
 
 int game_nb_moves(cgame g){
-  return (*g).mov;
+  return g->mov;
 }
 
 bool is_out(piece p){
@@ -78,13 +82,13 @@ bool play_move(game g,int piece_num, dir d, int distance){
 	continue;
       }
       if (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num))){
-	if(d = LEFT){
+	if(d == LEFT){
 	  dir_op = RIGHT;
-	}if(d = RIGHT){
+	}if(d == RIGHT){
 	  dir_op = LEFT;
-	}if(d = UP){
+	}if(d == UP){
 	  dir_op = DOWN;
-	}if(d = DOWN){
+	}if(d == DOWN){
 	  dir_op = UP;
 	}
 	move_piece((piece)game_piece(g,piece_num),dir_op,distance-dis);
@@ -125,5 +129,35 @@ bool play_move(game g,int piece_num, dir d, int distance){
 
 Ce play move est celui que l'on aurait souhaité faire, mais les données du tableau de pieces du jeu sont erronées à partir du moment où l'on réalloue la piece_aux, malgrès des heures de recherches nous ne savons toujours pas d'où vient le problème. */
 
+
+//////////// version 2////////////
+ 
+game new_game (int width, int height, int nb_pieces, piece *pieces){
+  game g=(game)malloc(sizeof(game));
+  g->mov=0;
+  g->nb_pieces=nb_pieces;
+  g->height=height;
+  g->width=width;
+  for(int i=0; i<nb_pieces; i++){
+    g->pieces[i]=pieces[i];
+  }
+  return g;
+}
+
+
+int game_width(cgame g){
+  return g->witdh;
+}
+
+
+int game_height(cgame g){
+  return g->height;
+}
+
+
+//// A ecrire 
+int game_square_piece (game g, int x, int y){
+  return 1;
+}
 
 
