@@ -72,30 +72,24 @@ void move_piece (piece p, dir d, int distance){
 bool intersect(cpiece p1, cpiece p2){
   int taille1 = get_width(p1) * get_height(p1);
   int taille2 = get_width(p2) * get_height(p2);
-  int t1[3][2];
-  int t2[3][2];
-  if(is_horizontal(p1)){
-    for(int i=0 ; i<taille1 ; i++){
-      t1[i][0]=get_x(p1)+ i;
-      t1[i][1]=get_y(p1);
-    }
-  }else{
-    for(int i=0 ; i<taille1 ; i++){
-      t1[i][0]=get_x(p1);
-      t1[i][1]=get_y(p1)+ i;
+  int t1[taille1][2];
+  int t2[taille2][2];
+  int i=0;
+  for(int x=0; x<get_width(p1); x++){
+    for(int y=0; y<get_height(p1); y++){
+      t1[i][0]=get_x(p1)+x;
+      t1[i][1]=get_y(p1)+y;
+      i++;
     }
   }
-  if(is_horizontal(p2)){
-    for(int i=0 ; i<taille2 ; i++){
-      t2[i][0]=get_x(p2)+ i;
-      t2[i][1]=get_y(p2);
+  i=0;
+  for(int x=0; x<get_width(p2); x++){
+    for(int y=0; y<get_height(p2); y++){
+      t2[i][0]=get_x(p2)+x;
+      t2[i][1]=get_y(p2)+y;
+      i++;
     }
-  }else{
-    for(int i=0 ; i<taille2 ; i++){
-      t2[i][0]=get_x(p2);
-      t2[i][1]=get_y(p2) + i;
-    }
-  }
+  }  
   for(int i=0; i<taille1; i++){
     for(int j=0; j<taille2; j++){
       if(t1[i][0] == t2[j][0] && t1[i][1] == t2[j][1]){
