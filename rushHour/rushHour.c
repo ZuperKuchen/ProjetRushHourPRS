@@ -152,24 +152,51 @@ void affichage(cgame g){
   printf("\n");
 }
 
+bool string_to_dir(dir *d,char *dir_str,bool vert){
+  res=true;
+  if (strcmp(dir_str,"left\n")==0 && !vert){
+    *d=LEFT;
+  }
+  else if (strcmp(dir_str,"right\n")==0 && !vert){
+    *d=RIGHT;
+  }
+  else if (strcmp(dir_str,"up\n")==0 && vert){
+    *d=UP;
+  }
+  else if (strcmp(dir_str,"down\n")==0 && vert){
+    *d=DOWN;
+  }
+  else {
+    res=false;
+  }
+}
+
+bool wantToQuit(char *dir_str){
+  if (strcmp(dir_str,"q\n")==0){
+    return true;
+  }
+  return false;
+}
+
+
 void startGame(game g,int nbPiece){
   while(!game_over_hr(g)){
-    char num[3],distance[3],dir_str[7];
+    char num_str[3],distance[3],dir_str[7];
     dir direction;
     bool vert;
     printf("Numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
-    fgets(num,3,stdin);
-    if(atoi(num)<0 || atoi(num)>=nbPiece){
+    fgets(num_str,3,stdin);
+    int num=atoi(num_str);
+    if(num<0 || num>=nbPiece){
       printf("Choisissez parmis les propositions..\n");
       continue;
     }
-    if (strcmp(num,"q\n")==0){
+    if (wantToQuit(num_str)==true){
       exit(EXIT_SUCCESS);
     }
-    int num_real=atoi(num);
-    if(is_horizontal(game_piece(g,num_real))){
+    if(is_horizontal(game_piece(g,num))){
       printf("Quelle direction? left/right ?\n");
       vert=false;
     }
@@ -179,32 +206,20 @@ void startGame(game g,int nbPiece){
     }
     fgets(dir_str,7,stdin);
     bool test=true;
-    if (strcmp(dir_str,"q\n")==0){
+    if (wantToQuit(dir_str)==true){
       exit(EXIT_SUCCESS);
     }
-    else if (strcmp(dir_str,"left\n")==0 && !vert){
-      direction=LEFT;
-    }
-    else if (strcmp(dir_str,"right\n")==0 && !vert){
-      direction=RIGHT;
-    }
-    else if (strcmp(dir_str,"up\n")==0 && vert){
-      direction=UP;
-    }
-    else if (strcmp(dir_str,"down\n")==0 && vert){
-      direction=DOWN;
-    }
-    else {
+    if (string_to_dir(&direction,dir_str,vert)==false)
       printf("Choisissez parmis les propositions..\n");
       test=false;
     }
     if (!test) continue;
     printf("La distance?\n");
     fgets(distance,3,stdin);
-    if (strcmp(distance,"q\n")==0){
+    if (wantToQuit(distance)==true){
       exit(EXIT_SUCCESS);
     }
-    bool goodMove=play_move(g,num_real,direction,atoi(distance));
+    bool goodMove=play_move(g,num,direction,atoi(distance));
     if (goodMove==false) {
       printf("Deplacement impossible \n");
       continue;
