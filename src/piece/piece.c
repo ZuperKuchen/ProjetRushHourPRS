@@ -6,16 +6,36 @@
 struct piece_s {
   int x;
   int y;
-  bool small;
-  bool horizontal;
+  int width;
+  int height;
+  bool move_x;
+  bool move_y;
 };
 
 piece new_piece_rh (int x, int y, bool small, bool horizontal){
   piece newpiece = (piece)malloc(sizeof(struct piece_s));
   (*newpiece).x = x;
   (*newpiece).y = y;
-  (*newpiece).small = small;
-  (*newpiece).horizontal = horizontal;
+  if(small){
+    if(horizontal){
+      (*newpiece).width = 2;
+      (*newpiece).height = 1;
+    }
+    else{
+      (*newpiece).width = 1;
+      (*newpiece).height = 2;
+    }
+  }
+  else{
+    if(horizontal){
+      (*newpiece).width = 3;
+      (*newpiece).height = 1;
+    }
+    else{
+      (*newpiece).width = 1;
+      (*newpiece).height = 3;
+    }
+  }
   return newpiece;
 }
 
@@ -26,18 +46,21 @@ void delete_piece (piece p){
 void copy_piece (cpiece src, piece dst){
   (*dst).x = get_x(src);
   (*dst).y = get_y(src);
-  (*dst).small = (*src).small;
-  (*dst).horizontal = is_horizontal(src);
+  (*dst).width = (*src).width;
+  (*dst).height = (*src).height;
+  (*dst).move_x = (*src).move_x;
+  (*dst).move_y = (*src).move_y;
 }
 
 void move_piece (piece p, dir d, int distance){
-  if (is_horizontal(p)){
+  if (can_move_x(p)){
     if(d==LEFT){
       (*p).x -= distance;
     }if(d==RIGHT){
       (*p).x += distance;
     }
-  }if (!is_horizontal(p)){
+  }
+  if (can_move_y(p)){
     if(d==UP){
       (*p).y += distance;
     }if(d==DOWN){
@@ -92,30 +115,15 @@ int get_y(cpiece p){
 }
 
 int get_height(cpiece p){
-  if(!is_horizontal(p)){
-    if ((*p).small){
-      return 2;
-    }else{
-      return 3;
-    }
-  }else{
-    return 1;
-  }
+  return (*p).height;
 }
 
 int get_width(cpiece p){
-  if(is_horizontal(p)){
-    if ((*p).small){
-      return 2;
-    }else{
-      return 3;
-    }
-  }else{
-    return 1;
-  }
+  return (*p).width;
 }
 
 bool is_horizontal(cpiece p){
-  return (*p).horizontal;
+  if(get_width(p) > get_height(p)) return true;
+  return false;
 }
 
