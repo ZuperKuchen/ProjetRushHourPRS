@@ -19,15 +19,7 @@ void usage(char *nomfonction){
 
 
 game new_game_hr (int nb_pieces, piece *pieces){
-  game g=(game)malloc(sizeof(game));
-  g->mov=0;
-  g->nb_pieces=nb_pieces;
-  g->height=6;
-  g->width=6;
-  for(int i=0; i<nb_pieces; i++){
-    g->pieces[i]=pieces[i];
-  }
-  return g;
+  game g=new_game (6, 6,nb_pieces, *pieces);
 }
 
 void delete_game (game g){
