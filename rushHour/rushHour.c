@@ -253,4 +253,5 @@ int main(int argc,char *argv[]){
     printf("Voulez vous rejouez? oui/non \n");
     fgets(rejouer,6,stdin);
   }
+  return EXIT_SUCCESS;
 }  
