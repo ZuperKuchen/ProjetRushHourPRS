@@ -9,6 +9,7 @@
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
 #define GAME_SIZE 6
+#define valeurCaseVide -1
 
 static void usage(char *commande){
   fprintf(stderr," %s <entier> nombre de pieces <=9 \n",commande);
@@ -110,7 +111,7 @@ void affichage(cgame g){
   int tab_game[GAME_SIZE][GAME_SIZE];
   for(int i=0; i<GAME_SIZE; i++){
     for(int j=0; j<GAME_SIZE; j++){
-      tab_game[i][j]= 15;
+      tab_game[i][j]= valeurCaseVide;
     }
   }
   for(int i=0;i<nb;i++){
@@ -131,7 +132,7 @@ void affichage(cgame g){
   for(int yt=GAME_SIZE-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<GAME_SIZE; xt++){
-      if(tab_game[xt][yt]==15){
+      if(tab_game[xt][yt]==valeurCaseVide){
 	printf("[ ");
       }
       else{
