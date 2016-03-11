@@ -37,7 +37,8 @@ typedef const struct game_s* cgame;
  * @param pieces array of pieces. The pieces given here are not modified by this function.
  * @return a pointer toward the generated game
  */
-game new_game_hr (int nb_pieces, piece *pieces);
+// game new_game_hr (int nb_pieces, piece *pieces);
+// désormais dans game_rh.c & game_rh.h
 
 /**
  * @brief Destroy the game and free allocated memory
@@ -69,7 +70,8 @@ cpiece game_piece(cgame g, int piece_num);
  * @brief Test is the game is over (i.e. if the piece 0 has reached the exit).
  * @return true if the piece number 0 has coordinates (4,3)
 */
-bool game_over_hr(cgame g);
+// bool game_over_hr(cgame g);
+// desormais dans game_rh
 
 
 /**
