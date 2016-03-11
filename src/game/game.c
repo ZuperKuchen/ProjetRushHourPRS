@@ -17,11 +17,6 @@ void usage(char *nomfonction){
   fprintf(stderr,"An error occured in fonction %s \n",nomfonction);
 }
 
-
-game new_game_hr (int nb_pieces, piece *pieces){
-  game g=new_game (6, 6,nb_pieces, *pieces);
-}
-
 void delete_game (game g){
   free(g);
 }
@@ -44,10 +39,6 @@ cpiece game_piece(cgame g,int piece_num){
     exit(EXIT_FAILURE);
   }
   return (cpiece)(*g).pieces[piece_num];
-}
-
-bool game_over_hr(cgame g){
-  return(get_x(game_piece(g,0))==4 && get_y(game_piece(g,0))==3);
 }
 
 int game_nb_moves(cgame g){
@@ -138,7 +129,7 @@ game new_game (int width, int height, int nb_pieces, piece *pieces){
 
 
 int game_width(cgame g){
-  return g->witdh;
+  return g->width;
 }
 
 
