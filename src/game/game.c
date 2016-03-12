@@ -25,7 +25,7 @@ void copy_game(cgame src,game dst){
   dst->mov=game_nb_moves(src);
   dst->nb_pieces=game_nb_pieces(src);
   for (int i=0;i<game_nb_pieces(src);i++){
-    copy_piece((cpiece)(*src).pieces[i],(*dst).pieces[i]);
+    copy_piece((cpiece)src->pieces[i],dst->pieces[i]);
   }
 }
 
@@ -38,7 +38,7 @@ cpiece game_piece(cgame g,int piece_num){
     usage("game_piece");
     exit(EXIT_FAILURE);
   }
-  return (cpiece)(*g).pieces[piece_num];
+  return (cpiece)g->pieces[piece_num];
 }
 
 int game_nb_moves(cgame g){
@@ -137,10 +137,39 @@ int game_height(cgame g){
   return g->height;
 }
 
-
-//// A ecrire 
+///V1 game_square_piece //// On compare chaque "carré" de chaque piece avec le carré test
 int game_square_piece (game g, int x, int y){
-  return 1;
+  for (int i=0;i<game_nb_pieces(g);i++){
+    cpiece p_aux= game_piece(g,i);
+    int x_p= get_x(p_aux);
+    int y_p=get_y(p_aux);
+    int h=get_height(p_aux);
+    int w=get witdh(p_aux);
+    for(int j=0; j<w; j++){
+      for(int k=0; k<h; k++){
+	if (x==x_aux+j && y==y_aux+k){
+	  return i;
+	}
+      }
+    }
+  }
+  return -1;
 }
 
+///v2 game_square_piece//// On crée une piece carré de coté 1 en (x,y) et on test succesivement si il y a intersection avec les pieces du jeu
 
+/*
+int game_square_piece (game g, int x, int y){
+  piece p_test=new_piece (x, y,1,1,false,false);
+  for(int i=0;i<game_nb_pieces(g);i++){
+    cpiece p_aux= game_piece(g,i);
+    if (intersect(p_aux,(cpiece)p_test)){
+      return i;
+      delete_piece(p_test);
+    }
+  }
+  return -1;
+  delete_piece(p_test);
+}
+
+*/
