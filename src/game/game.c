@@ -13,9 +13,20 @@ struct game_s{
   piece pieces[];
 };
 
+
+
 void usage(char *nomfonction){
   fprintf(stderr,"An error occured in fonction %s \n",nomfonction);
 }
+
+game new_game_hr (int nb_pieces, piece *pieces){
+  game g=new_game (6, 6,nb_pieces, *pieces);
+}
+
+bool game_over_hr(cgame g){
+  return(get_x(game_piece(g,0))==4 && get_y(game_piece(g,0))==3);
+}
+
 
 void delete_game (game g){
   free(g);
@@ -144,7 +155,7 @@ int game_square_piece (game g, int x, int y){
     int x_p= get_x(p_aux);
     int y_p=get_y(p_aux);
     int h=get_height(p_aux);
-    int w=get witdh(p_aux);
+    int w=get_width(p_aux);
     for(int j=0; j<w; j++){
       for(int k=0; k<h; k++){
 	if (x==x_aux+j && y==y_aux+k){
