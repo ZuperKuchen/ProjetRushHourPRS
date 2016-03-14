@@ -3,17 +3,20 @@ project (RushHour)
 
 add_definitions(-std=c99 -g)
 
-include_directories(src/game/ src/piece/ rushHour/)
+include_directories(src/game/ src/piece/ rushHour/ aneRouge/)
 
 install(FILES
 
         src/game/game.h
 	src/piece/piece.h
+	src/game/game_rh.h
+	src/piece/piece_rh.h
 	
 	DESTINATION "include")
 
 add_subdirectory(src)
 add_subdirectory(rushHour)
+add_subdirectory(aneRouge)
 
 set(CMAKE_INSTALL_PREFIX RushHour)
 enable_testing()
