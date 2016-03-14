@@ -99,6 +99,76 @@ piece* creer_Pieces_niveau_3(int* nbPieces){
   return tableau3;
 }
 
+bool string_to_dir(dir *d,char *dir_str){
+  res=true;
+  if (strcmp(dir_str,"left\n")==0){
+    *d=LEFT;
+  }
+  else if (strcmp(dir_str,"right\n")==0){
+    *d=RIGHT;
+  }
+  else if (strcmp(dir_str,"up\n")==0){
+    *d=UP;
+  }
+  else if (strcmp(dir_str,"down\n")==0){
+    *d=DOWN;
+  }
+  else {
+    res=false;
+  }
+}
+
+bool wantToQuit(char *dir_str){
+  if (strcmp(dir_str,"q\n")==0){
+    return true;
+  }
+  return false;
+}
+
+void startGame(game g,int nbPiece){
+  while(!game_over_ar(g)){
+    char num_str[3],distance[3],dir_str[7];
+    dir direction;
+    printf("Numéro de la piece à bouger ?\n");
+    for(int a=0;a<nbPiece;a++) printf(" %d",a);
+    printf("\n");
+    fgets(num_str,3,stdin);
+    int num=atoi(num_str);
+    if(num<0 || num>=nbPiece){
+      printf("Choisissez parmis les propositions..\n");
+      continue;
+    }
+    if (wantToQuit(num_str)==true){
+      exit(EXIT_SUCCESS);
+    }
+    printf("Quelle direction? left/right/up/down?\n");
+    fgets(dir_str,7,stdin);
+    if (wantToQuit(dir_str)==true){
+      exit(EXIT_SUCCESS);
+    }
+    bool test = true;
+    if (string_to_dir(&direction,dir_str)==false)
+      printf("Choisissez parmis les propositions..\n");
+    test = false;
+    }
+    if (!test) continue;
+    printf("La distance?\n");
+    fgets(distance,3,stdin);
+    if (wantToQuit(distance)==true){
+      exit(EXIT_SUCCESS);
+    }
+    bool goodMove=play_move(g,num,direction,atoi(distance));
+    if (goodMove==false) {
+      printf("Deplacement impossible \n");
+      continue;
+    }
+    printf("___________________________________________ \n");
+    affichage(g);
+   }
+  printf("Bravo ! le jeu est terminé\n ");
+  printf("___________________________________________ \n");
+}
+
 
 piece* niveau_pieces(int niveau,int* nbPieces){
   switch(niveau){
@@ -116,6 +186,8 @@ piece* niveau_pieces(int niveau,int* nbPieces){
   }
   return tab;
 }
+
+
 
 int main(int argc,char* argv[]){
   char rejouer[6];
@@ -142,7 +214,7 @@ int main(int argc,char* argv[]){
     piece* grille = niveau_pieces(niveau,&nbPieces);
     game anneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
     affichage((cgame)anneRouge);
-    startGame(rushHour,nbPiece);
+    startGame(rushHour,nbPieces);
     printf("Voulez vous rejouez? oui/non \n");
     fgets(rejouer,6,stdin);
   }
