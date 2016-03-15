@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "piece.h"
-#include "game_ar"
+#include "game_ar.h"
 
 bool game_over_ar(cgame g){
   return (get_x(game_piece(g,0))==1 &&  get_y(game_piece(g,0))==0);

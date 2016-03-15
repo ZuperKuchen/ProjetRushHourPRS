@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "game.h"
+#include "game_ar.h"
 #include "piece.h"
 #include "string.h"
 #define WIDTH 4
@@ -53,54 +54,55 @@ void affichage(cgame g){
 }
 
 piece* creer_Pieces_niveau_1(int* nbPieces){
-  *nbPiece=10;
-  piece* tableau1 = allouer_Tab_Piece(nbPiece);
-  tableau1[0] = newpiece(1,1,2,2,true,true);
-  tableau1[1] = newpiece(0,3,2,1,true,true);
-  tableau1[2] = newpiece(2,3,2,1,true,true);
-  tableau1[3] = newpiece(0,1,1,2,true,true);
-  tableau1[4] = newpiece(1,4,2,1,true,true);
-  tableau1[5] = newpiece(3,1,1,2,true,true);
-  tableau1[6] = newpiece(0,0,1,1,true,true);
-  tableau1[7] = newpiece(1,0,1,1,true,true);
-  tableau1[8] = newpiece(2,0,1,1,true,true);
-  tableau1[9] = newpiece(3,0,1,1,true,true);
+  *nbPieces=10;
+  piece* tableau1 = allouer_Tab_Piece(*nbPieces);
+  tableau1[0] = new_piece(1,1,2,2,true,true);
+  tableau1[1] = new_piece(0,3,2,1,true,true);
+  tableau1[2] = new_piece(2,3,2,1,true,true);
+  tableau1[3] = new_piece(0,1,1,2,true,true);
+  tableau1[4] = new_piece(1,4,2,1,true,true);
+  tableau1[5] = new_piece(3,1,1,2,true,true);
+  tableau1[6] = new_piece(0,0,1,1,true,true);
+  tableau1[7] = new_piece(1,0,1,1,true,true);
+  tableau1[8] = new_piece(2,0,1,1,true,true);
+  tableau1[9] = new_piece(3,0,1,1,true,true);
   return tableau1;
 }
 
 piece* creer_Pieces_niveau_2(int* nbPieces){
-  piece* tableau2 = allouer_Tab_Piece(nbPiece);
-  tableau1[0] = newpiece(1,3,2,2,true,true);
-  tableau1[1] = newpiece(0,3,1,2,true,true);
-  tableau1[2] = newpiece(3,3,1,2,true,true);
-  tableau1[3] = newpiece(1,2,2,1,true,true);
-  tableau1[4] = newpiece(0,0,1,2,true,true);
-  tableau1[5] = newpiece(3,0,1,2,true,true);
-  tableau1[6] = newpiece(1,0,1,1,true,true);
-  tableau1[7] = newpiece(1,1,1,1,true,true);
-  tableau1[8] = newpiece(2,0,1,1,true,true);
-  tableau1[9] = newpiece(2,1,1,1,true,true);
+  *nbPieces=10;
+  piece* tableau2 = allouer_Tab_Piece(*nbPieces);
+  tableau2[0] = new_piece(1,3,2,2,true,true);
+  tableau2[1] = new_piece(0,3,1,2,true,true);
+  tableau2[2] = new_piece(3,3,1,2,true,true);
+  tableau2[3] = new_piece(1,2,2,1,true,true);
+  tableau2[4] = new_piece(0,0,1,2,true,true);
+  tableau2[5] = new_piece(3,0,1,2,true,true);
+  tableau2[6] = new_piece(1,0,1,1,true,true);
+  tableau2[7] = new_piece(1,1,1,1,true,true);
+  tableau2[8] = new_piece(2,0,1,1,true,true);
+  tableau2[9] = new_piece(2,1,1,1,true,true);
   return tableau2;
 }
 
 piece* creer_Pieces_niveau_3(int* nbPieces){
-  *nbPiece=10;
-  piece* tableau3 = allouer_Tab_Piece(nbPiece);
-  tableau1[0] = newpiece(1,3,2,2,true,true);
-  tableau1[1] = newpiece(0,4,1,1,true,true);
-  tableau1[2] = newpiece(0,3,1,1,true,true);
-  tableau1[3] = newpiece(3,4,1,1,true,true);
-  tableau1[4] = newpiece(3,3,1,1,true,true);
-  tableau1[5] = newpiece(1,2,2,1,true,true);
-  tableau1[6] = newpiece(0,0,1,2,true,true);
-  tableau1[7] = newpiece(1,0,1,2,true,true);
-  tableau1[8] = newpiece(2,0,1,2,true,true);
-  tableau1[9] = newpiece(3,0,1,2,true,true);
+  *nbPieces=10;
+  piece* tableau3 = allouer_Tab_Piece(*nbPieces);
+  tableau3[0] = new_piece(1,3,2,2,true,true);
+  tableau3[1] = new_piece(0,4,1,1,true,true);
+  tableau3[2] = new_piece(0,3,1,1,true,true);
+  tableau3[3] = new_piece(3,4,1,1,true,true);
+  tableau3[4] = new_piece(3,3,1,1,true,true);
+  tableau3[5] = new_piece(1,2,2,1,true,true);
+  tableau3[6] = new_piece(0,0,1,2,true,true);
+  tableau3[7] = new_piece(1,0,1,2,true,true);
+  tableau3[8] = new_piece(2,0,1,2,true,true);
+  tableau3[9] = new_piece(3,0,1,2,true,true);
   return tableau3;
 }
 
 bool string_to_dir(dir *d,char *dir_str){
-  res=true;
+  bool res=true;
   if (strcmp(dir_str,"left\n")==0){
     *d=LEFT;
   }
@@ -116,6 +118,7 @@ bool string_to_dir(dir *d,char *dir_str){
   else {
     res=false;
   }
+  return res;
 }
 
 bool wantToQuit(char *dir_str){
@@ -147,7 +150,7 @@ void startGame(game g,int nbPiece){
       exit(EXIT_SUCCESS);
     }
     bool test = true;
-    if (string_to_dir(&direction,dir_str)==false)
+    if (string_to_dir(&direction,dir_str)==false){
       printf("Choisissez parmis les propositions..\n");
     test = false;
     }
@@ -171,15 +174,16 @@ void startGame(game g,int nbPiece){
 
 
 piece* niveau_pieces(int niveau,int* nbPieces){
+  piece* tab;
   switch(niveau){
   case 1:
-    piece* tab=creer_Pieces_niveau_1(&nbPieces);
+    tab=creer_Pieces_niveau_1(nbPieces);
     break;
   case 2:
-    piece* tab=creer_Pieces_niveau_2(&nbPieces);
+    tab=creer_Pieces_niveau_2(nbPieces);
     break;
   case 3:
-    piece* tab=creer_Pieces_niveau_3(&width_game,&height_game,&nbPieces);
+    tab=creer_Pieces_niveau_3(nbPieces);
     break;
   default:
     printf("erreur de niveau \n");
@@ -214,7 +218,7 @@ int main(int argc,char* argv[]){
     piece* grille = niveau_pieces(niveau,&nbPieces);
     game anneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
     affichage((cgame)anneRouge);
-    startGame(rushHour,nbPieces);
+    startGame(anneRouge,nbPieces);
     printf("Voulez vous rejouez? oui/non \n");
     fgets(rejouer,6,stdin);
   }

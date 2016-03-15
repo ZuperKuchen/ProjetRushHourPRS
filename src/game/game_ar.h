@@ -3,4 +3,4 @@
 
 bool game_over_ar(cgame g);
 
-#endef
+#endif
