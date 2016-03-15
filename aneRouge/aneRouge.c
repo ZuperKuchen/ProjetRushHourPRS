@@ -136,6 +136,7 @@ void startGame(game g,int nbPiece){
     printf("Numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
+    fflush(stdin);
     fgets(num_str,3,stdin);
     int num=atoi(num_str);
     if(num<0 || num>=nbPiece){
@@ -195,15 +196,15 @@ piece* niveau_pieces(int niveau,int* nbPieces){
 
 
 int main(int argc,char* argv[]){
-  char rejouer[6];
-  int niveau,nbPieces;
+  char rejouer[6], niveau[3];
+  int nbPieces;
   printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
-  scanf("%d",&niveau);
-  while(niveau!=1 && niveau !=2 && niveau!=3){
+  fgets(niveau,2,stdin);
+  while( atoi(niveau)!=1 && atoi(niveau) !=2 && atoi(niveau)!=3){
     printf("choisissez parmis les niveaux proposés !\n");
-    scanf("%d",&niveau);
+    fgets(niveau,2,stdin);
   }
-  piece* grille = niveau_pieces(niveau,&nbPieces);
+  piece* grille = niveau_pieces(atoi(niveau),&nbPieces);
   game aneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
   affichage((cgame)aneRouge);
   startGame(aneRouge,nbPieces);
@@ -211,17 +212,17 @@ int main(int argc,char* argv[]){
   fgets(rejouer,6,stdin);
   while(strcmp(rejouer,"oui\n")==0){
     printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
-    scanf("%d",&niveau);
-    while(niveau!=1 && niveau !=2 && niveau!=3){
+    fgets(niveau,2,stdin);
+    while(atoi(niveau)!=1 && atoi(niveau) !=2 && atoi(niveau)!=3){
       printf("choisissez parmis les niveaux proposés !\n");
-      scanf("%d",&niveau);
+      fgets(niveau,2,stdin);
     }
-    piece* grille = niveau_pieces(niveau,&nbPieces);
+    piece* grille = niveau_pieces(atoi(niveau),&nbPieces);
     game anneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
     affichage((cgame)anneRouge);
     startGame(anneRouge,nbPieces);
     printf("Voulez vous rejouez? oui/non \n");
-    fgets(rejouer,6,stdin);
+    fgets(rejouer,5,stdin);
   }
   return EXIT_SUCCESS;
 }
