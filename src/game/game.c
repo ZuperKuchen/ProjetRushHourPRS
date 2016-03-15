@@ -20,7 +20,7 @@ void usage(char *nomfonction){
 }
 
 game new_game_hr (int nb_pieces, piece *pieces){
-  game g=new_game (6, 6,nb_pieces, *pieces);
+  game g=new_game (6, 6,nb_pieces, pieces);
 }
 
 bool game_over_hr(cgame g){
@@ -158,7 +158,7 @@ int game_square_piece (game g, int x, int y){
     int w=get_width(p_aux);
     for(int j=0; j<w; j++){
       for(int k=0; k<h; k++){
-	if (x==x_aux+j && y==y_aux+k){
+	if (x==x_p+j && y==y_p+k){
 	  return i;
 	}
       }

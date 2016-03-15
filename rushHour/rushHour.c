@@ -154,7 +154,7 @@ void affichage(cgame g){
 }
 
 bool string_to_dir(dir *d,char *dir_str,bool vert){
-  res=true;
+  bool res=true;
   if (strcmp(dir_str,"left\n")==0 && !vert){
     *d=LEFT;
   }
@@ -170,6 +170,7 @@ bool string_to_dir(dir *d,char *dir_str,bool vert){
   else {
     res=false;
   }
+  return res;
 }
 
 bool wantToQuit(char *dir_str){
@@ -210,7 +211,7 @@ void startGame(game g,int nbPiece){
     if (wantToQuit(dir_str)==true){
       exit(EXIT_SUCCESS);
     }
-    if (string_to_dir(&direction,dir_str,vert)==false)
+    if (string_to_dir(&direction,dir_str,vert)==false){
       printf("Choisissez parmis les propositions..\n");
       test=false;
     }
@@ -227,7 +228,7 @@ void startGame(game g,int nbPiece){
     }
     printf("___________________________________________ \n");
     affichage(g);
-   }
+  }
   printf("Bravo ! le jeu est terminé\n ");
   printf("___________________________________________ \n");
 }
