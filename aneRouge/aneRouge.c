@@ -27,11 +27,11 @@ void affichage(cgame g){
     cpiece tmp_piece = game_piece(g,i);
     int x = get_x(tmp_piece);
     int y = get_y(tmp_piece);
-    for(int j=0; j<HEIGHT; j++){
-      for(int k=0;k<WIDTH;k++) tab_game[x+k][y+j] = i;
+    for(int j=0; j<get_height(tmp_piece); j++){
+      for(int k=0;k<get_width(tmp_piece);k++) tab_game[x+k][y+j] = i;
     }
   }
-  printf("********************\n");
+  printf("  ************\n");
   for(int yt=HEIGHT-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<WIDTH; xt++){
@@ -46,8 +46,9 @@ void affichage(cgame g){
     printf("\n");
   }
   printf("  ");
-  printf("*****      *****\n");
-  for(int k=0;k<WIDTH-1;k++) printf(" %d ",k);
+  printf("***      ***\n");
+  printf(" ");
+  for(int k=0;k<WIDTH;k++) printf("  %d",k);
   printf("\n\n");
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
