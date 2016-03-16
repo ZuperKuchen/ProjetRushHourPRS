@@ -193,36 +193,45 @@ piece* niveau_pieces(int niveau,int* nbPieces){
   return tab;
 }
 
-
-
-int main(int argc,char* argv[]){
-  char rejouer[6], niveau[3];
-  int nbPieces;
-  printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
-  fgets(niveau,2,stdin);
-  while( atoi(niveau)!=1 && atoi(niveau) !=2 && atoi(niveau)!=3){
-    printf("choisissez parmis les niveaux proposés !\n");
-    fgets(niveau,2,stdin);
+int choisir_niveau(){
+  bool level = false;
+  char str_niveau[4];
+  int niveau;
+  while(level==false){
+    level = true;
+    printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
+    fgets(str_niveau,3,stdin);
+    niveau = atoi(str_niveau);
+    if(niveau!=1 && niveau !=2 && niveau!=3){
+      printf("choisissez parmis les niveaux proposés !\n");
+      level == false;
+    }
   }
-  piece* grille = niveau_pieces(atoi(niveau),&nbPieces);
-  game aneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
+  return niveau;
+}
+
+bool play(int niveau,int *nbPieces){
+  char rejouer[6];
+  piece* grille = niveau_pieces(niveau,nbPieces);
+  game aneRouge = new_game(WIDTH,HEIGHT,*nbPieces,grille);
   affichage((cgame)aneRouge);
-  startGame(aneRouge,nbPieces);
+  startGame(aneRouge,*nbPieces);
   printf("Voulez vous rejouez? oui/non \n");
   fgets(rejouer,6,stdin);
-  while(strcmp(rejouer,"oui\n")==0){
-    printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
-    fgets(niveau,2,stdin);
-    while(atoi(niveau)!=1 && atoi(niveau) !=2 && atoi(niveau)!=3){
-      printf("choisissez parmis les niveaux proposés !\n");
-      fgets(niveau,2,stdin);
-    }
-    piece* grille = niveau_pieces(atoi(niveau),&nbPieces);
-    game anneRouge = new_game(WIDTH,HEIGHT,nbPieces,grille);
-    affichage((cgame)anneRouge);
-    startGame(anneRouge,nbPieces);
-    printf("Voulez vous rejouez? oui/non \n");
-    fgets(rejouer,5,stdin);
+  if(strcmp(rejouer,"oui\n")==0)return true;
+  else return false;
+}
+
+void jouer_Rejouer(bool replay,int *nbPieces){
+  while(replay==true){
+    int niveau = choisir_niveau();
+    replay=play(niveau,nbPieces);
   }
+}
+
+int main(int argc,char* argv[]){
+  int nbPieces;
+  bool replay = true;
+  jouer_Rejouer(replay,&nbPieces);
   return EXIT_SUCCESS;
 }
