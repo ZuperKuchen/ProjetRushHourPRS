@@ -233,27 +233,29 @@ void startGame(game g,int nbPiece){
   printf("___________________________________________ \n");
 }
 
-bool ask_to_replay(void){
-  char rejouer[5];
+bool play(int nbPieces){
+  char rejouer[6];
+  piece* grille = creerPieces(nbPieces); ;
+  game rushHour = new_game_hr(nbPieces,grille);
+  affichage((cgame)rushHour);
+  startGame(rushHour,nbPieces); 
   printf("Voulez vous rejouez? oui/non \n");
-  fgets(rejouer,5,stdin);
-  if(strcmp(rejouer,"oui\n")==0) return true;
-  return false;
+  fgets(rejouer,6,stdin);
+  if(strcmp(rejouer,"oui\n")==0)return true;
+  else return false;
 }
 
+void play_Replay(bool replay,int nbPieces){
+  while(replay==true){
+    replay=play(nbPieces);
+  }
+}
 
 int main(int argc,char *argv[]){
-  char rejouer[6];
   bool replay=true;
   if(argc!=2) usage(argv[0]);
-  while (replay){
-    int nbPiece = atoi(argv[1]);
-    if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
-    piece* grille = creerPieces(nbPiece);
-    game rushHour = new_game_hr(nbPiece,grille);
-    affichage((cgame)rushHour);
-    startGame(rushHour,nbPiece);
-    replay=ask_to_replay();
-  }
+  int nbPieces = atoi(argv[1]);
+  if(nbPieces<=0 || nbPieces>PIECE_MAX) usage(argv[0]);
+  play_Replay(replay,nbPieces);
   return EXIT_SUCCESS;
 }  
