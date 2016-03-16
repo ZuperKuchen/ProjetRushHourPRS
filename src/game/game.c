@@ -59,7 +59,23 @@ int game_nb_moves(cgame g){
 bool is_out(piece p){
   return (get_x(p)>(TAILLE-get_width(p)) || get_y(p)>(TAILLE-get_height(p))|| get_x(p)<0 || get_y(p)<0); 
 }
-  
+
+
+void reverse_direction(dir d,dir dir_op){
+  if(d == LEFT){
+    dir_op = RIGHT;
+  }if(d == RIGHT){
+    dir_op = LEFT;
+  }if(d == UP){
+    dir_op = DOWN;
+  }if(d == DOWN){
+    dir_op = UP;
+  }
+}
+
+bool is_not_valid_move(game g,int piece_num,int i){
+  return (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num)));
+}
 
 bool play_move(game g,int piece_num, dir d, int distance){
   if (distance<=0 || piece_num<0 || piece_num>game_nb_pieces(g)-1 ){
@@ -75,16 +91,8 @@ bool play_move(game g,int piece_num, dir d, int distance){
       if(i==piece_num){
 	continue;
       }
-      if (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num))){
-	if(d == LEFT){
-	  dir_op = RIGHT;
-	}if(d == RIGHT){
-	  dir_op = LEFT;
-	}if(d == UP){
-	  dir_op = DOWN;
-	}if(d == DOWN){
-	  dir_op = UP;
-	}
+      if (is_not_valid_move(g,piece_num,i)){
+	reverse_direction(d,dir_op);
 	move_piece((piece)game_piece(g,piece_num),dir_op,distance-dis);
 	return false;
       }

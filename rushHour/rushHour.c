@@ -233,26 +233,27 @@ void startGame(game g,int nbPiece){
   printf("___________________________________________ \n");
 }
 
+bool ask_to_replay(void){
+  char rejouer[5];
+  printf("Voulez vous rejouez? oui/non \n");
+  fgets(rejouer,5,stdin);
+  if(strcmp(rejouer,"oui\n")==0) return true;
+  return false;
+}
 
 
 int main(int argc,char *argv[]){
   char rejouer[6];
+  bool replay=true;
   if(argc!=2) usage(argv[0]);
-  int nbPiece = atoi(argv[1]);
-  if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
-  piece* grille = creerPieces(nbPiece);
-  game rushHour = new_game_hr(nbPiece,grille);
-  affichage((cgame)rushHour);
-  startGame(rushHour,nbPiece);
-  printf("Voulez vous rejouez? oui/non \n");
-  fgets(rejouer,6,stdin);
-  while(strcmp(rejouer,"oui\n")==0){
+  while (replay){
+    int nbPiece = atoi(argv[1]);
+    if(nbPiece<=0 || nbPiece>PIECE_MAX) usage(argv[0]);
     piece* grille = creerPieces(nbPiece);
     game rushHour = new_game_hr(nbPiece,grille);
     affichage((cgame)rushHour);
     startGame(rushHour,nbPiece);
-    printf("Voulez vous rejouez? oui/non \n");
-    fgets(rejouer,6,stdin);
+    replay=ask_to_replay();
   }
   return EXIT_SUCCESS;
 }  
