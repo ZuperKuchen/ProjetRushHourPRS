@@ -14,24 +14,7 @@ piece* malloc_tab_piece(int nbPiece){
   return allouer;
 }
 
-void affichage(cgame g){
-  printf("\n");
-  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
-  printf("\n");
-  int nb = game_nb_pieces(g);
-  int tab_game[WIDTH][HEIGHT];
-  for(int i=0; i<WIDTH; i++){
-    for(int j=0; j<HEIGHT; j++) tab_game[i][j]= VALEUR_CASE_VIDE;
-  }
-  for(int i=0;i<nb;i++){
-    cpiece tmp_piece = game_piece(g,i);
-    int x = get_x(tmp_piece);
-    int y = get_y(tmp_piece);
-    for(int j=0; j<get_height(tmp_piece); j++){
-      for(int k=0;k<get_width(tmp_piece);k++) tab_game[x+k][y+j] = i;
-    }
-  }
-  printf("  ************\n");
+void remplissage_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   for(int yt=HEIGHT-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<WIDTH; xt++){
@@ -50,6 +33,31 @@ void affichage(cgame g){
   printf(" ");
   for(int k=0;k<WIDTH;k++) printf("  %d",k);
   printf("\n\n");
+}
+
+void initialisation_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
+  for(int i=0; i<WIDTH; i++){
+    for(int j=0; j<HEIGHT; j++) tab_game[i][j]= VALEUR_CASE_VIDE;
+  }
+  for(int i=0;i<nb;i++){
+    cpiece tmp_piece = game_piece(g,i);
+    int x = get_x(tmp_piece);
+    int y = get_y(tmp_piece);
+    for(int j=0; j<get_height(tmp_piece); j++){
+      for(int k=0;k<get_width(tmp_piece);k++) tab_game[x+k][y+j] = i;
+    }
+  }
+}
+
+void affichage(cgame g){
+  printf("\n");
+  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
+  printf("\n");
+  int nb = game_nb_pieces(g);
+  int tab_game[WIDTH][HEIGHT];
+  initialisation_affichage(g,nb,tab_game);
+  printf("  ************\n");
+  remplissage_affichage(g,nb,tab_game);
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
 }

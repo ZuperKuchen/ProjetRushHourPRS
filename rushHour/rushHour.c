@@ -103,12 +103,7 @@ piece* creerPieces(int nombrePiece){
   return tab;
 }
 
-void affichage(cgame g){
-  printf("\n");
-  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
-  printf("\n");
-  int nb = game_nb_pieces(g);
-  int tab_game[GAME_SIZE][GAME_SIZE];
+void initialisation_affichage(cgame g,int nb,int tab_game[GAME_SIZE][GAME_SIZE]){
   for(int i=0; i<GAME_SIZE; i++){
     for(int j=0; j<GAME_SIZE; j++){
       tab_game[i][j]= valeurCaseVide;
@@ -128,7 +123,9 @@ void affichage(cgame g){
       }
     }
   }
-  printf("********************\n");
+}
+
+void remplissage_affichage(cgame g,int nb,int tab_game[GAME_SIZE][GAME_SIZE]){
   for(int yt=GAME_SIZE-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<GAME_SIZE; xt++){
@@ -149,6 +146,17 @@ void affichage(cgame g){
   printf("  ");
   for(int k=0;k<GAME_SIZE;k++) printf(" %d ",k);
   printf("\n\n");
+}
+
+void affichage(cgame g){
+  printf("\n");
+  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
+  printf("\n");
+  int nb = game_nb_pieces(g);
+  int tab_game[GAME_SIZE][GAME_SIZE];
+  initialisation_affichage(g,nb,tab_game);
+  printf("********************\n");
+  remplissage_affichage(g,nb,tab_game);
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
 }
@@ -180,48 +188,72 @@ bool wantToQuit(char *dir_str){
   return false;
 }
 
-
-void startGame(game g,int nbPiece){
-  while(!game_over_hr(g)){
-    char num_str[3],distance[3],dir_str[7];
-    dir direction;
-    bool vert;
+int choose_number_piece(int nbPiece){
+  char num_str[3];
+  bool good_num = false;
+  int num;
+  while(!good_num){
+    good_num = true;
     printf("Numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num_str,3,stdin);
-    int num=atoi(num_str);
-    if(num<0 || num>=nbPiece){
-      printf("Choisissez parmis les propositions..\n");
-      continue;
-    }
     if (wantToQuit(num_str)==true){
       exit(EXIT_SUCCESS);
     }
-    if(is_horizontal(game_piece(g,num))){
+    num=atoi(num_str);
+    if(num<0 || num>=nbPiece){
+      printf("Choisissez parmis les propositions..\n");
+      good_num = false;
+    }
+  }
+  return num;
+}
+
+
+
+int choose_distance(){
+  char distance[3];
+  printf("La distance?\n");
+  fgets(distance,3,stdin);
+  if (wantToQuit(distance)==true){
+    exit(EXIT_SUCCESS);
+  }
+  int dist = atoi(distance);
+  return dist;
+}
+
+bool choose_direction(cgame g,int num_piece,dir *direction){
+  char dir_str[7];
+  bool vert;
+  if(is_horizontal(game_piece(g,num_piece))){
       printf("Quelle direction? left/right ?\n");
       vert=false;
     }
-    else {
+  else {
       printf("Quelle direction? up/down ?\n");
       vert=true;
-    }
-    fgets(dir_str,7,stdin);
-    bool test=true;
-    if (wantToQuit(dir_str)==true){
-      exit(EXIT_SUCCESS);
-    }
-    if (string_to_dir(&direction,dir_str,vert)==false){
-      printf("Choisissez parmis les propositions..\n");
-      test=false;
-    }
+  }
+  fgets(dir_str,7,stdin);
+  if (wantToQuit(dir_str)==true){
+    exit(EXIT_SUCCESS);
+  }
+  if (string_to_dir(direction,dir_str,vert)==false){
+    printf("Choisissez parmis les propositions..\n");
+    return false;
+  }
+  return true;
+}
+
+
+void startGame(game g,int nbPiece){
+  while(!game_over_hr(g)){
+    dir direction;
+    int num = choose_number_piece(nbPiece);
+    int test = choose_direction(g,num,&direction);
     if (!test) continue;
-    printf("La distance?\n");
-    fgets(distance,3,stdin);
-    if (wantToQuit(distance)==true){
-      exit(EXIT_SUCCESS);
-    }
-    bool goodMove=play_move(g,num,direction,atoi(distance));
+    int distance = choose_distance();
+    bool goodMove=play_move(g,num,direction,distance);
     if (goodMove==false) {
       printf("Deplacement impossible \n");
       continue;
