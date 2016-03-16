@@ -9,7 +9,7 @@
 #define HEIGHT 5
 #define VALEUR_CASE_VIDE -1
 
-piece* allouer_Tab_Piece(int nbPiece){
+piece* malloc_tab_piece(int nbPiece){
   piece* allouer = (piece*)malloc(nbPiece*sizeof(piece));
   return allouer;
 }
@@ -54,9 +54,9 @@ void affichage(cgame g){
   printf("\n");
 }
 
-piece* creer_Pieces_niveau_1(int* nbPieces){
+piece* create_pieces_level_1(int* nbPieces){
   *nbPieces=10;
-  piece* tableau1 = allouer_Tab_Piece(*nbPieces);
+  piece* tableau1 = malloc_tab_piece(*nbPieces);
   tableau1[0] = new_piece(1,1,2,2,true,true);
   tableau1[1] = new_piece(0,3,2,1,true,true);
   tableau1[2] = new_piece(2,3,2,1,true,true);
@@ -70,9 +70,9 @@ piece* creer_Pieces_niveau_1(int* nbPieces){
   return tableau1;
 }
 
-piece* creer_Pieces_niveau_2(int* nbPieces){
+piece* create_pieces_level_2(int* nbPieces){
   *nbPieces=10;
-  piece* tableau2 = allouer_Tab_Piece(*nbPieces);
+  piece* tableau2 = malloc_tab_piece(*nbPieces);
   tableau2[0] = new_piece(1,3,2,2,true,true);
   tableau2[1] = new_piece(0,3,1,2,true,true);
   tableau2[2] = new_piece(3,3,1,2,true,true);
@@ -86,9 +86,9 @@ piece* creer_Pieces_niveau_2(int* nbPieces){
   return tableau2;
 }
 
-piece* creer_Pieces_niveau_3(int* nbPieces){
+piece* create_pieces_level_3(int* nbPieces){
   *nbPieces=10;
-  piece* tableau3 = allouer_Tab_Piece(*nbPieces);
+  piece* tableau3 = malloc_tab_piece(*nbPieces);
   tableau3[0] = new_piece(1,3,2,2,true,true);
   tableau3[1] = new_piece(0,4,1,1,true,true);
   tableau3[2] = new_piece(0,3,1,1,true,true);
@@ -136,7 +136,6 @@ void startGame(game g,int nbPiece){
     printf("Numéro de la piece à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
-    fflush(stdin);
     fgets(num_str,3,stdin);
     int num=atoi(num_str);
     if(num<0 || num>=nbPiece){
@@ -175,17 +174,17 @@ void startGame(game g,int nbPiece){
 }
 
 
-piece* niveau_pieces(int niveau,int* nbPieces){
+piece* level_pieces(int niveau,int* nbPieces){
   piece* tab;
   switch(niveau){
   case 1:
-    tab=creer_Pieces_niveau_1(nbPieces);
+    tab=create_pieces_level_1(nbPieces);
     break;
   case 2:
-    tab=creer_Pieces_niveau_2(nbPieces);
+    tab=create_pieces_level_2(nbPieces);
     break;
   case 3:
-    tab=creer_Pieces_niveau_3(nbPieces);
+    tab=create_pieces_level_3(nbPieces);
     break;
   default:
     printf("erreur de niveau \n");
@@ -193,7 +192,7 @@ piece* niveau_pieces(int niveau,int* nbPieces){
   return tab;
 }
 
-int choisir_niveau(){
+int choose_level(){
   bool level = false;
   char str_niveau[4];
   int niveau;
@@ -212,7 +211,7 @@ int choisir_niveau(){
 
 bool play(int niveau,int *nbPieces){
   char rejouer[6];
-  piece* grille = niveau_pieces(niveau,nbPieces);
+  piece* grille = level_pieces(niveau,nbPieces);
   game aneRouge = new_game(WIDTH,HEIGHT,*nbPieces,grille);
   affichage((cgame)aneRouge);
   startGame(aneRouge,*nbPieces);
@@ -222,9 +221,9 @@ bool play(int niveau,int *nbPieces){
   else return false;
 }
 
-void jouer_Rejouer(bool replay,int *nbPieces){
+void play_Replay(bool replay,int *nbPieces){
   while(replay==true){
-    int niveau = choisir_niveau();
+    int niveau = choose_level();
     replay=play(niveau,nbPieces);
   }
 }
@@ -232,6 +231,6 @@ void jouer_Rejouer(bool replay,int *nbPieces){
 int main(int argc,char* argv[]){
   int nbPieces;
   bool replay = true;
-  jouer_Rejouer(replay,&nbPieces);
+  play_Replay(replay,&nbPieces);
   return EXIT_SUCCESS;
 }
