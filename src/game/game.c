@@ -61,15 +61,15 @@ bool is_out(piece p){
 }
 
 
-void reverse_direction(dir d,dir dir_op){
+void reverse_direction(dir d,dir* dir_op){
   if(d == LEFT){
-    dir_op = RIGHT;
+    *dir_op = RIGHT;
   }if(d == RIGHT){
-    dir_op = LEFT;
+    *dir_op = LEFT;
   }if(d == UP){
-    dir_op = DOWN;
+    *dir_op = DOWN;
   }if(d == DOWN){
-    dir_op = UP;
+    *dir_op = UP;
   }
 }
 
@@ -92,7 +92,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
 	continue;
       }
       if (is_not_valid_move(g,piece_num,i)){
-	reverse_direction(d,dir_op);
+	reverse_direction(d,&dir_op);
 	move_piece((piece)game_piece(g,piece_num),dir_op,distance-dis);
 	return false;
       }
