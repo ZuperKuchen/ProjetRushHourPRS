@@ -1,7 +1,7 @@
 # ProjetRushHourPRS
-Projet License semestre 4 Pierre Chauveau, Sebastien Leyx, Rémi Brisset
+Projet Licence semestre 4 Pierre Chauveau, Sebastien Leyx, Rémi Brisset
 
-Pour crée les 2 executable, il faut effectuer les commande suivante depuis 
+Pour créer les 2 executables, il faut effectuer les commandes suivantes depuis 
 le répertoire ProjetRushHourPRS : 
 
 mkdir build
@@ -12,18 +12,18 @@ cmake ..
 
 make
 
-l'executable aneRouge se trouve dans le dossier aneRouge
+L'executable aneRouge se trouve dans le dossier ProjetRushHourPRS/build/aneRouge
 
-l'executable rushHour se trouve dans le dossier rushHour
+L'executable rushHour se trouve dans le dossier ProjetRushHourPRS/build/rushHour
 
-pour executer aneRouge faire 
+Pour executer aneRouge :
 
 ./aneRouge
 
-pour executer rushHour faire
+Pour executer rushHour :
 
-./rushHour nbPieceVoulu
+./rushHour nbPiecesVoulu
 
-rentrez donc un nombre de pieces apres le rushHour.
-
-goodGame
+Pour accéder aux ressources Game et Piece : ProjetRushHourPRS/src
+Pour accéder au code source de l'exécutable du Rush Hour : ProjetRushHourPRS/rushHour
+Pour accéder au code source de l'exécutable de l'Ane Rouge : ProjetRushHourPRS/aneRouge
