@@ -25,5 +25,7 @@ Pour executer rushHour :
 ./rushHour nbPiecesVoulu
 
 Pour accéder aux ressources Game et Piece : ProjetRushHourPRS/src
+
 Pour accéder au code source de l'exécutable du Rush Hour : ProjetRushHourPRS/rushHour
+
 Pour accéder au code source de l'exécutable de l'Ane Rouge : ProjetRushHourPRS/aneRouge
