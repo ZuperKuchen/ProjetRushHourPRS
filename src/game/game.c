@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include "game.h"
 #include "piece.h"
-#define TAILLE 6
 
 struct game_s{
   int height;
@@ -56,8 +55,8 @@ int game_nb_moves(cgame g){
   return g->mov;
 }
 
-bool is_out(piece p){
-  return (get_x(p)>(TAILLE-get_width(p)) || get_y(p)>(TAILLE-get_height(p))|| get_x(p)<0 || get_y(p)<0); 
+bool is_out(piece p, game g){
+  return (get_x(p)>(game_width((cgame)g)-get_width(p)) || get_y(p)>(game_height((cgame)g)-get_height(p))|| get_x(p)<0 || get_y(p)<0); 
 }
 
 
@@ -74,7 +73,7 @@ void reverse_direction(dir d,dir* dir_op){
 }
 
 bool is_not_valid_move(game g,int piece_num,int i){
-  return (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num)));
+  return (intersect(game_piece(g,piece_num),game_piece(g,i)) || is_out((piece)game_piece(g,piece_num), g));
 }
 
 bool play_move(game g,int piece_num, dir d, int distance){
@@ -127,7 +126,6 @@ int game_height(cgame g){
   return g->height;
 }
 
-///V1 game_square_piece //// On compare chaque "carré" de chaque piece avec le carré test
 int game_square_piece (game g, int x, int y){
   for (int i=0;i<game_nb_pieces(g);i++){
     cpiece p_aux= game_piece(g,i);
@@ -145,21 +143,3 @@ int game_square_piece (game g, int x, int y){
   }
   return -1;
 }
-
-///v2 game_square_piece//// On crée une piece carré de coté 1 en (x,y) et on test succesivement si il y a intersection avec les pieces du jeu
-
-/*
-int game_square_piece (game g, int x, int y){
-  piece p_test=new_piece (x, y,1,1,false,false);
-  for(int i=0;i<game_nb_pieces(g);i++){
-    cpiece p_aux= game_piece(g,i);
-    if (intersect(p_aux,(cpiece)p_test)){
-      return i;
-      delete_piece(p_test);
-    }
-  }
-  return -1;
-  delete_piece(p_test);
-}
-
-*/
