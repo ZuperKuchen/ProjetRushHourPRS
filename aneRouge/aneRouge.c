@@ -14,7 +14,7 @@ piece* malloc_tab_piece(int nbPiece){
   return allouer;
 }
 
-void remplissage_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
+void cases_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   for(int yt=HEIGHT-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<WIDTH; xt++){
@@ -35,7 +35,7 @@ void remplissage_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   printf("\n\n");
 }
 
-void initialisation_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
+void init_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   for(int i=0; i<WIDTH; i++){
     for(int j=0; j<HEIGHT; j++) tab_game[i][j]= VALEUR_CASE_VIDE;
   }
@@ -49,15 +49,15 @@ void initialisation_affichage(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   }
 }
 
-void affichage(cgame g){
+void display(cgame g){
   printf("\n");
   printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
   printf("\n");
   int nb = game_nb_pieces(g);
   int tab_game[WIDTH][HEIGHT];
-  initialisation_affichage(g,nb,tab_game);
+  init_display(g,nb,tab_game);
   printf("  ************\n");
-  remplissage_affichage(g,nb,tab_game);
+  cases_display(g,nb,tab_game);
   printf("Pour quitter appuyez sur q \n");
   printf("\n");
 }
@@ -130,14 +130,14 @@ bool string_to_dir(dir *d,char *dir_str){
   return res;
 }
 
-bool wantToQuit(char *dir_str){
+bool want_to_quit(char *dir_str){
   if (strcmp(dir_str,"q\n")==0){
     return true;
   }
   return false;
 }
 
-void startGame(game g,int nbPiece){
+void start_game(game g,int nbPiece){
   while(!game_over_ar(g)){
     char num_str[3],distance[3],dir_str[7];
     dir direction;
@@ -150,12 +150,12 @@ void startGame(game g,int nbPiece){
       printf("Choisissez parmis les propositions..\n");
       continue;
     }
-    if (wantToQuit(num_str)==true){
+    if (want_to_quit(num_str)==true){
       exit(EXIT_SUCCESS);
     }
     printf("Quelle direction? left/right/up/down?\n");
     fgets(dir_str,7,stdin);
-    if (wantToQuit(dir_str)==true){
+    if (want_to_quit(dir_str)==true){
       exit(EXIT_SUCCESS);
     }
     bool test = true;
@@ -166,7 +166,7 @@ void startGame(game g,int nbPiece){
     if (!test) continue;
     printf("La distance?\n");
     fgets(distance,3,stdin);
-    if (wantToQuit(distance)==true){
+    if (want_to_quit(distance)==true){
       exit(EXIT_SUCCESS);
     }
     bool goodMove=play_move(g,num,direction,atoi(distance));
@@ -175,7 +175,7 @@ void startGame(game g,int nbPiece){
       continue;
     }
     printf("___________________________________________ \n");
-    affichage(g);
+    display(g);
    }
   printf("Bravo ! le jeu est terminé\n ");
   printf("___________________________________________ \n");
@@ -221,15 +221,15 @@ bool play(int niveau,int *nbPieces){
   char rejouer[6];
   piece* grille = level_pieces(niveau,nbPieces);
   game aneRouge = new_game(WIDTH,HEIGHT,*nbPieces,grille);
-  affichage((cgame)aneRouge);
-  startGame(aneRouge,*nbPieces);
+  display((cgame)aneRouge);
+  start_game(aneRouge,*nbPieces);
   printf("Voulez vous rejouez? oui/non \n");
   fgets(rejouer,6,stdin);
   if(strcmp(rejouer,"oui\n")==0)return true;
   else return false;
 }
 
-void play_Replay(bool replay,int *nbPieces){
+void play_replay(bool replay,int *nbPieces){
   while(replay==true){
     int niveau = choose_level();
     replay=play(niveau,nbPieces);
@@ -239,6 +239,6 @@ void play_Replay(bool replay,int *nbPieces){
 int main(int argc,char* argv[]){
   int nbPieces;
   bool replay = true;
-  play_Replay(replay,&nbPieces);
+  play_replay(replay,&nbPieces);
   return EXIT_SUCCESS;
 }
