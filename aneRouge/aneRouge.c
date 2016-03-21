@@ -9,12 +9,12 @@
 #define HEIGHT 5
 #define VALEUR_CASE_VIDE -1
 
-piece* malloc_tab_piece(int nbPiece){
+piece* malloc_tab_piece(int nbPiece){                                 //permet d'alouer un tableau de struct piece
   piece* allouer = (piece*)malloc(nbPiece*sizeof(piece));
   return allouer;
 }
 
-void cases_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
+void cases_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){      //on affiche les valeur
   for(int yt=HEIGHT-1; yt>=0; yt--){
     printf("%d ",yt);
     for(int xt=0; xt<WIDTH; xt++){
@@ -35,7 +35,7 @@ void cases_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
   printf("\n\n");
 }
 
-void init_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){
+void init_display(cgame g,int nb,int tab_game[WIDTH][HEIGHT]){       //on initialise les cases 
   for(int i=0; i<WIDTH; i++){
     for(int j=0; j<HEIGHT; j++) tab_game[i][j]= VALEUR_CASE_VIDE;
   }
@@ -62,8 +62,8 @@ void display(cgame g){
   printf("\n");
 }
 
-piece* create_pieces_level_1(int* nbPieces){
-  *nbPieces=10;
+piece* create_pieces_level_1(int* nbPieces){             //niveau 1
+  *nbPieces=10; 
   piece* tableau1 = malloc_tab_piece(*nbPieces);
   tableau1[0] = new_piece(1,1,2,2,true,true);
   tableau1[1] = new_piece(0,3,2,1,true,true);
@@ -78,7 +78,7 @@ piece* create_pieces_level_1(int* nbPieces){
   return tableau1;
 }
 
-piece* create_pieces_level_2(int* nbPieces){
+piece* create_pieces_level_2(int* nbPieces){            //niveau 2
   *nbPieces=10;
   piece* tableau2 = malloc_tab_piece(*nbPieces);
   tableau2[0] = new_piece(1,3,2,2,true,true);
@@ -110,7 +110,7 @@ piece* create_pieces_level_3(int* nbPieces){
   return tableau3;
 }
 
-bool string_to_dir(dir *d,char *dir_str){
+bool string_to_dir(dir *d,char *dir_str){           //on donne la direction
   bool res=true;
   if (strcmp(dir_str,"left\n")==0){
     *d=LEFT;
@@ -130,46 +130,69 @@ bool string_to_dir(dir *d,char *dir_str){
   return res;
 }
 
-bool want_to_quit(char *dir_str){
+bool want_to_quit(char *dir_str){                //pour quitter quand le joueur le souhaite
   if (strcmp(dir_str,"q\n")==0){
     return true;
   }
   return false;
 }
 
-void start_game(game g,int nbPiece){
-  while(!game_over_ar(g)){
-    char num_str[3],distance[3],dir_str[7];
-    dir direction;
-    printf("Numéro de la piece à bouger ?\n");
+int choose_number_piece(int nbPiece){           //on choisis la piece à bouger
+  char num_str[3];
+  bool good_num = false;
+  int num;
+  while(!good_num){
+    good_num = true;
+    printf("Numéro de la pièce à bouger ?\n");
     for(int a=0;a<nbPiece;a++) printf(" %d",a);
     printf("\n");
     fgets(num_str,3,stdin);
-    int num=atoi(num_str);
-    if(num<0 || num>=nbPiece){
-      printf("Choisissez parmis les propositions..\n");
-      continue;
-    }
     if (want_to_quit(num_str)==true){
       exit(EXIT_SUCCESS);
     }
-    printf("Quelle direction? left/right/up/down?\n");
-    fgets(dir_str,7,stdin);
-    if (want_to_quit(dir_str)==true){
-      exit(EXIT_SUCCESS);
+    num=atoi(num_str);
+    if(num<0 || num>=nbPiece){
+      printf("Choisissez parmis les propositions :\n");
+      good_num = false;
     }
-    bool test = true;
-    if (string_to_dir(&direction,dir_str)==false){
-      printf("Choisissez parmis les propositions..\n");
-    test = false;
-    }
+  }
+  return num;
+}
+
+bool choose_direction(cgame g,int num_piece,dir *direction){    //on choisis la direction
+  char dir_str[7];
+  bool vert;
+  printf("Quelle direction ? left/right/up/down ?\n");
+  fgets(dir_str,7,stdin);
+  if (want_to_quit(dir_str)==true){
+    exit(EXIT_SUCCESS);
+  }
+  if (string_to_dir(direction,dir_str)==false){
+    printf("Choisissez parmis les propositions..\n");
+    return false;
+  }
+  return true;
+}
+
+int choose_distance(void){       //on choisis la distance
+  char distance[3];
+  printf("La distance ?\n");
+  fgets(distance,3,stdin);
+  if (want_to_quit(distance)==true){
+    exit(EXIT_SUCCESS);
+  }
+  int dist = atoi(distance);
+  return dist;
+}
+
+void start_game(game g,int nbPiece){
+  while(!game_over_ar(g)){
+    dir direction;
+    int num = choose_number_piece(nbPiece);
+    bool test = choose_direction(g,num,&direction);
     if (!test) continue;
-    printf("La distance?\n");
-    fgets(distance,3,stdin);
-    if (want_to_quit(distance)==true){
-      exit(EXIT_SUCCESS);
-    }
-    bool goodMove=play_move(g,num,direction,atoi(distance));
+    int distance = choose_distance();
+    bool goodMove=play_move(g,num,direction,distance);
     if (goodMove==false) {
       printf("Deplacement impossible \n");
       continue;

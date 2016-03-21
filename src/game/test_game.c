@@ -41,8 +41,16 @@ int main(int argc, char *argv[]){
   result = result && test_game_nb_piece(testg, 3);
   result = result && test_game_piece(testg, 2, 4, 0);
   //result = result && test_copy_game(testg);                    erreur de segmentation pas encore trouvée 
-  result = result && !(is_out(tab_pieces[0]));
+  result = result && !(is_out(tab_pieces[0],testg));
   result = result && test_play_move(testg,di);
+  tab_pieces[0]=new_piece(0,3,2,1,true,true);
+  tab_pieces[1]=new_piece(1,2,3,1,true,true);
+  tab_pieces[2]=new_piece(4,0,1,3,true,true);
+  game testg2 = new_game (4,5,3,tab_pieces);
+  /*result = result && test_game_nb_piece(testg, 3);
+  result = result && test_game_piece(testg, 2, 4, 0);
+  result = result && !(is_out(tab_pieces[0],testg));
+  result = result && test_play_move(testg,di);*/
   if(result) printf("youpi test_game\n");
 }
   
