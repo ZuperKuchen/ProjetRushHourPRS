@@ -20,6 +20,7 @@ void usage(char *nomfonction){
 
 game new_game_hr (int nb_pieces, piece *pieces){
   game g=new_game (6, 6,nb_pieces, pieces);
+  return g;
 }
 
 bool game_over_hr(cgame g){
