@@ -16,7 +16,6 @@ struct piece_s {
 piece new_piece_rh (int x, int y, bool small, bool horizontal){
   int width,height;
   bool move_x,move_y;
-  //piece newpiece = (piece)malloc(sizeof(struct piece_s));
   if(horizontal){
     move_x = true;
     move_y = false;
@@ -44,7 +43,7 @@ piece new_piece_rh (int x, int y, bool small, bool horizontal){
 }
 
 
-void delete_piece (piece p){
+void delete_piece(piece p){
   free(p);
 }
 
