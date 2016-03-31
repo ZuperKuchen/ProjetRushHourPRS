@@ -82,6 +82,7 @@ piece* array_pieces(int nombrePiece){
     possible_cases(small,horizontal,&x,&y);
     tab[i]=new_piece_rh(x,y,small,horizontal);                /* on creer la piece i et on la met dans le tableaux de pieces */
     if((get_y(tab[i])==3) && is_horizontal(tab[i])){          /* on verifie qu'elle n'est pas horizontal avec y=3 */
+      delete_piece(tab[i]);
       i--;
       continue;                                               /* si erreur on re-crée la piece */
     }
@@ -96,6 +97,7 @@ piece* array_pieces(int nombrePiece){
       }
     }
     if(j!=i){                                                /* de meme ici si intersection */
+      delete_piece(tab[i]);
       i--;
       continue;
     }
@@ -188,7 +190,7 @@ bool want_to_quit(char *dir_str){
   return false;
 }
 
-int choose_number_piece(int nbPiece){
+int choose_number_piece(int nbPiece, game g){
   char num_str[3];
   bool good_num = false;
   int num;
@@ -199,6 +201,7 @@ int choose_number_piece(int nbPiece){
     printf("\n");
     fgets(num_str,3,stdin);
     if (want_to_quit(num_str)==true){
+      delete_game(g);
       exit(EXIT_SUCCESS);
     }
     num=atoi(num_str);
@@ -212,21 +215,22 @@ int choose_number_piece(int nbPiece){
 
 
 
-int choose_distance(){
+int choose_distance(game g){
   char distance[3];
   printf("La distance ?\n");
   fgets(distance,3,stdin);
   if (want_to_quit(distance)==true){
+    delete_game(g);
     exit(EXIT_SUCCESS);
   }
   int dist = atoi(distance);
   return dist;
 }
 
-bool choose_direction(cgame g,int num_piece,dir *direction){
+bool choose_direction(game g,int num_piece,dir *direction){
   char dir_str[7];
   bool vert;
-  if(is_horizontal(game_piece(g,num_piece))){
+  if(is_horizontal(game_piece((cgame)g,num_piece))){
       printf("Quelle direction ? left/right ?\n");
       vert=false;
     }
@@ -236,6 +240,7 @@ bool choose_direction(cgame g,int num_piece,dir *direction){
   }
   fgets(dir_str,7,stdin);
   if (want_to_quit(dir_str)==true){
+    delete_game(g);
     exit(EXIT_SUCCESS);
   }
   if (string_to_dir(direction,dir_str,vert)==false){
@@ -249,10 +254,10 @@ bool choose_direction(cgame g,int num_piece,dir *direction){
 void start_game(game g,int nbPiece){
   while(!game_over_hr(g)){
     dir direction;
-    int num = choose_number_piece(nbPiece);
+    int num = choose_number_piece(nbPiece,g);
     int test = choose_direction(g,num,&direction);
     if (!test) continue;
-    int distance = choose_distance();
+    int distance = choose_distance(g);
     bool goodMove=play_move(g,num,direction,distance);
     if (goodMove==false) {
       printf("\n! Déplacement impossible !\n\n");
@@ -271,6 +276,7 @@ bool play(int nbPieces){
   game rushHour = new_game_hr(nbPieces,grille);
   display((cgame)rushHour);
   start_game(rushHour,nbPieces); 
+  delete_game(rushHour);
   printf("Voulez vous rejouer ? oui/non \n");
   fgets(rejouer,6,stdin);
   if(strcmp(rejouer,"oui\n")==0)return true;
