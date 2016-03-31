@@ -49,10 +49,6 @@ int game_nb_pieces(cgame g){
 }
 
 cpiece game_piece(cgame g,int piece_num){
-  if(piece_num<0 || piece_num>=(*g).nb_pieces){
-    usage("game_piece");
-    exit(EXIT_FAILURE);
-  }
   return (cpiece)g->pieces[piece_num];
 }
 
@@ -110,7 +106,7 @@ bool play_move(game g,int piece_num, dir d, int distance){
 //////////// version 2////////////
  
 game new_game (int width, int height, int nb_pieces, piece *pieces){
-  game g=(game)malloc(sizeof(game));
+  game g=(game)malloc(nb_pieces * sizeof(piece) + sizeof(int)*4);   // On ne peut pas allouer à sizeof game car la structure contient un tableau dont elle ne connait pas la taille. Merci Valgrind pour cette information.
   g->mov=0;
   g->nb_pieces=nb_pieces;
   g->height=height;
