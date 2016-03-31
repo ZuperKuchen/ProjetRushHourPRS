@@ -137,7 +137,7 @@ bool want_to_quit(char *dir_str){                //pour quitter quand le joueur 
   return false;
 }
 
-int choose_number_piece(int nbPiece){           //on choisis la piece à bouger
+int choose_number_piece(int nbPiece, game g){           //on choisis la piece à bouger
   char num_str[3];
   bool good_num = false;
   int num;
@@ -148,6 +148,7 @@ int choose_number_piece(int nbPiece){           //on choisis la piece à bouger
     printf("\n");
     fgets(num_str,3,stdin);
     if (want_to_quit(num_str)==true){
+      delete_game(g);
       exit(EXIT_SUCCESS);
     }
     num=atoi(num_str);
@@ -159,12 +160,13 @@ int choose_number_piece(int nbPiece){           //on choisis la piece à bouger
   return num;
 }
 
-bool choose_direction(cgame g,int num_piece,dir *direction){    //on choisis la direction
+bool choose_direction(game g,int num_piece,dir *direction){    //on choisis la direction
   char dir_str[7];
   bool vert;
   printf("Quelle direction ? left/right/up/down ?\n");
   fgets(dir_str,7,stdin);
   if (want_to_quit(dir_str)==true){
+    delete_game(g);
     exit(EXIT_SUCCESS);
   }
   if (string_to_dir(direction,dir_str)==false){
@@ -174,11 +176,12 @@ bool choose_direction(cgame g,int num_piece,dir *direction){    //on choisis la 
   return true;
 }
 
-int choose_distance(void){       //on choisis la distance
+int choose_distance(game g){       //on choisis la distance
   char distance[3];
   printf("La distance ?\n");
   fgets(distance,3,stdin);
   if (want_to_quit(distance)==true){
+    delete_game(g);
     exit(EXIT_SUCCESS);
   }
   int dist = atoi(distance);
@@ -188,10 +191,10 @@ int choose_distance(void){       //on choisis la distance
 void start_game(game g,int nbPiece){
   while(!game_over_ar(g)){
     dir direction;
-    int num = choose_number_piece(nbPiece);
+    int num = choose_number_piece(nbPiece, g);
     bool test = choose_direction(g,num,&direction);
     if (!test) continue;
-    int distance = choose_distance();
+    int distance = choose_distance(g);
     bool goodMove=play_move(g,num,direction,distance);
     if (goodMove==false) {
       printf("Deplacement impossible \n");
@@ -229,7 +232,7 @@ int choose_level(){
   int niveau;
   while(level==false){
     level = true;
-    printf("choisissez parmis les 3 niveaux \n niveau 1 tapez 1 \n niveau 2 tapez 2 \n niveau 3 tapez 3\n");
+    printf("Choisissez parmis les 3 niveaux : \n Niveau 1 tapez 1 \n Niveau 2 tapez 2 \n Niveau 3 tapez 3\n");
     fgets(str_niveau,3,stdin);
     niveau = atoi(str_niveau);
     if(niveau!=1 && niveau !=2 && niveau!=3){
@@ -247,6 +250,7 @@ bool play(int niveau,int *nbPieces){
   display((cgame)aneRouge);
   start_game(aneRouge,*nbPieces);
   printf("Voulez vous rejouez? oui/non \n");
+  delete_game(aneRouge);
   fgets(rejouer,6,stdin);
   if(strcmp(rejouer,"oui\n")==0)return true;
   else return false;
