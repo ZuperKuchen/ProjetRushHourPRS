@@ -54,31 +54,29 @@ void display_cases(cgame g,int nb,int tab_game[GAME_SIZE][GAME_SIZE]){
 
 void display(cgame g){
   printf("\n");
-  printf("Nombre de mouvements effectués : %d \n",game_nb_moves(g));
-  printf("\n");
   int nb = game_nb_pieces(g);
   int tab_game[GAME_SIZE][GAME_SIZE];
   display_init(g,nb,tab_game);
-  printf("********************\n");
   display_cases(g,nb,tab_game);
-  printf("| Pour quitter appuyez sur q |\n");
   printf("\n");
 }
 
-
-piece* read_Config_txt(int *width,int *height,int *nbPieces){
-  FILE *file = fopen("game.txt","r");
-  if(file==NULL){
-    printf("not file \n");
-    return false;
-  }int line[20];
+void grid_size(FILE *file,int *width,int *height){
+  int line[5];
   fscanf(file,"%d %d",&line[0],&line[1]);
   *width = line[0];
   *height = line[1];
+}
+
+void grid_nbPieces(FILE *file,int *nbPieces){
+  int line[3];
   fscanf(file,"%d",&line[0]);
   *nbPieces = line[0];
-  piece* tableau = (piece*)malloc((*nbPieces)*sizeof(piece));
-  for(int i=0; i<*nbPieces; i++){
+}
+
+void create_grid(FILE *file,int nbPieces,piece *tableau){
+  int line[20];
+  for(int i=0; i<nbPieces; i++){
     bool can_move_x,can_move_y;
     fscanf(file,"%d %d %d %d %d %d",&line[0],&line[1],&line[2],&line[3],&line[4],&line[5]);
     if(line[4]==0) can_move_x == false;
@@ -87,6 +85,18 @@ piece* read_Config_txt(int *width,int *height,int *nbPieces){
     else can_move_y = true;
     tableau[i] = new_piece(line[0],line[1],line[2],line[3],can_move_x,can_move_y); 
   }
+}
+
+piece* read_Config_txt(int *width,int *height,int *nbPieces){
+  FILE *file = fopen("../../rushHour/game.txt","r");
+  if(file==NULL){
+    printf("not file \n");
+    return false;
+  }
+  grid_size(file,width,height);
+  grid_nbPieces(file,nbPieces);
+  piece* tableau = (piece*)malloc((*nbPieces) * sizeof(piece));
+  create_grid(file,*nbPieces,tableau);
   return tableau;
 }
  
