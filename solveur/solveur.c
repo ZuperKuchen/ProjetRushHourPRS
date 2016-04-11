@@ -6,6 +6,7 @@
 #include <piece.h>
 #include "displayRH.h"
 #include "displayAR.h"
+#include "graphe.h"
 
 void grid_size(FILE *file,int *width,int *height){
   int line[5];
