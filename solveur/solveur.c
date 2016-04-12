@@ -9,6 +9,8 @@
 #include "displayAR.h"
 #include "graph.h"
 
+graph create_graph(game G, bool isRH);
+
 void grid_size(FILE *file,int *width,int *height){
   int line[5];
   fscanf(file,"%d %d",&line[0],&line[1]);
@@ -76,6 +78,9 @@ int main(int argc,char* argv[]){
     if(number_of_game == 0){
       piece *grid = read_Config_txtRH(&width,&height,&nbPieces);
       game rushHour = new_game_hr(nbPieces,grid);
+      graph solutions= create_graph(rushHour, true);
+      printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
+      printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
       displayRH((cgame)rushHour);
       delete_game(rushHour);
       good = true;
@@ -103,6 +108,7 @@ graph create_graph(game G, bool isRH){
   int sol;
   
   while(!end){
+    printf("Analyse en cours ...");
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     game* tabGame = different_cases(currentGame, &nbCases);
     for(int i=0; i<nbCases; i++){
@@ -125,6 +131,8 @@ graph create_graph(game G, bool isRH){
 	add_linked(graph_get_node(graph, indNode), sol);
       }
     }
+    //free_cases(tabGame, nbCases);
+    //delete_game(currentGame);
     indNode ++;
   }
   return graph;
