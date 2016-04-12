@@ -90,6 +90,17 @@ int main(int argc,char* argv[]){
   }
   return EXIT_SUCCESS;
 }
-  
 
+/*
   
+int create_graph(game G){
+  bool end = false;
+  int indNode = 0;
+  int indFinal;
+  node firstNode = new_empty_node(G);
+  graph graph = new_graph(firstNode);
+  
+  while(!end){
+    game currentGame = 
+  
+*/
