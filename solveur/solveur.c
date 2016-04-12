@@ -29,9 +29,9 @@ void create_grid(FILE *file,int nbPieces,piece *tableau){
   for(int i=0; i<nbPieces; i++){
     bool can_move_x,can_move_y;
     fscanf(file,"%d %d %d %d %d %d",&line[0],&line[1],&line[2],&line[3],&line[4],&line[5]);
-    if(line[4]==0) can_move_x == false;
+    if(line[4]==0) can_move_x = false;
     else can_move_x = true;
-    if(line[5]==0) can_move_y == false;
+    if(line[5]==0) can_move_y = false;
     else can_move_y = true;
     tableau[i] = new_piece(line[0],line[1],line[2],line[3],can_move_x,can_move_y); 
   }
@@ -78,10 +78,10 @@ int main(int argc,char* argv[]){
     if(number_of_game == 0){
       piece *grid = read_Config_txtRH(&width,&height,&nbPieces);
       game rushHour = new_game_hr(nbPieces,grid);
+      displayRH((cgame)rushHour);
       graph solutions= create_graph(rushHour, true);
       printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
       printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
-      displayRH((cgame)rushHour);
       delete_game(rushHour);
       good = true;
     }
