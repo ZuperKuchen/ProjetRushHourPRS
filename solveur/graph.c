@@ -39,6 +39,17 @@ bool piece_equals(cpiece P1, cpiece P2){
   return res;
 }
 
+piece copy_piece_for_solver(cpiece src){
+  int x = get_x(src);
+  int y = get_y(src);
+  int width = get_width(src);
+  int height = get_height(src);
+  bool move_x = can_move_x(src);
+  bool move_y = can_move_y(src);
+  piece dst = new_piece (x, y, width, height, move_x, move_y);
+  return dst;
+}
+
 // Fonctions sup pour Game
 
 bool game_equals_not_mov(cgame G1, cgame G2){
@@ -52,6 +63,18 @@ bool game_equals_not_mov(cgame G1, cgame G2){
      }
   }
   return res;
+}
+
+game copy_game_for_solver(cgame src){
+  int nb_pieces = game_nb_pieces(src);
+  int w = game_width(src);
+  int h = game_height(src);
+  piece tab[nb_pieces];
+  for (int i=0;i<game_nb_pieces(src);i++){
+    tab[i] = copy_piece_for_solver(game_piece(src, i));
+  }
+  game dst = new_game (w, h, nb_pieces, tab);
+  return dst;
 }
 
 // Fonctions sommet
@@ -111,6 +134,10 @@ void add_linked(node s, int ind){
   newTab[newSize-1] = ind;
   delete_node(s);
   s = new_full_node(g, newTab, newSize);
+}
+
+node copy_node(node src){
+  
 }
 
 
