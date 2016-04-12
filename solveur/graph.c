@@ -140,6 +140,14 @@ void delete_graph(graph g){
   free(g);
 }
 
+node graph_get_node(graph g, int ind){
+  return g->nodes[ind];
+}
+
+int graph_get_nbNodes(graph g){
+  return g->nbNodes;
+}
+
 void add_node_graph(graph g, node s){
   int newSize = g->nbNodes + 1;
   node *newTab = malloc(sizeof(node)*newSize);
