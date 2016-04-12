@@ -39,6 +39,8 @@ void delete_game (game g){
 void copy_game(cgame src,game dst){
   dst->mov=game_nb_moves(src);
   dst->nb_pieces=game_nb_pieces(src);
+  dst->height=game_height(src);
+  dst->width=game_width(src);
   for (int i=0;i<game_nb_pieces(src);i++){
     copy_piece((cpiece)src->pieces[i],dst->pieces[i]);
   }
