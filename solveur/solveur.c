@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <game.h>
+#include "game_ar.h"
 #include <piece.h>
 #include "displayRH.h"
 #include "displayAR.h"
@@ -91,16 +92,44 @@ int main(int argc,char* argv[]){
   return EXIT_SUCCESS;
 }
 
-/*
+
   
-int create_graph(game G){
+graph create_graph(game G, bool isRH){
   bool end = false;
   int indNode = 0;
-  int indFinal;
   node firstNode = new_empty_node(G);
   graph graph = new_graph(firstNode);
+  int nbCases;
+  int sol;
   
   while(!end){
-    game currentGame = 
+    game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
+    game* tabGame = different_cases(currentGame, &nbCases);
+    for(int i=0; i<nbCases; i++){
+      if(isRH && game_over_hr((cgame)tabGame[i])){
+	sol = -2;
+      }else if(!isRH && game_over_ar((cgame)tabGame[i])){
+	sol = -2;
+      }else{
+	sol = already_exists(tabGame[i], graph);
+      }
+      if(sol == -1){
+	add_node_graph(graph, new_node(tabGame[i], indNode));
+	add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1);
+      }else if(sol == -2){
+	add_node_graph(graph, new_node(tabGame[i], indNode));
+	add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1);
+	end = true;
+      }else{
+	add_linked(graph_get_node(graph, sol), indNode);
+	add_linked(graph_get_node(graph, indNode), sol);
+      }
+    }
+    indNode ++;
+  }
+  return graph;
+}
+	
+	  
   
-*/
+
