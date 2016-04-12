@@ -108,7 +108,6 @@ node new_node(game game, int indPere){
 
 void delete_node(node s){
   delete_game(s->game);
-  free(s->linked);
   free(s);
 }
 
@@ -205,13 +204,13 @@ game *different_cases(game gameUse, int* nbCases){
       tmpGame = copy_game_for_solver((cgame) gameUse);
       if(play_move(tmpGame, i, LEFT, 1)){
 	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
-	  *nbCases++;
+	  (*nbCases)++;
       }
       delete_game(tmpGame);
       tmpGame = copy_game_for_solver((cgame) gameUse);
       if(play_move(tmpGame, i, RIGHT, 1)){
 	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
-	  *nbCases++;
+	  (*nbCases)++;
       }
       delete_game(tmpGame);
     }
@@ -219,13 +218,13 @@ game *different_cases(game gameUse, int* nbCases){
       tmpGame = copy_game_for_solver((cgame) gameUse);
       if(play_move(tmpGame, i, UP, 1)){
 	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
-	  *nbCases++;
+	  (*nbCases)++;
       }
       delete_game(tmpGame);
       tmpGame = copy_game_for_solver((cgame) gameUse);
       if(play_move(tmpGame, i, DOWN, 1)){
 	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
-	  *nbCases++;
+	  (*nbCases)++;
       }
       delete_game(tmpGame);
     }	  
