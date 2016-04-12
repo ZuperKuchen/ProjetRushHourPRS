@@ -137,7 +137,12 @@ void add_linked(node s, int ind){
 }
 
 node copy_node(node src){
-  
+  game g = copy_game_for_solver((cgame)node_get_game(src));
+  int nbLinked = node_get_nbLinked(src);
+  int linked[nbLinked];
+  copy_array(nbLinked, src->linked, linked);
+  node dst = new_full_node(g, linked, nbLinked);
+  return dst;
 }
 
 
@@ -187,3 +192,11 @@ void add_node_graph(graph g, node s){
 }
 
 // Fonctions calculs
+
+game *different_cases(game game, int* nbCases){
+
+}
+
+int already_exists(game game, graph graph){
+
+}
