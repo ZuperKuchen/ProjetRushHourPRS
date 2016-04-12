@@ -14,10 +14,12 @@ void copy_array(int length, int* srcArray, int* dstArray);
 //Fonctions sup pour Piece
 
 bool piece_equals(cpiece P1, cpiece P2);
+piece copy_piece_for_solver(cpiece src);
 
 //Fonctions sup pour Game
 
 bool game_equals_not_mov(cgame G1, cgame G2);
+game copy_game_for_solver(cgame src);
 
 //Fonctions sommet (node)
 
@@ -47,7 +49,7 @@ void delete_graph(graph g);
 
 node graph_get_node(graph g, int ind);
 
-  int graph_get_nbNodes(graph g);
+int graph_get_nbNodes(graph g);
 
 void add_node_graph(graph g, node s);
 
