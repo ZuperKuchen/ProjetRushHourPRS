@@ -61,4 +61,6 @@ game *different_cases(game game, int* nbCases);
 
 int already_exists(game game, graph graph);
 
+void free_cases(game *cases, int nbCases);
+
 #endif
