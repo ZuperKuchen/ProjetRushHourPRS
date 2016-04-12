@@ -69,7 +69,7 @@ game copy_game_for_solver(cgame src){
   int nb_pieces = game_nb_pieces(src);
   int w = game_width(src);
   int h = game_height(src);
-  piece tab[nb_pieces];
+  piece *tab = malloc(sizeof(piece)*nb_pieces);
   for (int i=0;i<game_nb_pieces(src);i++){
     tab[i] = copy_piece_for_solver(game_piece(src, i));
   }
@@ -81,14 +81,14 @@ game copy_game_for_solver(cgame src){
 
 node new_empty_node(game game){
   node newNode=malloc(sizeof(game) + sizeof(int));
-  copy_game((cgame)game,newNode->game);
+  newNode->game = copy_game_for_solver((cgame)game);
   newNode->nbLinked = 0;
   return newNode;
 }
 
 node new_full_node(game game, int *linked, int nbLinked){
   node newNode=malloc(sizeof(game) + sizeof(int) * nbLinked + sizeof(int));
-  copy_game((cgame)game,newNode->game);
+  newNode->game = copy_game_for_solver((cgame)game);
   int nodelinked[nbLinked];
   newNode->linked = nodelinked;
   copy_array(nbLinked, linked, newNode->linked);
@@ -98,7 +98,7 @@ node new_full_node(game game, int *linked, int nbLinked){
 
 node new_node(game game, int indPere){
   node newNode=malloc(sizeof(game) + sizeof(int) * 2);
-  copy_game((cgame)game,newNode->game);
+  newNode->game = copy_game_for_solver((cgame)game);
   int linked[0];
   newNode->linked = linked;
   newNode->linked[0] = indPere;
@@ -125,10 +125,11 @@ int node_get_linked(node s, int ind){
 }
 
 void add_linked(node s, int ind){
-  game g = s->game;
+  game g = copy_game_for_solver((cgame)s->game);
   int newSize = s->nbLinked + 1;
   int newTab[newSize];
   for(int i = 0; i<newSize-1 ; i++){
+    if(s->linked[i] == ind) return;
     newTab[i] = s->linked[i];
   }
   newTab[newSize-1] = ind;
@@ -193,10 +194,58 @@ void add_node_graph(graph g, node s){
 
 // Fonctions calculs
 
-game *different_cases(game game, int* nbCases){
-
+game *different_cases(game gameUse, int* nbCases){
+  *nbCases = 0;
+  int nbPieces = game_nb_pieces((cgame) gameUse);
+  game tmpGame;
+  game *tabGame = malloc(sizeof(game)*nbPieces*4);
+  for(int i = 0; i<nbPieces; i++){
+    piece tmpPiece = (piece)game_piece((cgame) gameUse, i);
+    if(can_move_x((cpiece)tmpPiece)){
+      tmpGame = copy_game_for_solver((cgame) gameUse);
+      if(play_move(tmpGame, i, LEFT, 1)){
+	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
+	  *nbCases++;
+      }
+      delete_game(tmpGame);
+      tmpGame = copy_game_for_solver((cgame) gameUse);
+      if(play_move(tmpGame, i, RIGHT, 1)){
+	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
+	  *nbCases++;
+      }
+      delete_game(tmpGame);
+    }
+    if(can_move_y((cpiece)tmpPiece)){
+      tmpGame = copy_game_for_solver((cgame) gameUse);
+      if(play_move(tmpGame, i, UP, 1)){
+	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
+	  *nbCases++;
+      }
+      delete_game(tmpGame);
+      tmpGame = copy_game_for_solver((cgame) gameUse);
+      if(play_move(tmpGame, i, DOWN, 1)){
+	  tabGame[*nbCases] = copy_game_for_solver((cgame) tmpGame);
+	  *nbCases++;
+      }
+      delete_game(tmpGame);
+    }	  
+  }
+  return tabGame;
 }
 
 int already_exists(game game, graph graph){
-
+  for(int i = 0 ; i < graph_get_nbNodes(graph) ; i++){
+    if(game_equals_not_mov(node_get_game(graph_get_node(graph, i)), game)){
+      return i;
+    }
+  }
+  return -1;
 }
+
+void free_cases(game *cases, int nbCases){
+  for(int i = 0; i<nbCases; i++){
+    delete_game(cases[i]);
+  }
+  free(cases);
+}
+
