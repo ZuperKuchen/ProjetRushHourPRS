@@ -3,7 +3,7 @@
 #include <game.h>
 #include <piece.h>
 
-
+typedef struct intarray* intarray;
 typedef struct node* node;
 typedef struct graph* graph;
 
