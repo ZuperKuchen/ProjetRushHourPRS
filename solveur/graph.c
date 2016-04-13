@@ -7,16 +7,23 @@
 
 // On définit les structures
 
+
+/*
+struct intarray{
+  int* tab;
+  int size;
+};
+*/
+
 struct node{
   game game;
-  int *linked;
   int nbLinked;
+  int *linked;
 };
 
-
 struct graph{
-  node *nodes;
   int nbNodes;
+  node *nodes;
 };
 
 // Fonctions outils
@@ -69,7 +76,7 @@ game copy_game_for_solver(cgame src){
   int nb_pieces = game_nb_pieces(src);
   int w = game_width(src);
   int h = game_height(src);
-  piece *tab = malloc(sizeof(piece)*nb_pieces);
+  piece *tab= malloc(sizeof(piece)*nb_pieces);
   for (int i=0;i<game_nb_pieces(src);i++){
     tab[i] = copy_piece_for_solver(game_piece(src, i));
   }
@@ -77,11 +84,28 @@ game copy_game_for_solver(cgame src){
   return dst;
 }
 
+// Fonctions intarray
+/*
+intarray new_intarray(int* tab, int size){
+  intarray new = malloc(sizeof(int)*(size+1));
+  new->tab = malloc(sizeof(int)*size);
+  new->size = size;
+  for(int i = 0 ; i < size ; i++){
+    new->tab[i] = tab[i];
+  }
+}
+
+void delete_intarray(intarray ia){
+  free(ia->tab);
+  free(ia);
+}
+*/
 // Fonctions sommet
 
 node new_empty_node(game game){
   node newNode=malloc(sizeof(game) + sizeof(int));
   newNode->game = copy_game_for_solver((cgame)game);
+  newNode->linked = malloc(0);
   newNode->nbLinked = 0;
   return newNode;
 }
@@ -89,25 +113,26 @@ node new_empty_node(game game){
 node new_full_node(game game, int *linked, int nbLinked){
   node newNode=malloc(sizeof(game) + sizeof(int) * nbLinked + sizeof(int));
   newNode->game = copy_game_for_solver((cgame)game);
-  int nodelinked[nbLinked];
-  newNode->linked = nodelinked;
-  copy_array(nbLinked, linked, newNode->linked);
+  newNode->game = game;
   newNode->nbLinked = nbLinked;
+  newNode->linked = malloc(sizeof(int)*nbLinked);
+  for(int i=0; i<nbLinked; i++){
+    newNode->linked[i] = linked[i];
+  }
   return newNode;
 }
 
 node new_node(game game, int indPere){
   node newNode=malloc(sizeof(game) + sizeof(int) * 2);
   newNode->game = copy_game_for_solver((cgame)game);
-  int linked[0];
-  newNode->linked = linked;
+  newNode->linked = malloc(sizeof(int));
   newNode->linked[0] = indPere;
-  newNode->nbLinked = 1;
   return newNode;
 }
 
 void delete_node(node s){
   delete_game(s->game);
+  free(s->linked);
   free(s);
 }
 
@@ -123,18 +148,45 @@ int node_get_linked(node s, int ind){
   return s->linked[ind];
 }
 
+
 void add_linked(node s, int ind){
-  game g = copy_game_for_solver((cgame)s->game);
   int newSize = s->nbLinked + 1;
-  int newTab[newSize];
+  int *tabLinked = malloc(sizeof(int)*newSize);
+  game newGame = s->game;
+  for(int i=0; i<s->nbLinked; i++){
+    if(s->linked[i] == ind){
+      free(tabLinked);
+      return;
+    }
+    tabLinked[i] = s->linked[i];
+  }
+  tabLinked[newSize-1] = ind;
+  delete_node(s);
+  s = new_full_node(newGame, tabLinked, newSize);
+}
+
+node copy_node(node s){
+  node d = new_full_node(copy_game_for_solver(s->game), s->linked, s->nbLinked);
+  return d;
+}
+  
+/*
+
+void add_linked(node s, int ind){
+  int newSize = s->nbLinked + 1;
+  game g = copy_game_for_solver((cgame)s->game);
+  int *newTab = malloc(sizeof(int)*newSize);
   for(int i = 0; i<newSize-1 ; i++){
     if(s->linked[i] == ind) return;
     newTab[i] = s->linked[i];
   }
   newTab[newSize-1] = ind;
   delete_node(s);
-  s = new_full_node(g, newTab, newSize);
+  node res = new_full_node(g, newTab, newSize);
+  free(newTab);
 }
+
+
 
 node copy_node(node src){
   game g = copy_game_for_solver((cgame)node_get_game(src));
@@ -145,24 +197,30 @@ node copy_node(node src){
   return dst;
 }
 
+*/
 
 // Fonctions graph
 
 graph new_graph(node firstNode){
   graph newGraph = malloc(sizeof(node) + sizeof(int));
   newGraph->nodes = malloc(sizeof(node));
-  newGraph->nodes[0] = firstNode;
+  newGraph->nodes[0] = copy_node(firstNode);
   newGraph->nbNodes = 1;
   return newGraph;
 }
 
 graph new_full_graph(node *tabNodes, int nbNodes){
   graph newGraph = malloc(sizeof(node)*nbNodes + sizeof(int));
-  newGraph->nodes = tabNodes;
   newGraph->nbNodes = nbNodes;
+  newGraph->nodes = malloc(sizeof(node)*nbNodes);
+  for(int i=0; i<nbNodes; i++){
+    newGraph->nodes[i] = copy_node(tabNodes[i]);
+    delete_node(tabNodes[i]);
+  }
+  free(tabNodes);
   return newGraph;
 }
-  
+
 
 void delete_graph(graph g){
   for(int i=0; i<g->nbNodes; i++){
@@ -182,13 +240,13 @@ int graph_get_nbNodes(graph g){
 
 void add_node_graph(graph g, node s){
   int newSize = g->nbNodes + 1;
-  node *newTab = malloc(sizeof(node)*newSize);
-  for(int i = 0; i<newSize-1 ; i++){
-    newTab[i] = g->nodes[i];
+  node *tabNode = malloc(sizeof(node)*newSize);
+  for(int i=0; i<newSize-1; i++){
+    tabNode[i] = copy_node(g->nodes[i]);
   }
-  newTab[newSize-1] = s;
+  tabNode[newSize-1] = copy_node(s);
   delete_graph(g);
-  g = new_full_graph(newTab, newSize);
+  g = new_full_graph(tabNode, newSize);
 }
 
 // Fonctions calculs
@@ -229,12 +287,17 @@ game *different_cases(game gameUse, int* nbCases){
       delete_game(tmpGame);
     }	  
   }
+  tabGame = realloc(tabGame, sizeof(game)*(*nbCases));
   return tabGame;
 }
 
-int already_exists(game game, graph graph){
+int already_exists(game gameUse, graph graph){
+  node n;
+  game g;
   for(int i = 0 ; i < graph_get_nbNodes(graph) ; i++){
-    if(game_equals_not_mov(node_get_game(graph_get_node(graph, i)), game)){
+    n = graph_get_node(graph, i);
+    g = node_get_game(n);
+    if(game_equals_not_mov(g, gameUse)){
       return i;
     }
   }
