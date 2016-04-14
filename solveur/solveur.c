@@ -10,6 +10,7 @@
 #include "graph.h"
 
 graph create_graph(game G, bool isRH);
+void display_graph(graph G);
 
 void grid_size(FILE *file,int *width,int *height){
   int line[5];
@@ -108,10 +109,11 @@ graph create_graph(game G, bool isRH){
   int sol;
   
   while(!end){
-    printf("Analyse en cours ...");
+    display_graph(graph);
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
-    game* tabGame = different_cases(currentGame, &nbCases);
-    node father = graph_get_node(graph, indNode);
+    int nbPieces = game_nb_pieces((cgame)currentGame);
+    game *tabGame = different_cases(currentGame, &nbCases);
+    node father;
     for(int i=0; i<nbCases; i++){
       if(isRH && game_over_hr((cgame)tabGame[i])){
 	sol = -2;
@@ -121,24 +123,42 @@ graph create_graph(game G, bool isRH){
 	sol = already_exists(tabGame[i], graph);
       }
       if(sol == -1){
-	add_node_graph(graph, new_node(tabGame[i], indNode));
-	add_linked(father, graph_get_nbNodes(graph)-1);
+	int tab[0];
+	tab[0] = indNode;
+	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
+	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
       }else if(sol == -2){
-	add_node_graph(graph, new_node(tabGame[i], indNode));
-	add_linked(father, graph_get_nbNodes(graph)-1);
+	int tab[0];
+	tab[0] = indNode;
+	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
+	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
 	end = true;
+	break;
       }else{
-	add_linked(graph_get_node(graph, sol), indNode);
-	add_linked(father, sol);
+	put_new_adress(graph, add_linked(graph_get_node(graph, sol), indNode), sol);
+	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), sol), indNode);
       }
     }
     free_cases(tabGame, nbCases);
     delete_game(currentGame);
     indNode ++;
   }
+  display_graph(graph);
   return graph;
 }
-	
+
+void display_graph(graph G){
+  node current_node;
+  for(int i = 0; i < graph_get_nbNodes(G); i++){
+    current_node = graph_get_node(G, i);
+    printf("Node %d voisin de :\n", i);
+    for(int j = 0; j < node_get_nbLinked(current_node); j++){
+      printf("_%d", node_get_linked(current_node, j));
+    }
+    printf("\n");
+    displayRH((cgame)node_get_game(current_node));
+  }
+}
 	  
   
 
