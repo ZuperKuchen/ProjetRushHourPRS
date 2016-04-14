@@ -5,11 +5,11 @@
 #include "piece.h"
 
 struct game_s{
-  piece *pieces;
   int height;
   int width;
   int mov;
   int nb_pieces;
+  piece pieces[];
 };
 
 
@@ -32,7 +32,7 @@ void delete_game (game g){
   for(int i = 0; i<g->nb_pieces; i++){
     delete_piece(g->pieces[i]);
   }
-  free(g->pieces);
+  //free(g->pieces);
   free(g);
 }
 
@@ -108,18 +108,18 @@ bool play_move(game g,int piece_num, dir d, int distance){
 //////////// version 2////////////
  
 game new_game (int width, int height, int nb_pieces, piece *pieces){
-  game g=(game)malloc(nb_pieces * sizeof(piece) + sizeof(int)*4);   // On ne peut pas allouer à sizeof game car la structure contient un tableau dont elle ne connait pas la taille. Merci Valgrind pour cette information.
+  game g=(game)malloc(sizeof(int)*4 + nb_pieces * sizeof(piece));   // On ne peut pas allouer à sizeof game car la structure contient un tableau dont elle ne connait pas la taille. Merci Valgrind pour cette information.
   g->mov=0;
   g->nb_pieces=nb_pieces;
   g->height=height;
   g->width=width;
-  g->pieces=malloc(nb_pieces * sizeof(piece));
+  //g->pieces=malloc(nb_pieces * sizeof(piece));
   for(int i=0; i<nb_pieces; i++){
     g->pieces[i]=new_piece(0,0,0,0,true,true);
     copy_piece((cpiece)pieces[i], g->pieces[i]);
-    delete_piece(pieces[i]);
+    //delete_piece(pieces[i]);
   }
-  free(pieces);
+  //free(pieces);
   return g;
 }
 
