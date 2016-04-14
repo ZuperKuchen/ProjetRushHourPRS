@@ -8,9 +8,14 @@
 #include "displayRH.h"
 #include "displayAR.h"
 #include "graph.h"
+#include "displayGraph.h"
 
 graph create_graph(game G, bool isRH);
-void display_graph(graph G);
+
+static void usage(char *commande){
+  fprintf(stderr," %s <a|r> <filename> \n",commande);
+  exit(EXIT_FAILURE);
+}
 
 void grid_size(FILE *file,int *width,int *height){
   int line[5];
@@ -38,11 +43,10 @@ void create_grid(FILE *file,int nbPieces,piece *tableau){
   }
 }
 
-piece* read_Config_txtRH(int *width,int *height,int *nbPieces){
-  FILE *file = fopen("../../solveur/rushHour.txt","r");
+piece* read_Config_txt(FILE *file,int *width,int *height,int *nbPieces){
   if(file==NULL){
     printf("not file \n");
-    return false;
+    exit(EXIT_FAILURE);
   }
   grid_size(file,width,height);
   grid_nbPieces(file,nbPieces);
@@ -52,49 +56,63 @@ piece* read_Config_txtRH(int *width,int *height,int *nbPieces){
   return tableau;
 }
 
-piece* read_Config_txtAR(int *width,int *height,int *nbPieces){
-  FILE *file = fopen("../../solveur/aneRouge.txt","r");
-  if(file==NULL){
-    printf("not file \n");
-    return false;
-  }
-  grid_size(file,width,height);
-  grid_nbPieces(file,nbPieces);
-  piece* tableau = (piece*)malloc((*nbPieces) * sizeof(piece));
-  create_grid(file,*nbPieces,tableau);
-  fclose(file);
-  return tableau;
+
+bool compare(char *c1[],char *c2){
+  return strcmp(*c1,c2) == 0;
 }
- 
+
+void display_solution(graph g,int number_solution,bool isRH){
+  node solution_node = graph_get_node(g, number_solution);
+  printf("Node %d voisin de :\n", number_solution);
+  for(int j = 0; j < node_get_nbLinked(solution_node); j++){
+    printf("_%d", node_get_linked(solution_node, j));
+  }
+  if(isRH) displayRH((cgame)node_get_game(solution_node));
+  else displayAR((cgame)node_get_game(solution_node));
+}
+
+void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
+  piece *grid = read_Config_txt(file,width,height,nbPieces);
+  game rushHour = new_game_hr(*nbPieces,grid);
+  displayRH((cgame)rushHour);
+  graph solutions= create_graph(rushHour, true);
+  display_solution(solutions,454,true);
+  printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
+  printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
+  delete_game(rushHour);
+}
+
+void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
+  piece *grid = read_Config_txt(file,width,height,nbPieces);
+  game aneRouge = new_game(*width,*height,*nbPieces,grid);
+  displayAR((cgame)aneRouge);
+  graph solutions= create_graph(aneRouge, false);
+  display_solution(solutions,100,false);
+  printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
+  printf("Derniere case solution : %d\n", game_over_ar(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
+  delete_game(aneRouge);
+}
+
 int main(int argc,char* argv[]){
+  if(argc!=3) usage(argv[0]);
   int width = 0;
   int height = 0;
   int nbPieces = 0;
-  char choose_game[3];
-  bool good = false;
-  while(!good){
-    printf("\n Choisissez :\n   -0 pour rushhour\n   -1 pour anerouge\n");
-    fgets(choose_game,3,stdin);
-    int number_of_game = atoi(choose_game);  
-    if(number_of_game == 0){
-      piece *grid = read_Config_txtRH(&width,&height,&nbPieces);
-      game rushHour = new_game_hr(nbPieces,grid);
-      displayRH((cgame)rushHour);
-      graph solutions= create_graph(rushHour, true);
-      printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
-      printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
-      delete_game(rushHour);
-      good = true;
-    }
-    else if(number_of_game==1){
-      piece *grid = read_Config_txtAR(&width,&height,&nbPieces);
-      game aneRouge = new_game(width,height,nbPieces,grid);
-      displayAR((cgame)aneRouge);
-      delete_game(aneRouge);
-      good = true;
-    }
-    else return EXIT_FAILURE;
+  FILE *file = fopen(argv[2],"r");
+  char* choose_game[2];
+  char *rh = "r";
+  char *ar = "a";
+  char *rush = "rushHour.txt";
+  char *ane = "aneRouge.txt";
+  choose_game[0] = argv[1];
+  choose_game[1] = argv[2];
+  if(compare(choose_game,rh) && compare(choose_game+1,rush)){
+    config_rushHour(file,&width,&height,&nbPieces);
   }
+  else if(compare(choose_game,ar) && compare(choose_game+1,ane)){
+    config_aneRouge(file,&width,&height,&nbPieces);
+  }
+  else usage(argv[0]);
   return EXIT_SUCCESS;
 }
 
@@ -109,7 +127,7 @@ graph create_graph(game G, bool isRH){
   int sol;
   
   while(!end){
-    display_graph(graph);
+    //display_graph(graph,isRH);
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     int nbPieces = game_nb_pieces((cgame)currentGame);
     game *tabGame = different_cases(currentGame, &nbCases);
@@ -143,22 +161,11 @@ graph create_graph(game G, bool isRH){
     delete_game(currentGame);
     indNode ++;
   }
-  display_graph(graph);
+  //display_graph(graph,isRH);
   return graph;
 }
 
-void display_graph(graph G){
-  node current_node;
-  for(int i = 0; i < graph_get_nbNodes(G); i++){
-    current_node = graph_get_node(G, i);
-    printf("Node %d voisin de :\n", i);
-    for(int j = 0; j < node_get_nbLinked(current_node); j++){
-      printf("_%d", node_get_linked(current_node, j));
-    }
-    printf("\n");
-    displayRH((cgame)node_get_game(current_node));
-  }
-}
+
 	  
   
 
