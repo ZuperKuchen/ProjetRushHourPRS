@@ -37,7 +37,7 @@ int node_get_nbLinked(node s);
 
 int node_get_linked(node s, int ind);
 
-void add_linked(node s, int ind);
+node add_linked(node s, int ind);
 
 node copy_node(node src);
 
@@ -53,11 +53,13 @@ node graph_get_node(graph g, int ind);
 
 int graph_get_nbNodes(graph g);
 
-void add_node_graph(graph g, node s);
+graph add_node_graph(graph g, node s);
+
+void put_new_adress(graph g, node new, int ind);
 
 //Fonctions calculs
 
-game *different_cases(game game, int* nbCases);
+game *different_cases(game gameUse, int* nbCases);
 
 int already_exists(game game, graph graph);
 
