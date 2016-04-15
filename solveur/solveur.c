@@ -76,7 +76,8 @@ void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   game rushHour = new_game_hr(*nbPieces,grid);
   displayRH((cgame)rushHour);
   graph solutions= create_graph(rushHour, true);
-  display_solution(solutions,454,true);
+  if(solutions == NULL) return;
+  display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
   printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
   printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
   delete_game(rushHour);
@@ -87,7 +88,8 @@ void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   game aneRouge = new_game(*width,*height,*nbPieces,grid);
   displayAR((cgame)aneRouge);
   graph solutions= create_graph(aneRouge, false);
-  display_solution(solutions,100,false);
+  if(solutions == NULL) return;
+  display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
   printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
   printf("Derniere case solution : %d\n", game_over_ar(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
   delete_game(aneRouge);
@@ -127,6 +129,10 @@ graph create_graph(game G, bool isRH){
   int sol;
   
   while(!end){
+    if(indNode >= graph_get_nbNodes(graph)){
+      printf("Ce jeu est insolvable !\n");
+      return NULL;
+    }
     //display_graph(graph,isRH);
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     int nbPieces = game_nb_pieces((cgame)currentGame);
