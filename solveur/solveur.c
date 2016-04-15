@@ -104,14 +104,12 @@ int main(int argc,char* argv[]){
   char* choose_game[2];
   char *rh = "r";
   char *ar = "a";
-  char *rush = "rushHour.txt";
-  char *ane = "aneRouge.txt";
   choose_game[0] = argv[1];
   choose_game[1] = argv[2];
-  if(compare(choose_game,rh) && compare(choose_game+1,rush)){
+  if(compare(choose_game,rh)){
     config_rushHour(file,&width,&height,&nbPieces);
   }
-  else if(compare(choose_game,ar) && compare(choose_game+1,ane)){
+  else if(compare(choose_game,ar)){
     config_aneRouge(file,&width,&height,&nbPieces);
   }
   else usage(argv[0]);
