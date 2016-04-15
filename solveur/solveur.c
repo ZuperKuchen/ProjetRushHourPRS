@@ -11,6 +11,8 @@
 #include "displayGraph.h"
 
 graph create_graph(game G, bool isRH);
+int dijkstra_search(graph G);
+int simple_search(graph G);
 
 static void usage(char *commande){
   fprintf(stderr," %s <a|r> <filename> \n",commande);
@@ -63,10 +65,7 @@ bool compare(char *c1[],char *c2){
 
 void display_solution(graph g,int number_solution,bool isRH){
   node solution_node = graph_get_node(g, number_solution);
-  printf("Node %d voisin de :\n", number_solution);
-  for(int j = 0; j < node_get_nbLinked(solution_node); j++){
-    printf("_%d", node_get_linked(solution_node, j));
-  }
+  printf("Position finale :\n");
   if(isRH) displayRH((cgame)node_get_game(solution_node));
   else displayAR((cgame)node_get_game(solution_node));
 }
@@ -74,24 +73,32 @@ void display_solution(graph g,int number_solution,bool isRH){
 void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game rushHour = new_game_hr(*nbPieces,grid);
+  printf("\nPosition initiale :\n");
   displayRH((cgame)rushHour);
   graph solutions= create_graph(rushHour, true);
   if(solutions == NULL) return;
   display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
   printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
-  printf("Derniere case solution : %d\n", game_over_hr(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
+  int smallestWay = dijkstra_search(solutions);
+  int simpleWay = simple_search(solutions);
+  printf("D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
+  printf("D'après l'algorithme utilisant les avantages de notre implémentation, ce jeu peut se terminer en %d coups !\n", simpleWay);
   delete_game(rushHour);
 }
 
 void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game aneRouge = new_game(*width,*height,*nbPieces,grid);
+  printf("\nPosition initiale :\n");
   displayAR((cgame)aneRouge);
   graph solutions= create_graph(aneRouge, false);
   if(solutions == NULL) return;
   display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
-  printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
-  printf("Derniere case solution : %d\n", game_over_ar(node_get_game(graph_get_node(solutions, graph_get_nbNodes(solutions)-1))));
+  printf("(Nombres de cases utilisées : %d)\n\n", graph_get_nbNodes(solutions));
+  int smallestWay = dijkstra_search(solutions);
+  int simpleWay = simple_search(solutions);
+  printf("- D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
+  printf("- D'après l'algorithme utilisant les avantages de notre implémentation, ce jeu peut se terminer en %d coups !\n", simpleWay);
   delete_game(aneRouge);
 }
 
@@ -131,7 +138,10 @@ graph create_graph(game G, bool isRH){
       printf("Ce jeu est insolvable !\n");
       return NULL;
     }
-    //display_graph(graph,isRH);
+    if(indNode%5000 == 0){
+      display_graph(graph, isRH);
+      printf("%d\n", indNode);
+    } 
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     int nbPieces = game_nb_pieces((cgame)currentGame);
     game *tabGame = different_cases(currentGame, &nbCases);
@@ -165,11 +175,78 @@ graph create_graph(game G, bool isRH){
     delete_game(currentGame);
     indNode ++;
   }
-  //display_graph(graph,isRH);
   return graph;
 }
 
+int smallest_dist(int *dist, bool *check, int size){
+  int res;
+  int tmpDist;
+  for(int i=0; i<size; i++){
+    if(!check[i]){
+      res = i;
+      tmpDist = dist[i];
+      break;
+    }
+  }
+  for(int i=1; i<size; i++){
+    if(!check[i] && (dist[i] != -1) && (dist[i] < tmpDist)){
+      res = i;
+      tmpDist = dist[i];
+    }
+  }
+  return res;
+}
 
+
+int dijkstra_search(graph G){
+  int size = graph_get_nbNodes(G);
+  bool check[size];
+  int dist[size];
+  int father[size];
+  for(int i=0; i<size; i++){
+    check[i] = false;
+    dist[i] = -1;
+    father[i] = -1;
+  }
+  dist[0] = 0;
+  int destInd = size - 1;
+  while(smallest_dist(dist, check, size) != destInd){
+    int currentNode = smallest_dist(dist, check, size);
+    for(int i=0; i<node_get_nbLinked(graph_get_node(G, currentNode)); i++){
+      int son = node_get_linked(graph_get_node(G, currentNode), i);
+      if(!check[son]){
+	if((dist[son] = -1) || (dist[son] > dist[currentNode] +1)){
+	  dist[son] = dist[currentNode] + 1;
+	  father[son] = currentNode;
+	}
+      }
+    }
+    check[currentNode] = true;
+  }
+  int res = 0;
+  int ind = destInd;
+  while(ind != 0){
+    ind = father[ind];
+    res++;
+  }
+  return res;
+}
+
+int simple_search(graph G){
+  int currentNode = graph_get_nbNodes(G) - 1;
+  int smallest = currentNode;
+  int res = 0;
+  while(currentNode > 0){
+    for(int i=0; i<node_get_nbLinked(graph_get_node(G, currentNode)); i++){
+      if(node_get_linked(graph_get_node(G, currentNode), i) < smallest){
+	smallest = node_get_linked(graph_get_node(G, currentNode), i);
+      }
+    }
+    currentNode = smallest;
+    res++;
+  }
+  return res;
+}
 	  
   
 
