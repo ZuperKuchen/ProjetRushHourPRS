@@ -49,11 +49,19 @@ bool game_equals_not_mov(cgame G1, cgame G2){
   res = res && game_height(G1) == game_height(G2);
   res = res && game_nb_pieces(G1) == game_nb_pieces(G2);
   if(res){
-     for(int i = 0 ; i<game_nb_pieces(G1) ; i++){
-	res = res && piece_equals(game_piece(G1, i), game_piece(G2, i));
-     }
+    int pieces = 0;
+    for(int i = 0 ; i<game_nb_pieces(G1) ; i++){
+      for(int j = 0 ; j<game_nb_pieces(G2) ;j++){
+	if(piece_equals(game_piece(G1, i), game_piece(G2, j))){
+	  pieces ++;
+	  break;
+	}
+      }
+      if(i+1 != pieces) return false;
+    }
+    if(pieces == game_nb_pieces(G1)) return true;
   }
-  return res;
+  return false;
 }
 
 game copy_game_for_solver(cgame src){
