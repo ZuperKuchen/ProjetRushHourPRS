@@ -138,10 +138,6 @@ graph create_graph(game G, bool isRH){
       printf("Ce jeu est insolvable !\n");
       return NULL;
     }
-    if(indNode%5000 == 0){
-      display_graph(graph, isRH);
-      printf("%d\n", indNode);
-    } 
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     int nbPieces = game_nb_pieces((cgame)currentGame);
     game *tabGame = different_cases(currentGame, &nbCases);
