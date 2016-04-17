@@ -73,32 +73,32 @@ void display_solution(graph g,int number_solution,bool isRH){
 void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game rushHour = new_game_hr(*nbPieces,grid);
-  printf("\nPosition initiale :\n");
-  displayRH((cgame)rushHour);
+  //printf("\nPosition initiale :\n");
+  //displayRH((cgame)rushHour);
   graph solutions= create_graph(rushHour, true);
   if(solutions == NULL) return;
-  display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
-  printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
-  int smallestWay = dijkstra_search(solutions);
+  //display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
+  //printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
+  //int smallestWay = dijkstra_search(solutions);
   int simpleWay = simple_search(solutions);
-  printf("D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
-  printf("D'après l'algorithme utilisant les avantages de notre implémentation, ce jeu peut se terminer en %d coups !\n", simpleWay);
+  //printf("D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
+  printf("%d\n", simpleWay);
   delete_game(rushHour);
 }
 
 void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game aneRouge = new_game(*width,*height,*nbPieces,grid);
-  printf("\nPosition initiale :\n");
-  displayAR((cgame)aneRouge);
+  //printf("\nPosition initiale :\n");
+  //displayAR((cgame)aneRouge);
   graph solutions= create_graph(aneRouge, false);
   if(solutions == NULL) return;
-  display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
-  printf("(Nombres de cases utilisées : %d)\n\n", graph_get_nbNodes(solutions));
-  int smallestWay = dijkstra_search(solutions);
+  //display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
+  //printf("(Nombres de cases utilisées : %d)\n\n", graph_get_nbNodes(solutions));
+  //int smallestWay = dijkstra_search(solutions);
   int simpleWay = simple_search(solutions);
-  printf("- D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
-  printf("- D'après l'algorithme utilisant les avantages de notre implémentation, ce jeu peut se terminer en %d coups !\n", simpleWay);
+  //printf("- D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
+  printf("%d\n", simpleWay);
   delete_game(aneRouge);
 }
 
@@ -132,10 +132,9 @@ graph create_graph(game G, bool isRH){
   graph graph = new_graph(firstNode);
   int nbCases;
   int sol;
-  
   while(!end){
     if(indNode >= graph_get_nbNodes(graph)){
-      printf("Ce jeu est insolvable !\n");
+      printf("-1\n");
       return NULL;
     }
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
@@ -173,7 +172,7 @@ graph create_graph(game G, bool isRH){
   }
   return graph;
 }
-
+/*
 int smallest_dist(int *dist, bool *check, int size){
   int res;
   int tmpDist;
@@ -227,7 +226,7 @@ int dijkstra_search(graph G){
   }
   return res;
 }
-
+*/
 int simple_search(graph G){
   int currentNode = graph_get_nbNodes(G) - 1;
   int smallest = currentNode;
