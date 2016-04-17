@@ -166,10 +166,11 @@ graph create_graph(game G, bool isRH){
 	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), sol), indNode);
       }
     }
-    free_cases(tabGame, nbCases);
+    free_cases(tabGame, *nbCases);
     delete_game(currentGame);
     indNode ++;
   }
+  free(nbCases);
   return graph;
 }
 /*
