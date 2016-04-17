@@ -9,8 +9,7 @@ install(FILES
 
         src/game/game.h
 	src/piece/piece.h
-	src/game/game_rh.h
-	src/piece/piece_rh.h
+	src/game/game_ar.h
 	display/displayAR.h
 	display/displayRH.h
 	DESTINATION "include")

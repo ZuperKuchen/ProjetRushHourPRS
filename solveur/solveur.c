@@ -155,8 +155,8 @@ graph create_graph(game G, bool isRH){
 	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
 	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
       }else if(sol == -2){
-	int tab[0];
-	tab[0] = indNode;
+	int* tab = (int*)malloc(sizeof(int));
+	*tab = indNode;
 	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
 	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
 	end = true;
