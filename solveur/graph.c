@@ -188,7 +188,7 @@ void put_new_adress(graph g, node new, int ind){
 
 // Fonctions calculs
 
-game *different_cases(game gameUse, int* nbCases){
+game *different_cases(game gameUse, int *nbCases){
   *nbCases = 0;
   int nbPieces = game_nb_pieces((cgame)gameUse);
   game tmpGame;
