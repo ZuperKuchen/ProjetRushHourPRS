@@ -130,7 +130,7 @@ graph create_graph(game G, bool isRH){
   int indNode = 0;
   node firstNode = new_empty_node(G);
   graph graph = new_graph(firstNode);
-  int nbCases = 0;
+  int *nbCases = malloc(sizeof(int));
   int sol = 0;
   while(!end){
     if(indNode >= graph_get_nbNodes(graph)){
@@ -139,9 +139,9 @@ graph create_graph(game G, bool isRH){
     }
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));
     int nbPieces = game_nb_pieces((cgame)currentGame);
-    game *tabGame = different_cases(currentGame, &nbCases);
+    game *tabGame = different_cases(currentGame, nbCases);
     node father;
-    for(int i=0; i<nbCases; i++){
+    for(int i=0; i<*nbCases; i++){
       if(isRH && game_over_hr((cgame)tabGame[i])){
 	sol = -2;
       }else if(!isRH && game_over_ar((cgame)tabGame[i])){
