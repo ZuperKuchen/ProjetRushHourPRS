@@ -130,8 +130,8 @@ graph create_graph(game G, bool isRH){
   int indNode = 0;
   node firstNode = new_empty_node(G);
   graph graph = new_graph(firstNode);
-  int nbCases;
-  int sol;
+  int nbCases = 0;
+  int sol = 0;
   while(!end){
     if(indNode >= graph_get_nbNodes(graph)){
       printf("-1\n");
