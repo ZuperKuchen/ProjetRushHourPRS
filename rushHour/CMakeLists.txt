@@ -1,2 +1,3 @@
 add_executable(rushHour rushHour.c)
-target_link_libraries(rushHour game)
+TARGET_LINK_LIBRARIES(rushHour game ${SDL_LIBRARIES} )
+#target_link_libraries(rushHour game)

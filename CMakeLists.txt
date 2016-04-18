@@ -4,6 +4,9 @@ include( CTest )
 add_definitions(-std=c99 -g)
 
 include_directories(src/game/ src/piece/ rushHour/ aneRouge/ solveur/ display/)
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(SDL REQUIRED sdl)
+INCLUDE_DIRECTORIES(${SDL_INCLUDE_DIR})
 
 install(FILES
 

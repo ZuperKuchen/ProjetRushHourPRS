@@ -5,6 +5,7 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
+#include <SDL/SDL.h>
 #define PIECE_MAX 9
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
@@ -274,7 +275,7 @@ bool play(int nbPieces){
   char rejouer[6];
   piece* grille = array_pieces(nbPieces); ;
   game rushHour = new_game_hr(nbPieces,grille);
-  display((cgame)rushHour);
+  display((cgame)rushHour); 
   start_game(rushHour,nbPieces); 
   delete_game(rushHour);
   printf("Voulez vous rejouer ? oui/non \n");
@@ -289,11 +290,31 @@ void play_replay(bool replay,int nbPieces){
   }
 }
 
+void pause(){
+    int continuer = 1;
+    SDL_Event event;
+    while (continuer){
+        SDL_WaitEvent(&event);
+        switch(event.type){
+            case SDL_QUIT:
+             continuer = 0;
+        }
+    }
+}
+
 int main(int argc,char *argv[]){
   bool replay=true;
   if(argc!=2) usage(argv[0]);
   int nbPieces = atoi(argv[1]);
   if(nbPieces<=0 || nbPieces>PIECE_MAX) usage(argv[0]);
+  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+  SDL_SetVideoMode(400, 300, 32, SDL_SWSURFACE | SDL_DOUBLEBUF); 
+  if(SDL_Init(SDL_INIT_VIDEO) == -1){
+    fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
+  pause();
   play_replay(replay,nbPieces);
+  SDL_Quit;
   return EXIT_SUCCESS;
 }  
