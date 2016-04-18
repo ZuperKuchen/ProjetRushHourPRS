@@ -302,17 +302,25 @@ void pause(){
     }
 }
 
+void config_sdl(){
+  SDL_Surface *ecran = NULL;
+  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+  ecran = SDL_SetVideoMode(600, 600, 32, SDL_SWSURFACE | SDL_DOUBLEBUF);
+  if(ecran == NULL){
+    fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
+  SDL_WM_SetCaption("RushHour", NULL);
+  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 0, 0));
+  SDL_Flip(ecran);
+}
+
 int main(int argc,char *argv[]){
   bool replay=true;
   if(argc!=2) usage(argv[0]);
   int nbPieces = atoi(argv[1]);
   if(nbPieces<=0 || nbPieces>PIECE_MAX) usage(argv[0]);
-  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-  SDL_SetVideoMode(400, 300, 32, SDL_SWSURFACE | SDL_DOUBLEBUF); 
-  if(SDL_Init(SDL_INIT_VIDEO) == -1){
-    fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
+  config_sdl();
   pause();
   play_replay(replay,nbPieces);
   SDL_Quit;
