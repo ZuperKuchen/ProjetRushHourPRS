@@ -3,26 +3,25 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include "config_sdl.h"
-
-int config_sdl(){
-  SDL_Window* fenetre;
+/*
+bool config_sdl(SDL_Window *screen){
   SDL_Event evenements;
-  bool terminer = true;
   if(SDL_Init(SDL_INIT_VIDEO) < 0){
     fprintf(stderr, "Erreur d'initialisation de la SDL : %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
     SDL_Quit();
-    return -1;
+    return false;
   }
-  fenetre = SDL_CreateWindow("Test SDL 2.0", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN);
-  if(fenetre == 0){
+  screen = SDL_CreateWindow("X-TREM RushHour !!!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_SHOWN);
+  if(screen == NULL){
     fprintf(stderr, "Erreur d'initialisation de la fenetre : %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
     SDL_Quit();
-    return -1;
+    return false;
   }
-  if(terminer) SDL_Delay(3000); 
-  SDL_DestroyWindow(fenetre);
-  SDL_Quit();
-  return 0;
+  return true;
 }
+
+bool quit_sdl(SDL_Window *screen){
+  SDL_DestroyWindow(screen);
+  SDL_Quit();
+  return true;
+*/

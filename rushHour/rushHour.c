@@ -5,8 +5,6 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#include <SDL2/SDL.h>
-#include "config_sdl.h"
 #define PIECE_MAX 9
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
@@ -294,11 +292,9 @@ void play_replay(bool replay,int nbPieces){
 
 int main(int argc,char *argv[]){
   bool replay=true;
-  int verif;
   if(argc!=2) usage(argv[0]);
   int nbPieces = atoi(argv[1]);
   if(nbPieces<=0 || nbPieces>PIECE_MAX) usage(argv[0]);
-  verif = config_sdl();
   play_replay(replay,nbPieces);
   return EXIT_SUCCESS;
 }  
