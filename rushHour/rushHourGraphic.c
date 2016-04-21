@@ -11,22 +11,82 @@
 #include "config_sdl.h"
 #define WINDOW_SIZE 800
 
-void pieces_graphic_position(SDL_Rect **pos_pieces, piece pieces[],int nb_pieces){
+void pieces_graphic_position(SDL_Rect **pos_pieces, cgame g){
+  int nb_pieces=game_nb_pieces(g);
   for (int i=0; i<nb_pieces; i++){
-    pos_pieces[i]->x=get_x((cpiece) pieces[i]) * 100 + 100;
-    pos_pieces[i]->y=(- get_y((cpiece) piece[i]) + 6) * 100 + 100;
-    pos_pieces[i]->w=get_width((cpiece) piece[i])*100;
-    pos_pieces[i]->h=get_height((cpiece) piece[i])*100;
+    cpiece p_aux=game_piece(g, i);
+    pos_pieces[i]->x=get_x(p_aux) * 100 + 100;
+    pos_pieces[i]->y=(- get_y(p_aux) + 6) * 100 + 100;
+    pos_pieces[i]->w=get_width(p_aux)*100;
+    pos_pieces[i]->h=get_height(p_aux)*100;
   }
 }
 
-bool cars_display(SDL_Renderer renderer,game g){
+bool cars_display(SDL_Renderer *renderer, cgame g){
   int nb_pieces=game_nb_pieces(g);
-  SDL_Rect **pos_pieces;
-  piece_graphic_position(SDL_Rect pos_pieces, , 
-  
+  SDL_Rect *pos_pieces[nb_pieces];
+  pieces_graphic_position(pos_pieces,g);
+  SDL_Surface *sprites[nb_pieces];
+  SDL_Texture *textures[nb_pieces];
+  for (int i=0; i<nb_pieces ;i++){
+    cpiece tmp= game_piece(g, i);
+    if (i==0){
+      sprites[0] = IMG_Load("../../rushHour/redCar.png");
+    }
+    if (is_horizontal(tmp)){
+      if(get_height(tmp)==3){
+	sprites[i] = IMG_Load("../../rushHour/carRight3");
+      }
+      else{
+	sprites[i] = IMG_Load("../../rushHour/carRight2");
+      }
+    }
+    else if (get_width(tmp)==2){
+      sprites[i] = IMG_Load("../../rushHour/carUp2");
+    }
+    else {
+      sprites[i] = IMG_Load("../../rushHour/carUp3");
+    }
+    textures[i] = SDL_CreateTextureFromSurface(renderer,sprites[i]);
+    SDL_RenderCopy(renderer, textures[i], NULL, pos_pieces[i]);
+    //SDL_FreeSurface(sprites[i]);
+    //SDL_DestroyTexture(textures[i]);
+  }
+  SDL_RenderPresent(renderer);
+}
 
+void title_screen_display(SDL_Renderer *renderer){
+  SDL_Surface *sprite = IMG_Load("../../rushHour/titleScreen.jpg");
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_FreeSurface(sprite);
+  SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
+  SDL_RenderCopy(renderer, texture, NULL, &pos);
+  SDL_DestroyTexture(texture);
+  SDL_RenderPresent(renderer);
+}
 
+void board_display(SDL_Renderer *renderer){
+  SDL_Surface *sprite = IMG_Load("../../rushHour/FondRH.bmp");
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_FreeSurface(sprite);
+  SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
+  SDL_RenderCopy(renderer, texture, NULL, &pos);
+  //SDL_DestroyTexture(texture);
+  SDL_RenderPresent(renderer);
+}
+
+void create_grid(FILE *file,int nbPieces,piece *tableau){
+  int line[20];
+  for(int i=0; i<nbPieces; i++){
+    bool can_move_x,can_move_y;
+    fscanf(file,"%d %d %d %d %d %d",&line[0],&line[1],&line[2],&line[3],&line[4],&line[5]);
+    if(line[4]==0) can_move_x = false;
+    else can_move_x = true;
+    if(line[5]==0) can_move_y = false;
+    else can_move_y = true;
+    tableau[i] = new_piece(line[0],line[1],line[2],line[3],can_move_x,can_move_y); 
+  }
+}
 
 
 /*
@@ -69,21 +129,24 @@ int main(int argc,char **argv){
     SDL_Quit();
     return EXIT_FAILURE;
   }
-  SDL_Renderer *menu_renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
-  if (menu_renderer == NULL){
+  SDL_Renderer *renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
+  if (renderer == NULL){
     fprintf(stderr, "Erreur d'initialisation du renderer : %s\n", SDL_GetError());
   }
-  SDL_Surface *menu_sprite = IMG_Load("../../rushHour/titleScreen.jpg");
-  SDL_Texture *menu_texture = SDL_CreateTextureFromSurface(menu_renderer,menu_sprite);
-  SDL_FreeSurface(menu_sprite);
-  SDL_Rect menu_pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
-  SDL_RenderCopy(menu_renderer, menu_texture, NULL, &menu_pos);
-  SDL_RenderPresent(menu_renderer);
-  //if (texture_menu == NULL){
-  
 
 
+  //Ecran Titre
+  title_screen_display(renderer);
+ 
+  SDL_Delay(4000);
+  SDL_RenderClear(renderer);
 
+  board_display(renderer);
+  piece t_pieces[6];
+  FILE *niveau = fopen("../../rushHour/rushHour.txt","r");
+  create_grid(niveau,6,t_pieces);
+  game g= new_game (6,6,6,t_pieces);
+  cars_display(renderer,(cgame)g);
 
 
   //FinTest
@@ -91,7 +154,7 @@ int main(int argc,char **argv){
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
       continuer=false;
-      SDL_DestroyRenderer(menu_renderer);
+      SDL_DestroyRenderer(renderer);
       SDL_DestroyWindow(screen);
       SDL_Quit();
     }
