@@ -11,20 +11,20 @@
 #include "config_sdl.h"
 #define WINDOW_SIZE 800
 
-void pieces_graphic_position(SDL_Rect **pos_pieces, cgame g){
+void pieces_graphic_position(SDL_Rect pos_pieces[], cgame g){
   int nb_pieces=game_nb_pieces(g);
   for (int i=0; i<nb_pieces; i++){
     cpiece p_aux=game_piece(g, i);
-    pos_pieces[i]->x=get_x(p_aux) * 100 + 100;
-    pos_pieces[i]->y=(- get_y(p_aux) + 6) * 100 + 100;
-    pos_pieces[i]->w=get_width(p_aux)*100;
-    pos_pieces[i]->h=get_height(p_aux)*100;
+    pos_pieces[i].x=get_x(p_aux) * 100 + 100;
+    pos_pieces[i].y=(- get_y(p_aux) + 6) * 100 + 100;
+    pos_pieces[i].w=get_width(p_aux)*100;
+    pos_pieces[i].h=get_height(p_aux)*100;
   }
 }
 
 bool cars_display(SDL_Renderer *renderer, cgame g){
   int nb_pieces=game_nb_pieces(g);
-  SDL_Rect *pos_pieces[nb_pieces];
+  SDL_Rect pos_pieces[nb_pieces];
   pieces_graphic_position(pos_pieces,g);
   SDL_Surface *sprites[nb_pieces];
   SDL_Texture *textures[nb_pieces];
@@ -32,6 +32,7 @@ bool cars_display(SDL_Renderer *renderer, cgame g){
     cpiece tmp= game_piece(g, i);
     if (i==0){
       sprites[0] = IMG_Load("../../rushHour/redCar.png");
+      continue;
     }
     if (is_horizontal(tmp)){
       if(get_height(tmp)==3){
@@ -48,9 +49,10 @@ bool cars_display(SDL_Renderer *renderer, cgame g){
       sprites[i] = IMG_Load("../../rushHour/carUp3");
     }
     textures[i] = SDL_CreateTextureFromSurface(renderer,sprites[i]);
-    SDL_RenderCopy(renderer, textures[i], NULL, pos_pieces[i]);
-    //SDL_FreeSurface(sprites[i]);
-    //SDL_DestroyTexture(textures[i]);
+    SDL_RenderCopy(renderer, textures[i], NULL, &pos_pieces[i]);
+    SDL_FreeSurface(sprites[i]);
+    SDL_DestroyTexture(textures[i]);
+    SDL_RenderPresent(renderer);
   }
   SDL_RenderPresent(renderer);
 }
@@ -71,7 +73,7 @@ void board_display(SDL_Renderer *renderer){
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
   SDL_RenderCopy(renderer, texture, NULL, &pos);
-  //SDL_DestroyTexture(texture);
+  SDL_DestroyTexture(texture);
   SDL_RenderPresent(renderer);
 }
 
@@ -142,10 +144,11 @@ int main(int argc,char **argv){
   SDL_RenderClear(renderer);
 
   board_display(renderer);
-  piece t_pieces[6];
+  piece t_pieces[6]; //= malloc(6*sizeof(piece));
   FILE *niveau = fopen("../../rushHour/rushHour.txt","r");
   create_grid(niveau,6,t_pieces);
   game g= new_game (6,6,6,t_pieces);
+  
   cars_display(renderer,(cgame)g);
 
 
