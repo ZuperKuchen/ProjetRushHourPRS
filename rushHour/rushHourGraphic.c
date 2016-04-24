@@ -24,9 +24,9 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->h=get_height(p)*100;
 }
 
-SDL_Surface * piece_to_sprite(cpiece p, int ind){
+SDL_Surface* piece_to_sprite(cpiece p, int ind){
   if (ind == 0){
-    return IMG_Load("../../rushHour/carRed.png");
+    return IMG_Load("../../rushHour/carRight2.png");
   }
   else{
     if (is_horizontal(p)){
@@ -46,12 +46,12 @@ SDL_Surface * piece_to_sprite(cpiece p, int ind){
   }
 }
 
-bool cars_displayV2(SDL_Renderer *renderer, cgame g){
+void cars_display(SDL_Renderer *renderer, cgame g){
   int nb_pieces=game_nb_pieces(g);
   SDL_Rect pos={0,0,0,0};
   SDL_Surface *sprite;
   SDL_Texture *texture;
-  for (int i=1; i<nb_pieces ;i++){
+  for (int i=0; i<nb_pieces ; i++){
     cpiece tmp= game_piece(g, i);
     piece_graphic_position(&pos,tmp);
     sprite = piece_to_sprite(tmp,i);
@@ -59,7 +59,7 @@ bool cars_displayV2(SDL_Renderer *renderer, cgame g){
     SDL_RenderCopy(renderer, texture, NULL, &pos);
     SDL_FreeSurface(sprite);
     SDL_DestroyTexture(texture);
-    SDL_RenderPresent(renderer);
+    //SDL_RenderPresent(renderer);
   }
   SDL_RenderPresent(renderer);
 }
@@ -242,11 +242,24 @@ int main(int argc,char **argv){
   //piece t_pieces[6]; //= malloc(6*sizeof(piece));
   //FILE *niveau = fopen("../../rushHour/rushHour.txt","r");
   // create_grid(niveau,6,t_pieces);
-
+  
   piece* grille = array_pieces(6); ;
   game g = new_game_hr(6,grille);
-  cars_displayV2(renderer,(cgame)g);
-
+  cars_display(renderer,(cgame)g);
+  
+  /*SDL_Surface *sprite = IMG_Load("../../rushHour/redCar.png");
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_Rect pos = {0,0,0,0};
+  piece p = new_piece_rh(0, 3, true, true);
+  piece_graphic_position(&pos,(cpiece) p);
+  SDL_RenderCopy(renderer,texture, NULL,&pos);
+  SDL_RenderPresent(renderer);
+  SDL_Delay(1000);
+  SDL_Rect pos2= {300,300,200,100};
+  SDL_RenderCopy(renderer,texture, NULL, &pos2);
+  SDL_RenderPresent(renderer);
+  */
+  
  
   //FinTest
   while(continuer){
