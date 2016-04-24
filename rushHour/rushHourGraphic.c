@@ -17,6 +17,8 @@
 #define GAME_SIZE 6
 #define EMPTY_CASE_VALUE -1
 
+void board_display(SDL_Renderer *renderer);
+
 void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->x=get_x(p)*100 +100;
   pos_piece->y=(6-get_y(p)-get_height(p))*100 +100;
@@ -65,25 +67,31 @@ void cars_display(SDL_Renderer *renderer, cgame g){
 
 void title_screen_display(SDL_Renderer *renderer){
   SDL_Surface *sprite = IMG_Load("../../rushHour/titleScreen.bmp");
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
   SDL_RenderCopy(renderer, texture, NULL, &pos);
   SDL_DestroyTexture(texture);
   SDL_RenderPresent(renderer);
-  bool continue = true;
+  bool stop = false;
   SDL_Event event;
-  while(continue){
+  while(!stop){
     while (SDL_PollEvent(&event)){
       switch (event.type){
       case SDL_MOUSEBUTTONUP:
-	
+	if(event.button.x > 100 && event.button.x < 300){
+	  if(event.button.y > 200 && event.button.y < 270){
+	    board_display(renderer);
+	    stop = true;
+	  }
+	  // AJOUT DES BOUTONS QUITTER ET JOUER CONFIG DEJA ENREGISTREES
+	}
+      	break;
+      default:
 	break;
-	
-      }
+      }	
     }
-  } 
-  */
+  }
 }
 
 void board_display(SDL_Renderer *renderer){
