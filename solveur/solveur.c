@@ -72,7 +72,7 @@ void display_solution(graph g,int number_solution,bool isRH){
 
 void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
-  game rushHour = new_game_hr(*nbPieces,grid);
+  game rushHour = new_game(*width,*height,*nbPieces,grid);
   //printf("\nPosition initiale :\n");
   //displayRH((cgame)rushHour);
   graph solutions= create_graph(rushHour, true);
