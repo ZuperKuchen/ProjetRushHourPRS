@@ -26,7 +26,7 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
 
 SDL_Surface* piece_to_sprite(cpiece p, int ind){
   if (ind == 0){
-    return IMG_Load("../../rushHour/carRight2.png");
+    return IMG_Load("../../rushHour/redCar.png");
   }
   else{
     if (is_horizontal(p)){
@@ -65,13 +65,25 @@ void cars_display(SDL_Renderer *renderer, cgame g){
 }
 
 void title_screen_display(SDL_Renderer *renderer){
-  SDL_Surface *sprite = IMG_Load("../../rushHour/titleScreen.jpg");
+  SDL_Surface *sprite = IMG_Load("../../rushHour/titleScreen.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
   SDL_RenderCopy(renderer, texture, NULL, &pos);
   SDL_DestroyTexture(texture);
   SDL_RenderPresent(renderer);
+  /*bool continue = true;
+  SDL_Event event;
+  while(continue){
+    while (SDL_PollEvent(&event)){
+      switch (event.type){
+      case SDL_MOUSEBUTTONUP:
+	
+	
+      }
+    }
+  } 
+  */
 }
 
 void board_display(SDL_Renderer *renderer){
