@@ -24,7 +24,7 @@ game new_game_hr (int nb_pieces, piece *pieces){
 }
 
 bool game_over_hr(cgame g){
-  return(get_x(game_piece(g,0))==4 && get_y(game_piece(g,0))==3);
+  return(get_x(game_piece(g,0)) == g->width-2);
 }
 
 
