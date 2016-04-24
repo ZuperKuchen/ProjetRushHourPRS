@@ -59,7 +59,6 @@ void cars_display(SDL_Renderer *renderer, cgame g){
     SDL_RenderCopy(renderer, texture, NULL, &pos);
     SDL_FreeSurface(sprite);
     SDL_DestroyTexture(texture);
-    //SDL_RenderPresent(renderer);
   }
   SDL_RenderPresent(renderer);
 }
@@ -72,13 +71,14 @@ void title_screen_display(SDL_Renderer *renderer){
   SDL_RenderCopy(renderer, texture, NULL, &pos);
   SDL_DestroyTexture(texture);
   SDL_RenderPresent(renderer);
-  /*bool continue = true;
+  bool continue = true;
   SDL_Event event;
   while(continue){
     while (SDL_PollEvent(&event)){
       switch (event.type){
       case SDL_MOUSEBUTTONUP:
 	
+	break;
 	
       }
     }
