@@ -68,34 +68,33 @@ int config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   game rushHour = new_game(*width,*height,*nbPieces,grid);
   //printf("\nPosition initiale :\n");
   //displayRH((cgame)rushHour);
-  int solvable = 1;
-  graph solutions= create_graph(rushHour, true,&solvable);
-  if(solutions == NULL) exit(EXIT_FAILURE);
+  int solvable;
+  graph solutions = create_graph(rushHour, true,&solvable);
+  if(solvable == -1) return -1;
   //display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
   //printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
   //int smallestWay = dijkstra_search(solutions);
-  int simpleWay = simple_search(solutions);
+  solvable = simple_search(solutions);
   //printf("D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
-  printf("%d\n", simpleWay);
   delete_game(rushHour);
   return solvable;
 }
 
-void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
+int config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game aneRouge = new_game(*width,*height,*nbPieces,grid);
   //printf("\nPosition initiale :\n");
   //displayAR((cgame)aneRouge);
-  int solvable = 1;
-  graph solutions= create_graph(aneRouge, false,&solvable);
-  if(solutions == NULL) exit(EXIT_FAILURE);
+  int solvable;
+  graph solutions = create_graph(aneRouge, false,&solvable);
+  if(solvable == -1) return -1;
   //display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
   //printf("(Nombres de cases utilisées : %d)\n\n", graph_get_nbNodes(solutions));
   //int smallestWay = dijkstra_search(solutions);
-  int simpleWay = simple_search(solutions);
+  solvable = simple_search(solutions);
   //printf("- D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
-  printf("%d\n", simpleWay);
   delete_game(aneRouge);
+  return solvable;
 }
 
   
@@ -108,7 +107,6 @@ graph create_graph(game G, bool isRH,int *solvable){
   int sol = 0;
   while(!end){
     if(indNode >= graph_get_nbNodes(graph)){
-      printf("-1\n");
       *solvable = -1;
       return NULL;
     }

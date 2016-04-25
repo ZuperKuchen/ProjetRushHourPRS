@@ -32,8 +32,9 @@ int main(int argc,char* argv[]){
     unsolvable = config_rushHour(file,&width,&height,&nbPieces);
   }
   else if(compare(choose_game,ar)){
-    config_aneRouge(file,&width,&height,&nbPieces);
+    unsolvable = config_aneRouge(file,&width,&height,&nbPieces);
   }
   else usage(argv[0]);
+  printf("%d \n",unsolvable);
   return EXIT_SUCCESS;
 }

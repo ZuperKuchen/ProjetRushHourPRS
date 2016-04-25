@@ -20,7 +20,7 @@ void display_solution(graph g,int number_solution,bool isRH);
 
 int config_rushHour(FILE* file,int *width,int *height,int *nbPieces);
 
-void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces);
+int config_aneRouge(FILE* file,int *width,int *height,int *nbPieces);
 
 graph create_graph(game G, bool isRH,int *solvable);
 
