@@ -5,10 +5,13 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
-#include "rushHourGraphic.h"
+#include "rushHour.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "config_sdl.h"
+#include "solveur.h"
+#include "graph.h"
 #define WINDOW_SIZE 800
 //Constantes rushHour.c
 #define PIECE_MAX 9
@@ -18,6 +21,11 @@
 #define EMPTY_CASE_VALUE -1
 
 void board_display(SDL_Renderer *renderer);
+game create_valid_game(int nb_pieces, int* best_play);
+int choose_nb_pieces(void);
+int is_valid_game(game g);
+//void make_move(game g);
+
 
 void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->x=get_x(p)*100 +100;
@@ -28,27 +36,29 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
 
 SDL_Surface* piece_to_sprite(cpiece p, int ind){
   if (ind == 0){
-    return IMG_Load("../../rushHour/redCar.png");
+    return IMG_Load("../../Images/redCar.png");
   }
   else{
     if (is_horizontal(p)){
       if(get_height(p)==3){
-	return IMG_Load("../../rushHour/carRight3.png");
+	return IMG_Load("../../Images/carRight3.png");
       }
       else{
-	return IMG_Load("../../rushHour/carRight2.png");
+	return IMG_Load("../../Images/carRight2.png");
       }
     }
     else if (get_width(p)==2){
-      return IMG_Load("../../rushHour/carUp2.png");
+      return IMG_Load("../../Images/carUp2.png");
     }
     else {
-      return IMG_Load("../../rushHour/carUp3.png");
+      return IMG_Load("../../Images/carUp3.png");
     }
   }
 }
 
-void cars_display(SDL_Renderer *renderer, cgame g){
+void game_display(SDL_Renderer *renderer, cgame g){
+  SDL_RenderClear(renderer);
+  board_display(renderer);
   int nb_pieces=game_nb_pieces(g);
   SDL_Rect pos={0,0,0,0};
   SDL_Surface *sprite;
@@ -65,8 +75,8 @@ void cars_display(SDL_Renderer *renderer, cgame g){
   SDL_RenderPresent(renderer);
 }
 
-void title_screen_display(SDL_Renderer *renderer){
-  SDL_Surface *sprite = IMG_Load("../../rushHour/titleScreen.bmp");
+bool title_screen_display(SDL_Renderer *renderer){
+  SDL_Surface *sprite = IMG_Load("../../Images/titleScreen.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
@@ -81,12 +91,15 @@ void title_screen_display(SDL_Renderer *renderer){
       case SDL_MOUSEBUTTONUP:
 	if(event.button.x > 100 && event.button.x < 300){
 	  if(event.button.y > 200 && event.button.y < 270){
-	    board_display(renderer);
+	    board_display(renderer); // A remplacer par play
 	    stop = true;
 	  }
-	  // AJOUT DES BOUTONS QUITTER ET JOUER CONFIG DEJA ENREGISTREES
+// AJOUT DES BOUTONS QUITTER ET JOUER CONFIG DEJA ENREGISTREES
 	}
       	break;
+      case SDL_QUIT:
+	stop=true;
+	break;
       default:
 	break;
       }	
@@ -95,7 +108,7 @@ void title_screen_display(SDL_Renderer *renderer){
 }
 
 void board_display(SDL_Renderer *renderer){
-  SDL_Surface *sprite = IMG_Load("../../rushHour/FondRH.bmp");
+  SDL_Surface *sprite = IMG_Load("../../Images/FondRH.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
@@ -104,108 +117,48 @@ void board_display(SDL_Renderer *renderer){
   SDL_RenderPresent(renderer);
 }
 
-// Pris dans solveur.c
-
-void create_grid(FILE *file,int nbPieces,piece *tableau){
-  int line[20];
-  for(int i=0; i<nbPieces; i++){
-    bool can_move_x,can_move_y;
-    fscanf(file,"%d %d %d %d %d %d",&line[0],&line[1],&line[2],&line[3],&line[4],&line[5]);
-    if(line[4]==0) can_move_x = false;
-    else can_move_x = true;
-    if(line[5]==0) can_move_y = false;
-    else can_move_y = true;
-    tableau[i] = new_piece(line[0],line[1],line[2],line[3],can_move_x,can_move_y); 
-  }
+void play_graphic(SDL_Renderer *renderer){
+  board_display(renderer);
+  int nb_pieces=choose_nb_pieces();
+  int best_play=0;
+  game g = create_valid_game(nb_pieces, &best_play);
+  game_display(renderer,g);
+  /*bool win=false;
+  while(!win){
+    make_move(g);
+    board_display(renderer,g);
+    win=is_game_over_rh(g);
+      
+    }*/
 }
 
-//Pris dans rushHour.c
-int random(int max){
-    int nombre_aleatoire;
-    nombre_aleatoire = rand()%max;
-    return nombre_aleatoire;
+game create_valid_game(int nb_pieces, int* best_play){
+  bool end=false;
+  game g;
+  while (!end){
+    piece* grille = array_pieces(nb_pieces); 
+    game tmp = new_game_hr(nb_pieces,grille);
+    *best_play=is_valid_game(tmp);
+    if ( *best_play != -1){
+      end=true;
+      copy_game((cgame)tmp,g);
+    }
+    else delete_game(tmp);
+  }
+  return g; 
 }
 
-bool random_bool(void){                                /* random_bool génère un nombre aleatoire entre 0 et 9 compris,soit 10 nombres*/ 
-  int nombre_aleatoire = rand()%10;                    /* si le nombre est 0,1,2,3 ou 4, random_bool renvoie true, false sinon*/
-  if(nombre_aleatoire<5) return true;
-  else return false;
+//A COMPLETER
+int choose_nb_pieces(void){
+  return 6;
 }
 
-bool test_unsolvable(piece p1,piece p2){               /* test_unsolvable regarde quelques cas particuliers impossibles à résoudre*/
-  if(get_y(p1)==get_y(p2)){                            /* pour le joueur */
-    if(get_height(p1)*get_width(p1)==BIG_SIZE && get_height(p2)*get_width(p2)==BIG_SIZE){
-      if(is_horizontal(p1)==true && is_horizontal(p2)==true){
-	return false;
-      }
-    }
-  }
-  else if(get_x(p1)==get_x(p2)){
-    if(is_horizontal(p1)==false && is_horizontal(p2)==false){
-      if(get_height(p1)*get_width(p1)==BIG_SIZE || get_height(p2)*get_width(p2)==BIG_SIZE){
-	return false;
-      }
-    }
-  }
-  return true;
+int is_valid_game(game g){
+  return 40;
 }
 
-void possible_cases(bool small,bool horizontal,int *x,int *y){
-  if(horizontal){ 
-    if(small){
-      *x=random(5);                                  /* en fonction de si la piece est small/big et horizontal/vertical*/
-    }                                                /* on génère aléatoirement des valeurs x et y en fonction des cas possibles */
-    else{
-      *x=random(4);
-    }
-    *y=random(6);
-  }
-  else{
-    if(small){
-      *y=random(5);
-    }
-    else{
-      *y=random(4);
-    }
-    *x=random(6);
-  }
-}
-
-piece* array_pieces(int nombrePiece){
-  piece* tab =(piece*)malloc(nombrePiece * sizeof(piece));
-  srand(time(NULL));
-  tab[0]=new_piece_rh(0,3,true,true);
-  for(int i=1;i<nombrePiece;i++){
-    bool small = random_bool();
-    bool horizontal = random_bool();
-    int x;
-    int y;      
-    possible_cases(small,horizontal,&x,&y);
-    tab[i]=new_piece_rh(x,y,small,horizontal);                /* on creer la piece i et on la met dans le tableaux de pieces */
-    if((get_y(tab[i])==3) && is_horizontal(tab[i])){          /* on verifie qu'elle n'est pas horizontal avec y=3 */
-      delete_piece(tab[i]);
-      i--;
-      continue;                                               /* si erreur on re-crée la piece */
-    }
-    int j=0;  
-    for(j=0;j<i;j++){
-      if (!test_unsolvable(tab[i],tab[j])) break;
-      else if((intersect((cpiece)tab[i],(cpiece)tab[j])==false)){
-	continue;
-      }
-      else{
-	break;
-      }
-    }
-    if(j!=i){                                                /* de meme ici si intersection */
-      delete_piece(tab[i]);
-      i--;
-      continue;
-    }
-  }
-  return tab;
-}
-
+//void make_move(game g);
+  
 /*
 void start_game_graphic(game g,int nbPiece, ){
   while(!game_over_hr(g)){
@@ -263,9 +216,10 @@ int main(int argc,char **argv){
   //FILE *niveau = fopen("../../rushHour/rushHour.txt","r");
   // create_grid(niveau,6,t_pieces);
   
-  piece* grille = array_pieces(6); ;
+  piece* grille = array_pieces(6); 
   game g = new_game_hr(6,grille);
-  cars_display(renderer,(cgame)g);
+  game_display(renderer,(cgame)g);
+  
   
   /*SDL_Surface *sprite = IMG_Load("../../rushHour/redCar.png");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
