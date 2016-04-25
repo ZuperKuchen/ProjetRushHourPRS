@@ -24,7 +24,7 @@ void board_display(SDL_Renderer *renderer);
 game create_valid_game(int nb_pieces, int* best_play);
 int choose_nb_pieces(void);
 int is_valid_game(game g);
-//void make_move(game g);
+void make_move(game g);
 
 
 void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
@@ -128,7 +128,7 @@ void play_graphic(SDL_Renderer *renderer){
     make_move(g);
     board_display(renderer,g);
     win=is_game_over_rh(g);
-      
+    
     }*/
 }
 
@@ -139,9 +139,9 @@ game create_valid_game(int nb_pieces, int* best_play){
     piece* grille = array_pieces(nb_pieces); 
     game tmp = new_game_hr(nb_pieces,grille);
     *best_play=is_valid_game(tmp);
-    if ( *best_play != -1){
+    if ( *best_play > 8){
       end=true;
-      copy_game((cgame)tmp,g);
+      g=tmp;
     }
     else delete_game(tmp);
   }
@@ -152,12 +152,16 @@ game create_valid_game(int nb_pieces, int* best_play){
 int choose_nb_pieces(void){
   return 6;
 }
-
+//A COMPLETER PAR PIERRE
 int is_valid_game(game g){
-  return 40;
+  int solvable = 0;
+  graph solutions = create_graph(g, true,&solvable);
+  if(solvable == -1) return -1;
+  else return simple_search(solutions);
 }
 
-//void make_move(game g);
+void make_move(game g){
+    
   
 /*
 void start_game_graphic(game g,int nbPiece, ){
@@ -208,32 +212,12 @@ int main(int argc,char **argv){
   //Ecran Titre
   title_screen_display(renderer);
  
-  SDL_Delay(3000);
-  SDL_RenderClear(renderer);
-
-  board_display(renderer);
-  //piece t_pieces[6]; //= malloc(6*sizeof(piece));
-  //FILE *niveau = fopen("../../rushHour/rushHour.txt","r");
-  // create_grid(niveau,6,t_pieces);
-  
-  piece* grille = array_pieces(6); 
+  /*piece* grille = array_pieces(6); 
   game g = new_game_hr(6,grille);
   game_display(renderer,(cgame)g);
-  
-  
-  /*SDL_Surface *sprite = IMG_Load("../../rushHour/redCar.png");
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
-  SDL_Rect pos = {0,0,0,0};
-  piece p = new_piece_rh(0, 3, true, true);
-  piece_graphic_position(&pos,(cpiece) p);
-  SDL_RenderCopy(renderer,texture, NULL,&pos);
-  SDL_RenderPresent(renderer);
-  SDL_Delay(1000);
-  SDL_Rect pos2= {300,300,200,100};
-  SDL_RenderCopy(renderer,texture, NULL, &pos2);
-  SDL_RenderPresent(renderer);
   */
-  
+  play_graphic(renderer);
+ 
  
   //FinTest
   while(continuer){
