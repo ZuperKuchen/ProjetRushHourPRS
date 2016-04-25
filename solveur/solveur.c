@@ -63,13 +63,14 @@ void display_solution(graph g,int number_solution,bool isRH){
   else displayAR((cgame)node_get_game(solution_node));
 }
 
-void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
+int config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   piece *grid = read_Config_txt(file,width,height,nbPieces);
   game rushHour = new_game(*width,*height,*nbPieces,grid);
   //printf("\nPosition initiale :\n");
   //displayRH((cgame)rushHour);
-  graph solutions= create_graph(rushHour, true);
-  if(solutions == NULL) return;
+  int solvable = 1;
+  graph solutions= create_graph(rushHour, true,&solvable);
+  if(solutions == NULL) exit(EXIT_FAILURE);
   //display_solution(solutions,graph_get_nbNodes(solutions)-1,true);
   //printf("Nombres de cases : %d\n", graph_get_nbNodes(solutions));
   //int smallestWay = dijkstra_search(solutions);
@@ -77,6 +78,7 @@ void config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   //printf("D'après l'algorithme de Dijkstra, ce jeu peut se terminer en %d coups !\n", smallestWay);
   printf("%d\n", simpleWay);
   delete_game(rushHour);
+  return solvable;
 }
 
 void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
@@ -84,8 +86,9 @@ void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   game aneRouge = new_game(*width,*height,*nbPieces,grid);
   //printf("\nPosition initiale :\n");
   //displayAR((cgame)aneRouge);
-  graph solutions= create_graph(aneRouge, false);
-  if(solutions == NULL) return;
+  int solvable = 1;
+  graph solutions= create_graph(aneRouge, false,&solvable);
+  if(solutions == NULL) exit(EXIT_FAILURE);
   //display_solution(solutions,graph_get_nbNodes(solutions)-1,false);
   //printf("(Nombres de cases utilisées : %d)\n\n", graph_get_nbNodes(solutions));
   //int smallestWay = dijkstra_search(solutions);
@@ -96,7 +99,7 @@ void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
 }
 
   
-graph create_graph(game G, bool isRH){
+graph create_graph(game G, bool isRH,int *solvable){
   bool end = false;
   int indNode = 0;
   node firstNode = new_empty_node(G);
@@ -106,6 +109,7 @@ graph create_graph(game G, bool isRH){
   while(!end){
     if(indNode >= graph_get_nbNodes(graph)){
       printf("-1\n");
+      *solvable = -1;
       return NULL;
     }
     game currentGame = copy_game_for_solver(node_get_game(graph_get_node(graph, indNode)));

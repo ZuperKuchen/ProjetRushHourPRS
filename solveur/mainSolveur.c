@@ -27,8 +27,9 @@ int main(int argc,char* argv[]){
   char *ar = "a";
   choose_game[0] = argv[1];
   choose_game[1] = argv[2];
+  int unsolvable;
   if(compare(choose_game,rh)){
-    config_rushHour(file,&width,&height,&nbPieces);
+    unsolvable = config_rushHour(file,&width,&height,&nbPieces);
   }
   else if(compare(choose_game,ar)){
     config_aneRouge(file,&width,&height,&nbPieces);

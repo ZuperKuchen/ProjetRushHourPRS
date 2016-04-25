@@ -3,7 +3,6 @@
 
 #include "graph.h"
 
-graph create_graph(game G, bool isRH);
 int dijkstra_search(graph G);
 int simple_search(graph G);
 
@@ -19,11 +18,11 @@ bool compare(char *c1[],char *c2);
 
 void display_solution(graph g,int number_solution,bool isRH);
 
-void config_rushHour(FILE* file,int *width,int *height,int *nbPieces);
+int config_rushHour(FILE* file,int *width,int *height,int *nbPieces);
 
 void config_aneRouge(FILE* file,int *width,int *height,int *nbPieces);
 
-graph create_graph(game G, bool isRH);
+graph create_graph(game G, bool isRH,int *solvable);
 
 int simple_search(graph G);
 
