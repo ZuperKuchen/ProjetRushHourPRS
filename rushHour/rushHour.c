@@ -5,16 +5,14 @@
 #include "game.h"
 #include "piece.h"
 #include "string.h"
+#include "rushHour.h"
 #define PIECE_MAX 9
 #define SMALL_SIZE 2
 #define BIG_SIZE 3
 #define GAME_SIZE 6
 #define EMPTY_CASE_VALUE -1
 
-static void usage(char *commande){
-  fprintf(stderr," %s <entier> nombre de pieces <=9 \n",commande);
-  exit(EXIT_FAILURE);
-}
+
 
 int random(int max){
     int nombre_aleatoire;
@@ -289,12 +287,3 @@ void play_replay(bool replay,int nbPieces){
   }
 }
 
-
-int main(int argc,char *argv[]){
-  bool replay=true;
-  if(argc!=2) usage(argv[0]);
-  int nbPieces = atoi(argv[1]);
-  if(nbPieces<=0 || nbPieces>PIECE_MAX) usage(argv[0]);
-  play_replay(replay,nbPieces);
-  return EXIT_SUCCESS;
-}  

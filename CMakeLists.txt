@@ -23,7 +23,7 @@ install(FILES
 	display/displayAR.h
 	display/displayRH.h
 	rushHour/config_sdl.h
-	rushHour/rushHourGraphic.h
+	rushHour/rushHour.h
 	DESTINATION "include")
 add_subdirectory(solveur)
 add_subdirectory(src)
