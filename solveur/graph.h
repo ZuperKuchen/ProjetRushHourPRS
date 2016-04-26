@@ -3,23 +3,18 @@
 #include <game.h>
 #include <piece.h>
 
-typedef struct intarray* intarray;
 typedef struct node* node;
 typedef struct graph* graph;
-
-//Fonctions outils
-
-void copy_array(int length, int* srcArray, int* dstArray);
 
 //Fonctions sup pour Piece
 
 bool piece_equals(cpiece P1, cpiece P2);
-piece copy_piece_for_solver(cpiece src);
-
+piece copy_piece_for_solver(cpiece src);  //Renvoie une nouvelle piece qui
+                                          //prend les meme valeurs que src
 //Fonctions sup pour Game
 
 bool game_equals_not_mov(cgame G1, cgame G2);
-game copy_game_for_solver(cgame src);
+game copy_game_for_solver(cgame src);     //Comme le copy_piece_for_solveur
 
 //Fonctions sommet (node)
 
@@ -59,10 +54,14 @@ void put_new_adress(graph g, node new, int ind);
 
 //Fonctions calculs
 
-game *different_cases(game gameUse, int* nbCases);
+game *different_cases(game gameUse, int* nbCases); //A partir d'un GAME, renvoie
+                                                   //un tableau des GAME possibles
+                                                   //après un mouv.
 
-int already_exists(game game, graph graph);
+int already_exists(game game, graph graph);        //Vérifie si le game existe deja
+                                                   //dans le graph
 
-void free_cases(game *cases, int nbCases);
+void free_cases(game *cases, int nbCases);         //free le tableau de game 
+                                                   //retourné par different_cases
 
 #endif
