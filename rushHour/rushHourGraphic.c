@@ -20,11 +20,12 @@
 #define GAME_SIZE 6
 #define EMPTY_CASE_VALUE -1
 
+void game_display(SDL_Renderer *renderer, cgame g,int solveur,int indSelec);
 void board_display(SDL_Renderer *renderer);
 game create_valid_game(int nb_pieces, int* best_play);
 int choose_nb_pieces(void);
 int is_valid_game(game g);
-void make_move(game g);
+void make_move(SDL_Renderer *renderer, game g, int best_play);
 bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h);
 game init_config_text(int level);
 bool play_graphic(SDL_Renderer *renderer,bool is_random);
@@ -57,47 +58,63 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
 }
 
 SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select){
-  if (selec){
-    return IMG_Load("../../rushHour/Images/Car.png")
   if (ind == 0){
+    if(select){
+      return IMG_Load("../../rushHour/Images/gCarRight2");
+    }
     return IMG_Load("../../rushHour/Images/redCar.png");
   }
   else{
     if (is_horizontal(p)){
       if(get_height(p)==3){
+	if(select){
+	  return IMG_Load("../../rushHour/Images/gCarRight3.png");
+	}
 	return IMG_Load("../../rushHour/Images/carRight3.png");
       }
       else{
+	if(select){
+	  return IMG_Load("../../rushHour/Images/gCarRight2.png");
+	}
 	return IMG_Load("../../rushHour/Images/carRight2.png");
       }
     }
     else if (get_width(p)==2){
+      if(select){
+	return IMG_Load("../../rushHour/Images/gCarUp2.png");
+      }
       return IMG_Load("../../rushHour/Images/carUp2.png");
     }
     else {
+      if(select){
+	return IMG_Load("../../rushHour/Images/gCarUp3");
+      }
       return IMG_Load("../../rushHour/Images/carUp3.png");
     }
   }
 }
 
-void game_display(SDL_Renderer *renderer, cgame g){
+void game_display(SDL_Renderer *renderer, cgame g,int best_play,int indSelec){
   SDL_RenderClear(renderer);
   board_display(renderer);
   int nb_pieces=game_nb_pieces(g);
   SDL_Rect pos={0,0,0,0};
   SDL_Surface *sprite;
   SDL_Texture *texture;
+  bool selec = false;
   for (int i=0; i<nb_pieces ; i++){
+    if(indSelec == i) selec = true;
+    else selec = false;
     cpiece tmp= game_piece(g, i);
     piece_graphic_position(&pos,tmp);
-    sprite = piece_to_sprite(tmp,i);
+    sprite = piece_to_sprite(tmp,i,selec);
     texture = SDL_CreateTextureFromSurface(renderer,sprite);
     SDL_RenderCopy(renderer, texture, NULL, &pos);
     SDL_FreeSurface(sprite);
     SDL_DestroyTexture(texture);
   }
   SDL_RenderPresent(renderer);
-  display_nb_mov(renderer,is_valid_game((game)g),game_nb_moves(g));
+  display_nb_mov(renderer,best_play,game_nb_moves(g));
 }
 
 bool title_screen_display(SDL_Renderer *renderer){
@@ -161,12 +178,13 @@ bool play_graphic(SDL_Renderer *renderer,bool is_random){
   else {
     chose_number= make_choice(is_random);
     g = init_config_text(chose_number);
+    best_play=is_valid_game(g);
   }
-  game_display(renderer,g);
+  game_display(renderer,g,best_play,-1);
   bool win=false;
   while(!win){
-    make_move(g);
-    game_display(renderer,g);
+    make_move(renderer,g,best_play);
+    game_display(renderer,g,best_play,-1);
     win=game_over_hr(g);
   }
   return true;
@@ -282,7 +300,7 @@ int graphic_position_to_piece(cgame g,int x,int y){
   return game_square_piece((game)g,newX,newY);
 }
 //A FINIR
-void make_move(game g){
+void make_move(SDL_Renderer *renderer, game g, int best_play){
   SDL_Event event;
   bool end = false;
   int moving_piece;
@@ -294,7 +312,7 @@ void make_move(game g){
 	  //l'utilisateur a cliqué sur la grille
 	  moving_piece=graphic_position_to_piece((cgame)g,event.button.x,event.button.y);
 	  if(moving_piece>-1){
-	    //affichage Voiture VERTE   \\
+	    game_display(renderer,(cgame)g, best_play, moving_piece);
 	    //l'utilisateur a cliqué sur une pièce
 	    while(SDL_PollEvent(&event)){
 	      switch(event.type){
