@@ -1,0 +1,68 @@
+\documentclass {article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{listings}
+
+\title{Rapport de Projet S3}
+\date\today
+\author{Pierre Chauveau, Sebastien Leyx, Rémi Brisset groupe A2}
+
+
+
+\begin{document}
+\maketitle
+\section{Implémentation de Game et Piece}
+\paragraph{}
+
+\section{CMake}
+\paragraph{}
+
+\section{Premier exécutable Rush Hour}
+\paragraph{}
+
+\section{V2 de Game et Piece, implémentation de l'Ane Rouge}
+\paragraph{}
+
+\section{Solveur}
+\subsection{Choix du Graph non orienté}
+\paragraph{}
+Nous avons choisi d'utiliser un graph non orienté pour implémenter le solveur. C'est ce qui nous paraissait le plus évident, chaque noeud contient comme valeur un Game avec une certaine position des différentes pieces, et les noeuds sont reliés s'il est possible d'aller d'une position de jeu à une autre en un mouvement. A partir de ça il suffit d'utiliser l'Algorithme de Dijkstra pour regarder le chemin le plus court. Afin d'éviter de complexifier le solveur, nous avons choisi de rentrer tous les noeuds dans un tableau, ce qui donne en vérité un poids à chaque noeuds, plus il est loin dans le tableau plus sa distance par rapport à la solution initiale est élevée donc inutile d'utiliser Dijkstra.
+
+\subsection{L'algorithme}
+\paragraph{}
+Il y a donc en somme deux algorithmes utiles, celui qui crée le graph, et celui qui trouve la combinaison la plus rapide. Pour créer le graph, le principe est assez simple : nous prenons la position initiale que nous récupérons dans le fichier txt et que nous rentrons dans une structure Game. Ensuite nous récupérons les positions possibles induites par le Game étudié, et nous les rentrons dans le tableau de noeuds si elle n'y est pas déjà. Nous assurons que les noeuds soient bien reliés et on recommence pour le noeud suivant, jusqu'à ce qu'il tombe sur la position finale.
+
+Pour la recherche de solution, il nous suffit de partir de la derniere case du tableau qui est la position finale et on recherche dans tous ses voisins celui dont l'indice est le plus faible, puis nous recommençons jusqu'à tomber sur la position initiale.
+
+\subsection{L'amélioration de l'algorithme}
+\paragraph{}
+Suite à ça, notre solveur mettait un temps vertigineux à trouver des solutions pourtant simples pour l'ane rouge. Le problème était que pour savoir si une configuration existait déjà il nous fallait la comparer à chaque configuration existante dans le graph, et c'est dans cette comparaison que nous avions fait une grosse erreur. Nous comparions chaque piece du jeu une à une, donc la piece 0 avec la piece 0, la 1 avec la 1, etc. Sauf que deux configurations peuvent etre équivalente sans que chaque piece avec le meme numéro soient au meme endroit, si deux pieces de meme taille sont juste inversées. Cette amélioration a drastiquement réduit le temps d'exécution pour l'Ane Rouge.
+
+\subsection{Les problèmes rencontrés}
+\paragraph{}
+Lors de la programmation du solveur, nous avons eu des problèmes de rigueur au niveau des allocations. Nous avons utilisé gdb de longues heures pour réparer nos erreurs et nous en avons beaucoup appris sur l'utilisation des malloc, calloc et free.
+
+Nous avons remarqué le second problème lors du concours de solveur, nous ne renvoyions pas la bonne valeur pour le Rush Hour Large. Cela venait d'une erreur de code que nous avions faite dans le game\_over\_hr qui ne prenait pas en compte la taille du tableau et dans le solveur nous utilisions new\_game\_hr alors qu'il nous fallait utiliser new\_game pour pouvoir indiquer la taille du tableau. Nous avont pu facilement le corriger.
+
+\subsection{Complexité}
+\paragraph{}
+Nous allons étudier la complexiter de la fonction create\_graph. Nous avons deux boucles imbriquées qui vons surtout dépendre du nombre de possibilités pour une configuration.\\
+Une boucle While qui se finit quand on a trouvé la solution finale :\\
+Ici nous regardons le nombre de possibilités avec la fonction different\_cases de complexité nbPieces*4.\\
+Donc le pire cas est que toutes les pieces puissent bouger dans toutes les directions nbPieces*4 que l'on va appelé 'S'.\\
+Une boucle for qui a une complexitée dépendante du nombre de noeuds déjà existants et qui s'exécute S fois. On peut nommer le nombre de noeuds existant N et considérer qu'il représente la taille du tableau final.\\
+Du coup on peut concidèrer que l'algorithme s'éxecute en S*N2 oppération.\\
+Il a une complexité en temps de O(n2).
+
+
+\subsection{Le graph est-il un choix judicieux ?}
+\paragraph{}
+Nous avons donc un solveur relativement efficace pour l'Ane Rouge mais très lent pour une configuration d'Ane Rouge complexe (plus de 10 min sur une machine du crémi pour le rh46 et 8 min sur une de nos machines personnelles).
+
+\section{Interface Graphique}
+\paragraph{}
+
+\end{document}
+ 
