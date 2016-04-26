@@ -25,16 +25,16 @@ void board_display(SDL_Renderer *renderer);
 game create_valid_game(int nb_pieces, int* best_play);
 int choose_nb_pieces(void);
 int is_valid_game(game g);
-void make_move(SDL_Renderer *renderer, game g, int best_play);
+bool make_move(SDL_Renderer *renderer, game g, int best_play);
 bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h);
 game init_config_text(int level);
 bool play_graphic(SDL_Renderer *renderer,bool is_random);
 int make_choice(bool is_random);
-void destroy_loading(SDL_Window *screen);
 void display_nb_mov(SDL_Renderer *renderer,int nb_mov_solver,int nb_mov_game); 
 bool move_piece_SDL(game g, int indP, int x, int y);
 bool title_screen_display(SDL_Renderer *renderer);
 SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select);
+bool want_to_replay(void);
 
 game init_config_text(int level){
   char path[30];
@@ -60,7 +60,7 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
 SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select){
   if (ind == 0){
     if(select){
-      return IMG_Load("../../rushHour/Images/gCarRight2");
+      return IMG_Load("../../rushHour/Images/gCarRight2.png");
     }
     return IMG_Load("../../rushHour/Images/redCar.png");
   }
@@ -87,7 +87,7 @@ SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select){
     }
     else {
       if(select){
-	return IMG_Load("../../rushHour/Images/gCarUp3");
+	return IMG_Load("../../rushHour/Images/gCarUp3.png");
       }
       return IMG_Load("../../rushHour/Images/carUp3.png");
     }
@@ -133,15 +133,18 @@ bool title_screen_display(SDL_Renderer *renderer){
       case SDL_MOUSEBUTTONUP:
 	if(event.button.x > 100 && event.button.x < 300){
 	  if(event.button.y > 200 && event.button.y < 270){
-	    play_graphic(renderer,true);
+	    return play_graphic(renderer,true);
 	    stop = true;
+	    break;
 	  }
 	  if(event.button.y > 300 && event.button.y < 370){
-	    play_graphic(renderer,false);
+	    return play_graphic(renderer,false);
 	    stop = true;
+	    break;
 	  }
 	  if(event.button.y > 400 && event.button.y < 470){
 	    stop=true;
+	    return false;
 	    break;
 	  }
 	}
@@ -183,12 +186,60 @@ bool play_graphic(SDL_Renderer *renderer,bool is_random){
   game_display(renderer,g,best_play,-1);
   bool win=false;
   while(!win){
-    make_move(renderer,g,best_play);
+    if(!make_move(renderer,g,best_play)) return false;
     game_display(renderer,g,best_play,-1);
     win=game_over_hr(g);
   }
-  return true;
+  return want_to_replay();
 }
+
+bool want_to_replay(void){
+  SDL_Window *screen;
+  screen = SDL_CreateWindow("Rejouer ?", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
+  if(screen == NULL){
+    fprintf(stderr, "Erreur d'initialisation de la fenetre : %s\n", SDL_GetError());
+    SDL_Quit();
+    exit(EXIT_FAILURE);
+  }
+  SDL_Renderer *renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
+  if (renderer == NULL){
+    fprintf(stderr, "Erreur d'initialisation du renderer : %s\n", SDL_GetError());
+  }
+  SDL_Surface *sprite ;
+  sprite = IMG_Load("../../rushHour/Images/endGame.bmp");
+  SDL_Texture *texture= SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_Rect pos= {0, 0, 400, 200};
+  SDL_RenderCopy(renderer, texture, NULL, &pos);
+  SDL_RenderPresent(renderer);
+  SDL_Event event;
+  bool end=false;
+  bool res;
+  while(!end){
+    while (SDL_PollEvent(&event)){
+      switch(event.type){
+      case SDL_MOUSEBUTTONUP:
+	if(in_rectangle(event.button.x,event.button.y,150,135,40,40)){
+	  res= true;
+	  end=true;
+	}
+	if (in_rectangle(event.button.x,event.button.y,190,135,40,40)){
+	  res= false;
+	  end=true;
+	}
+	break;
+      default:
+	break;
+      }
+    }
+  }
+  SDL_RenderPresent(renderer);
+  SDL_FreeSurface(sprite);
+  SDL_DestroyTexture(texture);
+  SDL_DestroyWindow(screen);
+  return res;
+}
+
+    
 
 game create_valid_game(int nb_pieces, int* best_play){
   SDL_Window *screen;
@@ -208,8 +259,6 @@ game create_valid_game(int nb_pieces, int* best_play){
   SDL_Rect pos= {0, 0, 400, 200};
   SDL_RenderCopy(renderer, texture, NULL, &pos);
   SDL_RenderPresent(renderer);
-  SDL_FreeSurface(sprite);
-  SDL_DestroyTexture(texture);
   bool end=false;
   game g;
   while (!end){
@@ -222,11 +271,13 @@ game create_valid_game(int nb_pieces, int* best_play){
     }
     else delete_game(tmp);
   }
+  SDL_RenderPresent(renderer);
+  SDL_FreeSurface(sprite);
+  SDL_DestroyTexture(texture);
   SDL_DestroyWindow(screen);
   return g; 
 }
 
-//A COMPLETER
 int make_choice(bool is_random){
   SDL_Window *screen = SDL_CreateWindow("Choix", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
   if(screen == NULL){
@@ -274,12 +325,6 @@ int make_choice(bool is_random){
   return res;
 }
 
-
-
-
-
-
-//A COMPLETER PAR PIERRE
 int is_valid_game(game g){
   int solvable = 0;
   graph solutions = create_graph(g, true,&solvable);
@@ -292,16 +337,15 @@ bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h){
   int tmpY= rectY+h;
   return x>rectX && x<tmpX && y>rectY && y<tmpY; 
 }
-//A COMPLETER
 
 int graphic_position_to_piece(cgame g,int x,int y){
   int newX = (x-100)/100;
   int newY = 5-(y-100)/100;
   return game_square_piece((game)g,newX,newY);
 }
-//A FINIR
-void make_move(SDL_Renderer *renderer, game g, int best_play){
-  SDL_Event event;
+//
+bool make_move(SDL_Renderer *renderer, game g, int best_play){
+  SDL_Event event, event2;
   bool end = false;
   int moving_piece;
   while (!end){
@@ -314,16 +358,18 @@ void make_move(SDL_Renderer *renderer, game g, int best_play){
 	  if(moving_piece>-1){
 	    game_display(renderer,(cgame)g, best_play, moving_piece);
 	    //l'utilisateur a cliqué sur une pièce
-	    while(SDL_PollEvent(&event)){
-	      switch(event.type){
+	    while(SDL_WaitEvent(&event2)){
+	      switch(event2.type){
 	      case SDL_MOUSEBUTTONUP:
-		if(in_rectangle(event.button.x,event.button.y,100,100,600,600)){
+		if(in_rectangle(event2.button.x,event2.button.y,100,100,600,600)){
 		  //l'utilisateur a cliqué sur la grille
-		  if(move_piece_SDL(g, moving_piece, event.button.x, event.button.y)){
-		    return;
+		  if(move_piece_SDL(g, moving_piece, event2.button.x, event2.button.y)){
+		    return true;
 		  }
 		}
 		break;
+	      case SDL_QUIT:
+		return false;
 	      default:
 		break;
 	      }
@@ -331,6 +377,8 @@ void make_move(SDL_Renderer *renderer, game g, int best_play){
 	  }
 	}
 	break;
+      case SDL_QUIT:
+	return false;
       default:
 	break;
       }
