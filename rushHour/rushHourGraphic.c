@@ -25,8 +25,26 @@ game create_valid_game(int nb_pieces, int* best_play);
 int choose_nb_pieces(void);
 int is_valid_game(game g);
 void make_move(game g);
+bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h);
+int old_to_new_y(int oldY);
+int new_to_old_y(int newY);
+game init_config_text(int level);
+void play_graphic(SDL_Renderer *renderer,bool is_random);
 
-
+game init_config_text(int level){
+  char path[30];
+  char *rush="../../rushHour/file/rushHour";
+  char number = (char) level+48;
+  char* txt = ".txt";
+  strcpy(path,rush);
+  strcat(path,&number);
+  strcat(path,txt);
+  FILE *file= fopen(path,"r");
+  int width, height, nb_pieces;
+  piece* grid= read_Config_txt(file, &width, &height, &nb_pieces);
+  game g=new_game(width, height, nb_pieces, grid);
+  return g;
+}
 void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->x=get_x(p)*100 +100;
   pos_piece->y=(6-get_y(p)-get_height(p))*100 +100;
@@ -36,22 +54,22 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
 
 SDL_Surface* piece_to_sprite(cpiece p, int ind){
   if (ind == 0){
-    return IMG_Load("../../Images/redCar.png");
+    return IMG_Load("../../rushHour/Images/redCar.png");
   }
   else{
     if (is_horizontal(p)){
       if(get_height(p)==3){
-	return IMG_Load("../../Images/carRight3.png");
+	return IMG_Load("../../rushHour/Images/carRight3.png");
       }
       else{
-	return IMG_Load("../../Images/carRight2.png");
+	return IMG_Load("../../rushHour/Images/carRight2.png");
       }
     }
     else if (get_width(p)==2){
-      return IMG_Load("../../Images/carUp2.png");
+      return IMG_Load("../../rushHour/Images/carUp2.png");
     }
     else {
-      return IMG_Load("../../Images/carUp3.png");
+      return IMG_Load("../../rushHour/Images/carUp3.png");
     }
   }
 }
@@ -76,7 +94,7 @@ void game_display(SDL_Renderer *renderer, cgame g){
 }
 
 bool title_screen_display(SDL_Renderer *renderer){
-  SDL_Surface *sprite = IMG_Load("../../Images/titleScreen.bmp");
+  SDL_Surface *sprite = IMG_Load("../../rushHour/Images/titleScreen.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
@@ -91,7 +109,11 @@ bool title_screen_display(SDL_Renderer *renderer){
       case SDL_MOUSEBUTTONUP:
 	if(event.button.x > 100 && event.button.x < 300){
 	  if(event.button.y > 200 && event.button.y < 270){
-	    board_display(renderer); // A remplacer par play
+	    play_graphic(renderer,true);// A remplacer par play
+	    stop = true;
+	  }
+	  if(event.button.y > 300 && event.button.y < 370){
+	    play_graphic(renderer,false);// A remplacer par play
 	    stop = true;
 	  }
 // AJOUT DES BOUTONS QUITTER ET JOUER CONFIG DEJA ENREGISTREES
@@ -108,7 +130,7 @@ bool title_screen_display(SDL_Renderer *renderer){
 }
 
 void board_display(SDL_Renderer *renderer){
-  SDL_Surface *sprite = IMG_Load("../../Images/FondRH.bmp");
+  SDL_Surface *sprite = IMG_Load("../../rushHour/Images/FondRH.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
   SDL_FreeSurface(sprite);
   SDL_Rect pos= {0, 0, WINDOW_SIZE, WINDOW_SIZE};
@@ -117,11 +139,17 @@ void board_display(SDL_Renderer *renderer){
   SDL_RenderPresent(renderer);
 }
 
-void play_graphic(SDL_Renderer *renderer){
+void play_graphic(SDL_Renderer *renderer,bool is_random){
   board_display(renderer);
   int nb_pieces=choose_nb_pieces();
   int best_play=0;
-  game g = create_valid_game(nb_pieces, &best_play);
+  game g;
+  if (is_random){
+     g = create_valid_game(nb_pieces, &best_play);
+  }
+  else {
+     g = init_config_text(1);
+  }
   game_display(renderer,g);
   /*bool win=false;
   while(!win){
@@ -160,27 +188,49 @@ int is_valid_game(game g){
   else return simple_search(solutions);
 }
 
-void make_move(game g){
-    
-  
-/*
-void start_game_graphic(game g,int nbPiece, ){
-  while(!game_over_hr(g)){
-    dir direction;
-    int num = choose_number_piece(nbPiece,g);
-    int test = choose_direction(g,num,&direction);
-    if (!test) continue;
-    int distance = choose_distance(g);
-    bool goodMove=play_move(g,num,direction,distance);
-    if (goodMove==false) {
-      printf("\n! Déplacement impossible !\n\n");
-      continue;
-    }
-    display(g);
-  }
+bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h){
+  int tmpX= rectX+w;
+  int tmpY= rectY+h;
+  return x>rectX && x<tmpX && y>rectY && y<tmpY; 
 }
-*/
+//A COMPLETER
+  /*
+int old_to_new_y(int oldY);
+int new_to_old_y(int newY);
+  */
 
+int find_grid_case(int coord){
+  coord/=100;
+  coord*=100;
+  return coord;
+}
+  /*
+void make_move(game g){
+  SDL_event event;
+  bool end = false;
+  int moving_piece;
+  while (!end){
+    while (SDL_PollEvent(&event)){
+      switch (event.type){
+      case MOUSEBUTTONUP:
+	if(in_rectangle(event.button.x,event.button.y,100,100,600,600)){
+	  //l'utilisateur a cliqué sur la grille
+	  caseX=find_grid_case(event.button.x);
+	  caseY=find_grid_case(event.button.x);
+	  //attention changement de coordonnées n'oublie pas Rémi 
+	  moving_piece=game_square_piece(g,caseX,caseY);
+	  if(moving_piece>-1){
+	    //l'utilisateur a cliqué sur une pièce
+	  }
+	}
+	break;
+      default:
+	break;
+      }
+	  
+	  
+	  */	  
+   
 int main(int argc,char **argv){
   SDL_Window *screen = NULL;
   SDL_Event event;
@@ -216,7 +266,7 @@ int main(int argc,char **argv){
   game g = new_game_hr(6,grille);
   game_display(renderer,(cgame)g);
   */
-  play_graphic(renderer);
+  
  
  
   //FinTest
