@@ -71,6 +71,7 @@ int config_rushHour(FILE* file,int *width,int *height,int *nbPieces){
   if(solvable == -1) return -1;
   solvable = simple_search(solutions);
   delete_game(rushHour);
+  delete_graph(solutions);
   return solvable;
 }
 
@@ -82,6 +83,7 @@ int config_aneRouge(FILE* file,int *width,int *height,int *nbPieces){
   if(solvable == -1) return -1;
   solvable = simple_search(solutions);
   delete_game(aneRouge);
+  delete_graph(solutions);
   return solvable;
 }
 
@@ -115,11 +117,13 @@ graph create_graph(game G, bool isRH,int *solvable){
 	*tab = indNode;
 	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
 	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
+	free(tab);
       }else if(sol == -2){
 	int* tab = (int*)malloc(sizeof(int));
 	*tab = indNode;
 	graph = add_node_graph(graph, new_full_node(tabGame[i], tab ,1));
 	put_new_adress(graph, add_linked(graph_get_node(graph, indNode), graph_get_nbNodes(graph)-1), indNode);
+	free(tab);
 	end = true;
 	break;
       }else{

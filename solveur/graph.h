@@ -36,6 +36,8 @@ node add_linked(node s, int ind);
 
 node copy_node(node src);
 
+void delete_node(node s);
+
 //Fonctions graph
 
 graph new_graph(node firstNode);
@@ -51,6 +53,8 @@ int graph_get_nbNodes(graph g);
 graph add_node_graph(graph g, node s);
 
 void put_new_adress(graph g, node new, int ind);
+
+void delete_graph(graph g);
 
 //Fonctions calculs
 

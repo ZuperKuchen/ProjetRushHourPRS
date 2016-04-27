@@ -268,10 +268,18 @@ void start_game(game g,int nbPiece){
   printf("___________________________________________ \n");
 }
 
+void delete_array_pieces(piece *array, int size){
+  for(int i=0; i<size; i++){
+    delete_piece(array[i]);
+  }
+  free(array);
+}
+
 bool play(int nbPieces){
   char rejouer[6];
-  piece* grille = array_pieces(nbPieces); ;
+  piece* grille = array_pieces(nbPieces);
   game rushHour = new_game_hr(nbPieces,grille);
+  delete_array_pieces(grille, nbPieces);
   display((cgame)rushHour); 
   start_game(rushHour,nbPieces); 
   delete_game(rushHour);

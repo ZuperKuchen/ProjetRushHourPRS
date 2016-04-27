@@ -41,6 +41,13 @@ piece copy_piece_for_solver(cpiece src){
   return dst;
 }
 
+void delete_pieces_array(piece *array, int size){
+  for(int i=0; i<size; i++){
+    delete_piece(array[i]);
+  }
+  free(array);
+}
+
 // Fonctions sup pour Game
 
 bool game_equals_not_mov(cgame G1, cgame G2){
@@ -68,11 +75,12 @@ game copy_game_for_solver(cgame src){
   int nb_pieces = game_nb_pieces(src);
   int w = game_width(src);
   int h = game_height(src);
-  piece tab[nb_pieces];
+  piece *tab = malloc(sizeof(piece)*nb_pieces);
   for (int i=0;i<nb_pieces;i++){
     tab[i] = copy_piece_for_solver(game_piece(src, i));
   }
   game dst = new_game (w, h, nb_pieces, tab);
+  delete_pieces_array(tab, nb_pieces);
   return dst;
 }
 
@@ -141,6 +149,7 @@ node copy_node(node s){
 }
 
 
+
 // Fonctions graph
 
 graph new_graph(node firstNode){
@@ -185,6 +194,8 @@ graph add_node_graph(graph g, node s){
 void put_new_adress(graph g, node new, int ind){
   g->nodes[ind] = new;
 }
+
+
 
 // Fonctions calculs
 
