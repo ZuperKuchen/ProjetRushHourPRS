@@ -21,6 +21,10 @@
 #define GAME_SIZE 6
 #define EMPTY_CASE_VALUE -1
 
+/*
+  Retourne le nombre de coups minimum du game ou -1 si le game n'est pas solvable. Affiche une fenetre de chargement en attendant la valeur de retour
+ */
+
 int is_valid_game(game g){
   SDL_Window *screen;
   screen = SDL_CreateWindow("Loading...", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
@@ -39,11 +43,13 @@ int is_valid_game(game g){
   SDL_Rect pos= {0, 0, 400, 200};
   SDL_RenderCopy(renderer, texture, NULL, &pos);
   SDL_RenderPresent(renderer);
+  //calcul 
   int solvable = 0;
   graph solutions = create_graph(g, true,&solvable);
   int res;
   if(solvable == -1) res= -1;
   else res = simple_search(solutions);
+  //destruction de la fenêtre
   SDL_RenderPresent(renderer);
   SDL_FreeSurface(sprite);
   SDL_DestroyTexture(texture);
@@ -51,12 +57,19 @@ int is_valid_game(game g){
   return res;
 }
 
+/*
+Renvoie true si le point (x,y) est dans le rectangle de coin supérieur (rectX,rectY) et de taille w*h 
+ */
+
 bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h){
   int tmpX= rectX+w;
   int tmpY= rectY+h;
   return x>rectX && x<tmpX && y>rectY && y<tmpY; 
 }
 
+/*
+  Renvoie le numéro de la pièce g par rapport aux coordonnées de la fenetre SDL
+ */
 int graphic_position_to_piece(cgame g,int x,int y){
   int newX = (x-100)/100;
   int newY = 5-(y-100)/100;
@@ -89,25 +102,13 @@ int main(int argc,char **argv){
   if (renderer == NULL){
     fprintf(stderr, "Erreur d'initialisation du renderer : %s\n", SDL_GetError());
   }
-
-
-  //Ecran Titre
+  
   while(continuer){
     continuer=title_screen_display(renderer);
   }
+ 
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(screen);
   SDL_Quit();
-  
-  /*  //FinTest
-  while(continuer){
-    SDL_WaitEvent(&event);
-    if(event.type == SDL_QUIT){
-      continuer=false;
-      SDL_DestroyRenderer(renderer);
-      SDL_DestroyWindow(screen);
-      SDL_Quit();
-    }
-    }*/
   return EXIT_SUCCESS;
 }

@@ -21,7 +21,11 @@ void erreur_window(){
 void erreur_renderer(){
   fprintf(stderr, "Erreur d'initialisation du renderer : %s\n", SDL_GetError());
 }
-
+/*
+  Affichage graphique du game g dans le renderer 
+  best_play = nombre de coup minimum
+  indSelec = indice de la pièce selectionnée ou -1 si aucune
+*/
 void game_display(SDL_Renderer *renderer, cgame g,int best_play,int indSelec){
   SDL_RenderClear(renderer);
   board_display(renderer);
@@ -44,7 +48,9 @@ void game_display(SDL_Renderer *renderer, cgame g,int best_play,int indSelec){
   SDL_RenderPresent(renderer);
   display_nb_mov(renderer,best_play,game_nb_moves(g));
 }
-
+/*
+affichage de l'ecran titre 
+ */
 
 bool title_screen_display(SDL_Renderer *renderer){
   SDL_Surface *sprite = IMG_Load("../../rushHour/Images/titleScreen.bmp");
@@ -61,16 +67,19 @@ bool title_screen_display(SDL_Renderer *renderer){
       switch (event.type){
       case SDL_MOUSEBUTTONUP:
 	if(event.button.x > 100 && event.button.x < 300){
+	  //bouton jouer 
 	  if(event.button.y > 200 && event.button.y < 270){
 	    return play_graphic(renderer,true);
 	    stop = true;
 	    break;
 	  }
+	  //bouton jouer parties enregistrées
 	  if(event.button.y > 300 && event.button.y < 370){
 	    return play_graphic(renderer,false);
 	    stop = true;
 	    break;
 	  }
+	  //bouton quitter
 	  if(event.button.y > 400 && event.button.y < 470){
 	    stop=true;
 	    return false;
@@ -89,6 +98,9 @@ bool title_screen_display(SDL_Renderer *renderer){
   return true;
 }
 
+/*
+affichage du plateau de jeu vide
+*/
 void board_display(SDL_Renderer *renderer){
   SDL_Surface *sprite = IMG_Load("../../rushHour/Images/FondRH.bmp");
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,sprite);
@@ -99,6 +111,9 @@ void board_display(SDL_Renderer *renderer){
   SDL_RenderPresent(renderer);
 }
 
+/*
+ affiche les nombres de mouvements (effectués et minimum) sur la bande supérieur du plateau de jeu
+*/
 void display_nb_mov(SDL_Renderer *renderer,int nb_mov_solver,int nb_mov_game){
   SDL_Surface *texte1 = NULL;
   SDL_Surface *texte2 = NULL;

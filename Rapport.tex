@@ -16,7 +16,7 @@
 \section{Implémentation de Game et Piece}
 \paragraph{}
 
-
+Pour l'implémentation de \og game.c \fg{}, la majorité des problèmes rencontrés étaient des problèmes d'allocations de mémoire.
 
 \section{CMake}
 \paragraph{}
@@ -24,17 +24,18 @@ Pour CMake, la séance de TP nous a permis d'apprendre son utilisation de maniè
 
 \section{Premier exécutable Rush Hour}
 \paragraph{}
-Nous avons choisi pour rushHour, d'utiliser des configurations aléatoires. Nous nous sommes dit que cela permettrait de jouer une configuration différente à chaque lancement du jeu. Pour cela on a donc créé des fonctions aléatoires pour définir la direction, mais aussi pour la taille, et la position dans la grille. Pour qu'il n'y ait pas de problèmes de croisements de pieces, nous avons créé une fonction qui génère N pieces rentrées en lignes de commande, une par une, et qui vérifiait à chaques création de pieces, la validitée de la pièce avec la fonction \"intersect'\" avec toutes les pièces déja crée. Si la pièce n'est pas compatible elle est détruite et re-crée aléatoirement. Il fallait vérifier quelques autres cas impossible comme une piece horizontale sur la ligne de la voiture 0. Cette derniere fonction créé renvoie donc la grille du jeu. A ce moment du projet, il y avait quelques problèmes posés par la génération de grille aléatoire. Tout d'abord la possibilité d'avoir un jeu insolvable ou à l'inverse des configurations solvables en quelques coups, et très facile à résoudre. Les problèmes rencontrés pour cela étaient essentiellement la gestion des adresse avec malloc (mal utilisé ce qui nous a valu de nombreuses heures avec notre ami GDB, puis valgrind ..) .
+Nous avons choisi pour rushHour, d'utiliser des configurations aléatoires. Nous nous sommes dit que cela permettrait de jouer une configuration différente à chaque lancement du jeu. Pour cela on a donc créé des fonctions aléatoires pour définir la direction, la taille, et la position dans la grille. Pour qu'il n'y ait pas de problèmes de croisements de pieces, nous avons créé une fonction qui génère N pieces rentrées en lignes de commande, une par une, et qui vérifiait à chaques création de pieces, la validitée de la pièce avec la fonction \"intersect'\" avec toutes les pièces déja crée. Si la pièce n'est pas compatible elle est détruite et re-crée aléatoirement. Il fallait vérifier quelques autres cas impossible comme une piece horizontale sur la ligne de la voiture 0. Cette derniere fonction créé renvoie donc la grille du jeu. A ce moment du projet, il y avait quelques problèmes posés par la génération de grille aléatoire. Tout d'abord la possibilité d'avoir un jeu insolvable ou à l'inverse des configurations solvables en quelques coups, et très facile à résoudre. Les problèmes rencontrés pour cela étaient essentiellement la gestion des adresse avec malloc (mal utilisé ce qui nous a valu de nombreuses heures avec notre ami GDB, puis valgrind ..) .
+\smallskip
 
 Un des problèmes que nous avons du surmonter est la gestion des entrées claviers utilisateur. En effet, nous avions commencé par essayer de l'implémenter à l'aide de la fonction \og int scanf(const char * format, …); \fg{}, mais de nombreux problèmes de gestions de buffers nous on fait effectuer quelques recherches sur les inconvénients ( notamment les risques de buffer overflow)  de scanf ce qui nous a amené à chercher une autre solution. On a finalement choisi d'utiliser \og char *fgets(char *str, int n, FILE *stream) \fg{} pour toutes les interactions avec l'utilisateur.
-REMI PARLE DE START GAME -> FGETS ECT .. 
+
 \section{V2 de Game et Piece, implémentation de l'Ane Rouge}
 \paragraph{}
 
 \section{Solveur}
 \subsection{Choix du Graph non orienté}
 \paragraph{}
-Nous avons choisi d'utiliser un graph non orienté pour implémenter le solveur. C'est ce qui nous paraissait le plus évident, chaque noeud contient comme valeur un Game avec une certaine position des différentes pieces, et les noeuds sont reliés s'il est possible d'aller d'une position de jeu à une autre en un mouvement. A partir de ça il suffit d'utiliser l'Algorithme de Dijkstra pour regarder le chemin le plus court. Afin d'éviter de complexifier le solveur, nous avons choisi de rentrer tous les noeuds dans un tableau, ce qui donne en vérité un poids à chaque noeuds, plus il est loin dans le tableau plus sa distance par rapport à la solution initiale est élevée donc inutile d'utiliser Dijkstra.
+Nous avons choisi d'utiliser un graph non orienté pour implémenter le solveur. C'est ce qui nous paraissait le plus évident, chaque noeud contient comme valeur un Game avec une certaine position des différentes pieces, et les noeuds sont reliés s'il est possible d'aller d'une position de jeu à une autre en un mouvement. A partir de ça il suffit d'utiliser l'Algorithme de Dijkstra pour regarder le chemin le plus court entre la position gagnante et la position initiale. Afin d'éviter de complexifier le solveur, nous avons choisi de rentrer tous les noeuds dans un tableau, ce qui donne en vérité un poids à chaque noeuds, plus il est loin dans le tableau plus sa distance par rapport à la solution initiale est élevée donc inutile d'utiliser Dijkstra.
 
 \subsection{L'algorithme}
 \paragraph{}
