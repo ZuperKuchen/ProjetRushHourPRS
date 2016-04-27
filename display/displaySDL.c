@@ -108,24 +108,28 @@ void display_nb_mov(SDL_Renderer *renderer,int nb_mov_solver,int nb_mov_game){
     exit(EXIT_FAILURE);
   }
   police = TTF_OpenFont("../../rushHour/Images/pricedownbl.ttf",32);
-  char path1[10];
+  char path1[10] = {'\0'};
   int numb = nb_mov_solver%10;
   nb_mov_solver/=10;
+  char n1[4];
   char premier = (char) numb + 48;
-  strcpy(path1,&premier);
+  n1[0] = premier;
   char path2[10] = {'\0'};
   int numb2 = nb_mov_game%10;
+  char n2[4];
   nb_mov_game/=10;
   char premier2 = (char) numb2 + 48;
-  strcpy(path2,&premier2);
+  n2[0] = premier2;
   int compt = 1;
   while(nb_mov_solver>0){
-    compt++;
     numb = nb_mov_solver%10;
     char tmp = (char) numb + 48;
-    strcat(path1,&tmp);
+    n1[compt] = tmp;
     nb_mov_solver/=10;
+    compt++;
   }
+  n1[compt]='\0';
+  strcat(path1,n1);
   for(int i=0;i<compt/2;i++){
     char tmp = path1[i];
     path1[i] = path1[compt-1-i];
@@ -134,12 +138,14 @@ void display_nb_mov(SDL_Renderer *renderer,int nb_mov_solver,int nb_mov_game){
   
   compt = 1;
   while(nb_mov_game>0){
-    compt++;
     numb2 = nb_mov_game%10;
     char tmp = (char) numb2 + 48;
-    strcat(path2,&tmp);
+    n2[compt] = tmp;
     nb_mov_game/=10;
+    compt++;
   }
+  n2[compt]='\0';
+  strcat(path2,n2);
   for(int i=0;i<compt/2;i++){
     char tmp = path2[i];
     path2[i] = path2[compt-1-i];

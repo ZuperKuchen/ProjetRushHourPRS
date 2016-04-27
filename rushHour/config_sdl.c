@@ -22,12 +22,13 @@
 #define EMPTY_CASE_VALUE -1
 
 game init_config_text(int level){
-  char path[30];
-  char *rush="../../rushHour/file/rushHour";
+  char path[30] = "../../rushHour/file/rushHour";
   char number = (char) level+48;
   char* txt = ".txt";
-  strcpy(path,rush);
-  strcat(path,&number);
+  char n[3];
+  n[0] = number;
+  n[1] = '\0';
+  strcat(path,n);
   strcat(path,txt);
   FILE *file= fopen(path,"r");
   int width, height, nb_pieces;
