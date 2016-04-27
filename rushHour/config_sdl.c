@@ -14,13 +14,10 @@
 #include "graph.h"
 #include "displaySDL.h"
 #define WINDOW_SIZE 800
-//Constantes rushHour.c
-#define PIECE_MAX 9
-#define SMALL_SIZE 2
-#define BIG_SIZE 3
-#define GAME_SIZE 6
-#define EMPTY_CASE_VALUE -1
 
+/*
+renvoi le game enregistré correspondant à l'indice level
+ */
 game init_config_text(int level){
   char path[30] = "../../rushHour/file/rushHour";
   char number = (char) level+48;
@@ -37,6 +34,9 @@ game init_config_text(int level){
   return g;
 }
 
+/*
+modifie le SDL_Rect passé en paramètre en lui donnant les coordonnées sur la fenêtre SDL de la pièce en paramètre
+*/
 void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->x=get_x(p)*100 +100;
   pos_piece->y=(6-get_y(p)-get_height(p))*100 +100;
@@ -44,6 +44,9 @@ void piece_graphic_position(SDL_Rect *pos_piece, cpiece p){
   pos_piece->h=get_height(p)*100;
 }
 
+/*
+  retourne le sprite correspondant à cpièce suivant sa taille, sa direction, si elle est selctionnée ou non ... 
+*/
 SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select){
   if (ind == 0){
     if(select) return IMG_Load("../../rushHour/Images/gCarRight2.png");
@@ -70,6 +73,7 @@ SDL_Surface* piece_to_sprite(cpiece p, int ind, bool select){
     }
   }
 }
+
 
 bool play_graphic(SDL_Renderer *renderer,bool is_random){
   board_display(renderer);
