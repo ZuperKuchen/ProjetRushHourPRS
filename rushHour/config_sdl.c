@@ -247,6 +247,10 @@ bool make_move(SDL_Renderer *renderer, game g, int best_play){
 		  if(move_piece_SDL(g, moving_piece, event2.button.x, event2.button.y)){
 		    return true;
 		  }
+		  if(graphic_position_to_piece((cgame)g,event2.button.x,event2.button.y)==moving_piece){
+		    game_display(renderer,(cgame)g, best_play, -1);
+		    return true;
+		  }
 		}
 		break;
 	      case SDL_QUIT:

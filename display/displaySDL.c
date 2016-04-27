@@ -77,6 +77,7 @@ bool title_screen_display(SDL_Renderer *renderer){
 	    break;
 	  }
 	}
+	break;
       case SDL_QUIT:
 	return false;
 	break;

@@ -22,10 +22,33 @@
 #define EMPTY_CASE_VALUE -1
 
 int is_valid_game(game g){
+  SDL_Window *screen;
+  screen = SDL_CreateWindow("Loading...", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
+  if(screen == NULL){
+    erreur_window();
+    SDL_Quit();
+    exit(EXIT_FAILURE);
+  }
+  SDL_Renderer *renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
+  if (renderer == NULL){
+    erreur_renderer();
+  }
+  SDL_Surface *sprite ;
+  sprite = IMG_Load("../../rushHour/Images/loadingSolveur.bmp");
+  SDL_Texture *texture= SDL_CreateTextureFromSurface(renderer,sprite);
+  SDL_Rect pos= {0, 0, 400, 200};
+  SDL_RenderCopy(renderer, texture, NULL, &pos);
+  SDL_RenderPresent(renderer);
   int solvable = 0;
   graph solutions = create_graph(g, true,&solvable);
-  if(solvable == -1) return -1;
-  else return simple_search(solutions);
+  int res;
+  if(solvable == -1) res= -1;
+  else res = simple_search(solutions);
+  SDL_RenderPresent(renderer);
+  SDL_FreeSurface(sprite);
+  SDL_DestroyTexture(texture);
+  SDL_DestroyWindow(screen);
+  return res;
 }
 
 bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h){
