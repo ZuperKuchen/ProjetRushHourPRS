@@ -23,37 +23,46 @@
 
 /*
   Retourne le nombre de coups minimum du game ou -1 si le game n'est pas solvable. Affiche une fenetre de chargement en attendant la valeur de retour
- */
+*/
 
-int is_valid_game(game g){
-  SDL_Window *screen;
-  screen = SDL_CreateWindow("Loading...", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
-  if(screen == NULL){
-    erreur_window();
-    SDL_Quit();
-    exit(EXIT_FAILURE);
-  }
-  SDL_Renderer *renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
-  if (renderer == NULL){
-    erreur_renderer();
-  }
-  SDL_Surface *sprite ;
-  sprite = IMG_Load("../../rushHour/Images/loadingSolveur.bmp");
-  SDL_Texture *texture= SDL_CreateTextureFromSurface(renderer,sprite);
-  SDL_Rect pos= {0, 0, 400, 200};
-  SDL_RenderCopy(renderer, texture, NULL, &pos);
-  SDL_RenderPresent(renderer);
-  //calcul 
+int solver_time(game g){
   int solvable = 0;
   graph solutions = create_graph(g, true,&solvable);
   int res;
   if(solvable == -1) res= -1;
   else res = simple_search(solutions);
-  //destruction de la fenêtre
-  SDL_RenderPresent(renderer);
-  SDL_FreeSurface(sprite);
-  SDL_DestroyTexture(texture);
-  SDL_DestroyWindow(screen);
+  return res;
+}
+
+int is_valid_game(game g,bool isRandom){
+  int res;
+  if(isRandom){
+    SDL_Window *screen;
+    screen = SDL_CreateWindow("Loading...", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 200, SDL_WINDOW_SHOWN);
+    if(screen == NULL){
+      erreur_window();
+      SDL_Quit();
+      exit(EXIT_FAILURE);
+    }
+    SDL_Renderer *renderer = SDL_CreateRenderer(screen,-1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_TARGETTEXTURE);
+    if (renderer == NULL){
+      erreur_renderer();
+    }
+    SDL_Surface *sprite ;
+    sprite = IMG_Load("../../rushHour/Images/loadingSolveur.bmp");
+    SDL_Texture *texture= SDL_CreateTextureFromSurface(renderer,sprite);
+    SDL_Rect pos= {0, 0, 400, 200};
+    SDL_RenderCopy(renderer, texture, NULL, &pos);
+    SDL_RenderPresent(renderer);
+    //calcul 
+    res = solver_time(g);
+    //destruction de la fenêtre
+    SDL_RenderPresent(renderer);
+    SDL_FreeSurface(sprite);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyWindow(screen);
+  }
+  else res = solver_time(g);
   return res;
 }
 

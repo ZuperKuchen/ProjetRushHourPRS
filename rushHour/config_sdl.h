@@ -9,7 +9,7 @@
 
 game create_valid_game(int nb_pieces, int* best_play);
 int choose_nb_pieces(void);
-int is_valid_game(game g);
+int is_valid_game(game g,bool isRandom);
 bool make_move(SDL_Renderer *renderer, game g, int best_play);
 bool in_rectangle(int x,int y,int rectX, int rectY,int w,int h);
 game init_config_text(int level);

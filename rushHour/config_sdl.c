@@ -87,7 +87,7 @@ bool play_graphic(SDL_Renderer *renderer,bool is_random){
   else {
     chose_number= make_choice(is_random);
     g = init_config_text(chose_number);
-    best_play=is_valid_game(g);
+    best_play=is_valid_game(g,true);
   }
   game_display(renderer,g,best_play,-1);
   bool win=false;
@@ -168,7 +168,7 @@ game create_valid_game(int nb_pieces, int* best_play){
   while (!end){
     piece* grille = array_pieces(nb_pieces); 
     game tmp = new_game_hr(nb_pieces,grille);
-    *best_play=is_valid_game(tmp);
+    *best_play=is_valid_game(tmp,false);
     if ( *best_play > 5){
       end=true;
       g=tmp;
