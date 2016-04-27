@@ -70,8 +70,15 @@ Nous avons donc un solveur relativement efficace pour l'Ane Rouge mais très len
 
 \section{Interface Graphique}
 \subsection{choix d'impémentation}
-Nous avons décidé d'utiliser la bibliothèque graphique SDL2 pour implémenter l'interface graphique de rushHour. Nous n'avons pas utilisé les outils de création de formes fournit par SDL, préférant insérer nos propre sprites. Au final l'ensemble de notre interface graphique consiste a des images \"collées\" sur des fenetres SDL.
 \paragraph{}
+Nous avons décidé d'utiliser la bibliothèque graphique SDL2 pour implémenter l'interface graphique de rushHour. Nous n'avons pas utilisé les outils de création de formes fournit par SDL, préférant insérer nos propre sprites. Au final l'ensemble de notre interface graphique consiste a des images \"collées\" sur des fenetres SDL. A chaque fois qu'une pièce est selectionnée ou déplacé le contenu de la fenêtre est effacé puis réaffiché.
+
+\subsection{}
+\paragraph{}
+Certaines spécifications de SDL nous ont posés quelques soucis. Par exemple, une fenêtre doit être initialisé et détruite au sein de la même fonction. L'initialisation devant être testée, il en résulte des codes plutôt long et peu digeste dans les fonctions necessitant l'affichage d'une fenêtre ( et donc d'un renderer, d'une surface, d'une texture). \\
+Cette même spécificité nous a obligé à utiliser de manière astucieuse le booléen retourné par nos fonctions de jeu utilisant une interaction avec l'utilisateur (les évènements SDL) en traduisant l'évènement \og cliquer sur la croix rouge \fg{} par un return false qui lui même fera retourner false à sa fonction appelante et ainsi de suite jusqu'à retourner false afin de quitter la boucle du main, et donc pouvoir quitter l'interface SDL. Tout ceci étant extrêmement rapide, l'utilisateur a donc l'impression de quitter brutalement la fenêtre alors qu'il amorce simplement la fin du programme.
+
+
 
 \end{document}
  
