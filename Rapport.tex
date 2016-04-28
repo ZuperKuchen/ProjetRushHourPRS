@@ -31,6 +31,7 @@ Un des problèmes que nous avons du surmonter est la gestion des entrées clavie
 
 \section{V2 de Game et Piece, implémentation de l'Ane Rouge}
 \paragraph{}
+Pour pouvoir implémenter l'ane rouge, en utilisant la bibliothèque libGame, contenant les mêmes fichiers sources que rushHour. Pour cela il a donc fallut ré-implémenter piece.c et game.c pour qu'ils soient utilisable par les deux jeux. Pour cette phase nous n'avons pas spécialement rencontrés de problèmes, car la démarche était la même que pour la première implémentation des sources et de rushHour. Une fois l'implémentation faite( et encore et toujours des oublis sur les malloc .. et donc Segmentation fault ..) et résolu, nous devions implémenter le main de l'ane rouge. Nous avons choisis de ne pas faire de configuration aléatoire, contrairement à rushHour car pour l'ane rouge la grille est quasiment pleine, et cela aurait été vraiment trop difficile à gérer. Pour la suite, du classique, il fallait faire la création de la grille, une fois la grille récupérée crée le jeu, puis une fonction StartGame exactement comme dans rushHour. La seule diffèrence du gamePlay entre les deux se trouve au niveau de la taille du jeu, du game\_over, et principalement de l'affichage. Cette phase de réadaption des codes sources et de l'implémentation de l'ane rouge à été la plus \"simple\" du projet. Nous avions fait lors de la première implémentation des codes modulables ce qui nous a surement permis de modifier assez rapidement. On a donc pu passer encore plus de temps sur la factorisation des fonctions. Certes nous n'avons pas mis énormément de commentaires, mais cela car chaques fonction avait un nom évocateur mais aussi car elles dépassaient rarement 5-6 lignes chacunes.
 
 \section{Solveur}
 \subsection{Choix du Graph non orienté}
@@ -69,11 +70,11 @@ Il a une complexité en temps de O(n2).
 Nous avons donc un solveur relativement efficace pour l'Ane Rouge mais très lent pour une configuration d'Ane Rouge complexe (plus de 10 min sur une machine du crémi pour le rh46 et 8 min sur une de nos machines personnelles).
 
 \section{Interface Graphique}
-\subsection{choix d'impémentation}
+\subsection{Choix d'impémentation}
 \paragraph{}
 Nous avons décidé d'utiliser la bibliothèque graphique SDL2 pour implémenter l'interface graphique de rushHour. Nous n'avons pas utilisé les outils de création de formes fournit par SDL, préférant insérer nos propre sprites. Au final l'ensemble de notre interface graphique consiste a des images \"collées\" sur des fenetres SDL. A chaque fois qu'une pièce est selectionnée ou déplacé le contenu de la fenêtre est effacé puis réaffiché.
 
-\subsection{}
+\subsection{Problèmes rencontrés}
 \paragraph{}
 Certaines spécifications de SDL nous ont posés quelques soucis. Par exemple, une fenêtre doit être initialisé et détruite au sein de la même fonction. L'initialisation devant être testée, il en résulte des codes plutôt long et peu digeste dans les fonctions necessitant l'affichage d'une fenêtre ( et donc d'un renderer, d'une surface, d'une texture). \\
 Cette même spécificité nous a obligé à utiliser de manière astucieuse le booléen retourné par nos fonctions de jeu utilisant une interaction avec l'utilisateur (les évènements SDL) en traduisant l'évènement \og cliquer sur la croix rouge \fg{} par un return false qui lui même fera retourner false à sa fonction appelante et ainsi de suite jusqu'à retourner false afin de quitter la boucle du main, et donc pouvoir quitter l'interface SDL. Tout ceci étant extrêmement rapide, l'utilisateur a donc l'impression de quitter brutalement la fenêtre alors qu'il amorce simplement la fin du programme.

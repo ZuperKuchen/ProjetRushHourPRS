@@ -16,13 +16,23 @@ L'executable aneRouge se trouve dans le dossier ProjetRushHourPRS/build/aneRouge
 
 L'executable rushHour se trouve dans le dossier ProjetRushHourPRS/build/rushHour
 
+L'executable rushHour se trouve dans le dossier ProjetRushHourPRS/build/solveur
+
 Pour executer aneRouge :
 
 ./aneRouge
 
-Pour executer rushHour :
+Pour executer rushHour en mode commande :
 
-./rushHour nbPiecesVoulu
+./rushHourCommand nbPiecesVoulu
+
+Pour executer rushHour en mode graphique :
+
+./rushHourGraphic
+
+Pour executer le solveur :
+
+./solveur a|r file.txt
 
 Pour accéder aux ressources Game et Piece : ProjetRushHourPRS/src
 
